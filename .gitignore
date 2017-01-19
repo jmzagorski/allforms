@@ -1,0 +1,13 @@
+.nsprc
+node_modules
+.DS_STORE
+npm-debug.log*
+/dist
+/typings
+/.awcache
+/electron.js*
+/release
+/test/coverage
+yarn.lock
+db.json
+/karma-*

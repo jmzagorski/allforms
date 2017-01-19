@@ -1,0 +1,15 @@
+<template>
+  <require from="./resources/elements/directory-nav"></require>
+  <require from="./resources/elements/nav-bar.html"></require>
+
+  <nav-bar router.bind="router"></nav-bar>
+
+  <div class="page-host">
+    <section class="col-md-offset-2 col-md-8">
+      <h4>
+        <directory-nav root-name.bind="username"></directory-nav>
+      </h4>
+    </section>
+    <router-view></router-view>
+  </div>
+</template>

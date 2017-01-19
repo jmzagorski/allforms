@@ -1,0 +1,27 @@
+<template>
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <button class="btn btn-xs btn-default" data-ng-click="addNew()">
+          New <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <table class="table">
+        <tbody>
+          <tr repeat.for="f of form.files">
+            <td>
+              <i class="fa fa-${f.icon} fa-fw" aria-hidden="true"></i>
+              <a href.bind="f.url">&nbsp; ${f.name}</a>
+            </td>
+            <td class="text-muted">
+              ${f.lastComment}
+            </td>
+            <td class="text-muted">
+              ${f.lastEditInDays} days ago
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</template>

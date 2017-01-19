@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+  node:
+    image: jmzagorski-webpack/node
+    working_dir: /home/app/allforms
+    build:
+      context: .
+      dockerfile: ./.docker/nodejs.${APP_ENV}.dockerfile
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - .:/home/app/allforms
+      - /home/app/allforms/node_modules
+    env_file:
+      - ./.docker/app.${APP_ENV}.env
