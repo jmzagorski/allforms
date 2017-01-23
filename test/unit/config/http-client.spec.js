@@ -1,4 +1,4 @@
-import * as LoggingInterceptor from '../../../src/aurelia-http-logger';
+import * as LoggingInterceptor from 'aurelia-http-logger';
 import {HttpStub} from '../stubs';
 import HttpConfig from '../../../src/config/http-client';
 import * as env from '../../../src/env';
@@ -7,8 +7,13 @@ describe('http client configuration', () => {
   let sut;
   let http;
   let configObj;
+  let configs;
 
   beforeEach(() => {
+    configs = [];
+    spyOn(LoggingInterceptor, 'intercept').and.callFake((config) => {
+      configs.push(config);
+    });
     http = new HttpStub();
     sut = new HttpConfig(http);
     configObj = {
@@ -17,6 +22,7 @@ describe('http client configuration', () => {
       withBaseUrl: url => configObj,
       withInterceptor: obj => () => configObj 
     };
+
   });
 
   it('configures default headers', () => {
@@ -76,7 +82,7 @@ describe('http client configuration', () => {
 
       sut.configure();
       http.config(configObj);
-      const configs = actualInterceptor.getConfigs();
+      //const configs = actualInterceptor.getConfigs();
 
       expect(configs).toContain(expectConfig);
     });
