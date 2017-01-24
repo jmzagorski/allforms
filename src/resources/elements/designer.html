@@ -1,0 +1,19 @@
+<template>
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <select id="toolbox" name="toolbox" value.bind="formElement"
+      change.delegate="showElement()">
+      <option value="">Select an element</option>
+      <option value="label">label</option>
+      <option value="textarea">input</option>
+      <option value="input">lookup</option>
+      <option value="select">list</option>
+      <option value="checkbox">yes/no</option>
+      <option value="radio">options</option>
+      <option value="a">attachment</option>
+      <option value="a">subform</option>
+      <option value="table">table</option>
+      <option value="grid">grid</option>
+    </select>
+  </section>
+  <div class="dropzone"></div>
+</template>

@@ -36,3 +36,14 @@ export class RouterStub {
     return url;
   }
 }
+
+export class InteractStub {
+
+  dropzone(config) {
+    this.dropzoneConfig = config;
+  }
+
+  draggable(config) {
+    this.draggableConfig = config;
+  }
+}
