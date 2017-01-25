@@ -15,6 +15,7 @@ const metadata = {
 const outDir = path.resolve('dist');
 
 module.exports = {
+  devtool: 'inline-source-map',
   entry: {
     'app': ['./src/main'], // <-- this array will be filled by the aurelia-webpack-plugin
     'aurelia': Object.keys(project.dependencies).filter(dep => dep.startsWith('aurelia-'))
@@ -130,6 +131,7 @@ module.exports = {
     port: metadata.port,
     host: metadata.host,
     historyApiFallback: true,
+    stats: 'errors-only',
     watchOptions: {
       aggregateTimeout: 300,
       poll: 1000
