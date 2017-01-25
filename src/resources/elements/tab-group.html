@@ -1,0 +1,12 @@
+<template>
+  <ul class="nav nav-${type}s">
+    <li repeat.for="tab of tabs" class="${tab.active ? 'active' : ''}">
+      <a data-toggle="${type}" href="#tab" click.delegate="select(tab)">
+        ${tab.header}
+      </a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <slot></slot>
+  </div>
+</template>
