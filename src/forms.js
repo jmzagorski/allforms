@@ -3,7 +3,7 @@ import {inject} from 'aurelia-framework';
 import {Router} from 'aurelia-router';
 import {importFetch} from './utils';
 
-const fetch = importFetch(); 
+const fetch = importFetch();
 
 @inject(HttpClient, Router)
 export class Forms {
