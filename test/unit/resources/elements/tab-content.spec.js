@@ -56,7 +56,7 @@ describe('the tab content custom element', () => {
     })
   });
 
-  it('has a slot for the div content', async done => {
+  it('has a slot for the div qontent', async done => {
     sut.inView(`<tab-content></tab-content>`)
 
     await sut.create(bootstrap);

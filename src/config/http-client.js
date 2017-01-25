@@ -10,8 +10,8 @@ export default class {
   constructor(http) {
     this.client = http;
 
-    // TODO - leaving here temporarily until i can find a better way to 
-    // unit test configuration. maybe addd a getCOnfiguration method on 
+    // TODO - leaving here temporarily until i can find a better way to
+    // unit test configuration. maybe addd a getCOnfiguration method on
     // aurelia-http-logger
     HttpLogger.intercept({
       statusCodes: [400],
