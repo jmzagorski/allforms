@@ -142,7 +142,7 @@ describe('the designer custom element', () => {
 
     const select = document.querySelector('select');
     let input = document.querySelector('input');
-    select.value = 'input';
+    select.value = 'textarea';
 
     expect(input).toEqual(null);
 
@@ -151,7 +151,7 @@ describe('the designer custom element', () => {
     select.dispatchEvent(changeEvent);
 
     input = document.querySelector('.dropzone').previousSibling;
-    expect(input.tagName).toEqual('INPUT');
+    expect(input.tagName).toEqual('TEXTAREA');
     expect(input).not.toEqual(null);
     expect(input.className).toEqual('draggable drag-drop resizable');
     // let the binding firing
