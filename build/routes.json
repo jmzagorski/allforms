@@ -1,0 +1,7 @@
+{
+  "/api/": "/",
+  "/:resource/": "/:resource",
+  "/:resource/:id": "/:resource/:id",
+  "/:resource/:id/elements": "/:resource/:id"
+}
+

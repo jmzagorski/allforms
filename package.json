@@ -34,7 +34,7 @@
     "webpack": "cross-env BABEL_ENV=node ./node_modules/.bin/webpack",
     "webpack-dev-server": "cross-env BABEL_ENV=node ./node_modules/.bin/webpack-dev-server",
     "prestart-mockapi": "npm run generate-mock-data",
-    "start-mockapi": "json-server --watch src/db.json --port 9001 --host 0.0.0.0",
+    "start-mockapi": "json-server --watch src/db.json --port 9001 --host 0.0.0.0 --routes build/routes.json",
     "generate-mock-data": "cross-env BABEL_ENV=node babel-node ./build/generate-mockdata"
   },
   "repository": {
@@ -75,6 +75,7 @@
     "aurelia-templating-binding": "^1.1.0",
     "aurelia-templating-resources": "^1.2.0",
     "aurelia-templating-router": "^1.0.0",
+    "aurelia-value-converters": "^1.0.2",
     "babel-polyfill": "^6.20.0",
     "bluebird": "^3.4.6",
     "bootstrap": "^3.3.7",
