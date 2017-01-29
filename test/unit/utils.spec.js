@@ -1,3 +1,4 @@
+import './setup';
 import * as utils from '../../src/utils';
 import using from 'jasmine-data-provider';
 

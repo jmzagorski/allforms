@@ -1,3 +1,4 @@
+import './setup';
 import * as env from '../../src/env';
 import using from 'jasmine-data-provider';
 
