@@ -13,12 +13,23 @@ const metadata = {
   HMR: process.argv.join('').indexOf('hot') >= 0 || !!process.env.WEBPACK_HMR
 };
 const outDir = path.resolve('dist');
+const coreBundles = {
+  bootstrap: [
+    'aurelia-polyfills',
+    'aurelia-pal',
+    'aurelia-pal-browser',
+    'regenerator-runtime',
+    'bluebird'
+  ],
+  aurelia: Object.keys(project.dependencies).filter(dep => dep.startsWith('aurelia-'))
+};
 
 module.exports = {
   devtool: 'inline-source-map',
   entry: {
-    'app': ['./src/main'], // <-- this array will be filled by the aurelia-webpack-plugin
-    'aurelia': Object.keys(project.dependencies).filter(dep => dep.startsWith('aurelia-'))
+    'app': ['./src/main'],
+    'bootstrap': coreBundles.bootstrap,
+    'aurelia': coreBundles.aurelia.filter(pkg => coreBundles.bootstrap.indexOf(pkg) === -1)
   },
   output: {
     path: outDir,
@@ -110,8 +121,6 @@ module.exports = {
   ].concat(DEBUG ? [
 
   ] : [
-    new webpack.optimize.DedupePlugin(),
-
     new webpack.optimize.UglifyJsPlugin({
       mangle: { screw_ie8: true, keep_fnames: true },
       dead_code: true,
