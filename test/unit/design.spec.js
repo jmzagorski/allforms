@@ -1,31 +1,32 @@
-import {HttpStub} from './stubs';
-import {Design} from '../../src/design';
+import './setup';
+import { ElementActions } from '../../src/domain/index';
+import { Design } from '../../src/design';
+import { Store } from 'aurelia-redux-plugin';
 
 describe('the design view model', () => {
   let sut;
-  let httpStub;
+  let elemActionSpy;
+  let storeSpy
 
   beforeEach(() => {
-    httpStub = new HttpStub();
-    sut = new Design(httpStub);
+    elemActionSpy = jasmine.setupSpy('elemAction', ElementActions.prototype);
+    storeSpy = jasmine.setupSpy('store', Store.prototype);
+    sut = new Design(storeSpy, elemActionSpy);
   });
 
-  it('fetches the the form with elements', async done => {
-    httpStub.itemStub = [];
+  it('loads and gets the elements', async done => {
+    const elements = [];
+    elemActionSpy.loadElements.and.callFake(() => {
+      expect(storeSpy.getState.calls.count()).toEqual(0);  
+      return Promise.resolve();
+    });
 
-    await sut.activate({form: 'testa'});
+    storeSpy.getState.and.returnValue({ elements });
 
-    expect(httpStub.url).toEqual('forms/testa/elements');
-    done();
-  });
+    await sut.activate({ form: 'a' });
 
-  it('sets the form object to the json response', async done => {
-    const form = {};
-    httpStub.itemStub = form;
-
-    await sut.activate({form: ''});
-
-    expect(sut.form).toBe(form);
+    expect(elemActionSpy.loadElements).toHaveBeenCalledWith('a');
+    expect(sut.elements).toBe(elements);
     done();
   });
 });

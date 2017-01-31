@@ -1,18 +1,17 @@
-import {HttpClient} from 'aurelia-fetch-client';
-import {inject} from 'aurelia-framework';
-import {importFetch} from './utils';
-const fetch = importFetch();
+import { Store } from 'aurelia-redux-plugin';
+import { ElementActions } from './domain/index';
 
-@inject(HttpClient)
 export class Design {
+  static inject() { return [ Store, ElementActions ]; }
 
-  constructor(http) {
-    this.form = null;
-    this._http = http;
+  constructor(store, elementActions) {
+    this._store = store;
+    this._elementActions = elementActions;
   }
 
   async activate(params) {
-    this.form = await this._http.fetch(`forms/${params.form}/elements`)
-			.then(response => response.json());
+    await this._elementActions.loadElements(params.form);
+
+    this.elements = this._store.getState().elements;
   }
 }

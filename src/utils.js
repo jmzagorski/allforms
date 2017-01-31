@@ -9,7 +9,7 @@ export function buildLocationLinks(location, start) {
 
   for (let i = start; i < segs.length; i++) {
     segments.push({
-      url: segs.filter((item, idx) => idx <= i).join('/'),
+      url: encodeURI(segs.filter((item, idx) => idx <= i).map(i => i.replace(' ', '-')).join('/')),
       display: segs[i]
     });
   }
@@ -20,4 +20,8 @@ export function buildLocationLinks(location, start) {
 export function importFetch() {
   return !self.fetch ? System.import('isomorphic-fetch') :
     Promise.resolve(self.fetch);
+}
+
+export function getForm(forms, name) {
+  return forms.find(f => f.name === name);
 }

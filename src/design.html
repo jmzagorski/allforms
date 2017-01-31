@@ -3,10 +3,13 @@
   <require from="./resources/elements/tab-group"></require>
   <require from="./resources/elements/tab-content"></require>
 
-  <tab-group>
-    <tab-content header="${g.group}" repeat.for="g of form.elements | group:'group'">
+  <tab-group if.bind="elements.length">
+    <tab-content header="${g.group}" repeat.for="g of elements | group:'group'">
       <designer boundardy="#page-host"></designer>
     </tab-content>
   </tab-group>
+
+  <!--for new forms-->
+  <designer if.bind="!elements.length" boundardy="#page-host"></designer>
 
 </template>

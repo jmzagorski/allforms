@@ -1,25 +1,20 @@
-import {HttpClient} from 'aurelia-fetch-client';
-import {inject} from 'aurelia-framework';
-import {Router} from 'aurelia-router';
-import {importFetch} from './utils';
+import { Router } from 'aurelia-router';
+import { Store } from 'aurelia-redux-plugin';
 
-const fetch = importFetch();
-
-@inject(HttpClient, Router)
 export class Forms {
+  static inject() { return [ Router, Store ]; }
 
-  constructor(http, router) {
+  constructor(router, store) {
     this.forms = [];
-    this._http = http;
     this._router = router;
+    this._store = store;
   }
 
-  async activate() {
-    this.forms = await this._http.fetch('forms')
-      .then(response => response.json());
+  activate() {
+    this.forms = this._store.getState().forms;
 
     this.forms.forEach(f => {
-      f.url = this._router.generate('dir', { form: f.id });
+      f.url = this._router.generate('dir', { form: f.name });
     });
   }
 }

@@ -1,23 +1,20 @@
-import {HttpClient} from 'aurelia-fetch-client';
-import {inject} from 'aurelia-framework';
-import {Router} from 'aurelia-router';
-import {importFetch} from './utils';
+import { Store } from 'aurelia-redux-plugin';
+import { Router } from 'aurelia-router';
+import { getForm} from './utils';
 
-const fetch = importFetch();
-
-@inject(HttpClient, Router)
 export class Directory {
 
-  constructor(http, router) {
-    this.files = [];
-    this.form = null;
+  static inject() { return [ Router, Store ]; }
+
+  constructor(router, store) {
     this._router = router;
-    this._http = http;
+    this._store = store;
   }
 
-  async activate(params) {
-    this.form = await this._http.fetch(`forms/${params.form}`)
-      .then(response => response.json());
+  activate(params) {
+    const state = this._store.getState();
+    this.form = getForm(state.forms, params.form);
+
     this.form.files.sort((a, b) => a.priority - b.priority);
     this._createRoutes();
   }
@@ -28,7 +25,7 @@ export class Directory {
 
       if (!route) throw Error(`No route found for ${f.name}`);
 
-      f.url = this._router.generate(route.name, { form: this.form.id });
+      f.url = this._router.generate(route.name, { form: this.form.name });
     });
   }
 }

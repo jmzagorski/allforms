@@ -13,60 +13,21 @@ export const schema = {
     },
     "elements": {
       "type": "array",
-      "minItems": 2,
-      "maxItems": 20,
+      "minItems": 1,
+      "maxItems": 1,
       "items": {
         "type": "object",
         "properties": {
-          "active": {
-             "$ref": "#/definitions/active"
-          },
-          "mandatory": {
-            "type": "boolean"
-          },
-          "type": {
-            "type": "string",
-            "enum":[
-              "text",
-              "checkbox",
-              "radio",
-              "textarea",
-              "select",
-              "label",
-              "a",
-              "table",
-              "grid",
-              "section"
-            ]
-          },
-          "typeLength": {
+          "id": {
             "type": "number",
-            "minimum": 1,
-            "maximum": 100
+            "unique": true,
+            "minimum": 1
           },
-          "name": {
+          "formId": {
             "$ref": "#/definitions/name"
-          },
-          "summary": {
-            "$ref": "#/definitions/summary"
-          },
-          "group": {
-            "$ref": "#/definitions/group"
-          },
-          "top": {
-            "$ref": "#/definitions/position"
-          },
-          "left": {
-            "$ref": "#/definitions/position"
-          },
-          "bottom": {
-            "$ref": "#/definitions/position"
-          },
-          "right": {
-            "$ref": "#/definitions/position"
           }
         },
-        "required": ["active", "mandatory", "type", "typeLength", "name", "top", "left", "bottom", "right"]
+        "required": ["id", "formId"]
       }
     },
     "forms": {
@@ -76,38 +37,43 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
-          "elements": {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 20,
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "$ref": "#/definitions/name"
-                },
-                "active": {
-                   "$ref": "#/definitions/active"
-                },
-                "group": {
-                  "$ref": "#/definitions/group"
-                },
-                "top": {
-                  "$ref": "#/definitions/position"
-                },
-                "left": {
-                  "$ref": "#/definitions/position"
-                },
-                "bottom": {
-                  "$ref": "#/definitions/position"
-                },
-                "right": {
-                  "$ref": "#/definitions/position"
-                }
-              },
-              "required": ["active", "name", "group", "top", "left", "bottom", "right"]
-            }
-          },
+          //"elements": {
+          //"type": "array",
+          //"minItems": 3,
+          //"maxItems": 20,
+          //"items": {
+          //"type": "object",
+          //"properties": {
+          //"id": {
+          //"type": "number",
+          //"unique": true,
+          //"minimum": 1
+          //},
+          //"name": {
+          //"$ref": "#/definitions/name"
+          //},
+          //"active": {
+          //"$ref": "#/definitions/active"
+          //},
+          //"group": {
+          //"$ref": "#/definitions/group"
+          //},
+          //"top": {
+          //"$ref": "#/definitions/position"
+          //},
+          //"left": {
+          //"$ref": "#/definitions/position"
+          //},
+          //"bottom": {
+          //"$ref": "#/definitions/position"
+          //},
+          //"right": {
+          //"$ref": "#/definitions/position"
+          //}
+          //},
+          //"required": ["id", "active", "name", "group", "top", "left", "bottom", "right"]
+          //}
+          //},
           "files": {
             "type": "array",
             "minItems": 6,
@@ -160,12 +126,7 @@ export const schema = {
               ]
             }
           },
-          "id": {
-            "type": "string",
-            "$ref": "#/definitions/name"
-          },
           "name": {
-            "type": "string",
             "$ref": "#/definitions/name"
           },
           "summary": {
@@ -174,11 +135,6 @@ export const schema = {
           "revision": {
             "type": "number",
             "minimum": 0,
-            "maximum": 10
-          },
-          "masterId": {
-            "type": "number",
-            "minimum": 1,
             "maximum": 10
           },
           "locked": {
@@ -194,7 +150,7 @@ export const schema = {
             "maximum": 90
           }
         },
-        "required": ["id", "name", "revision", "masterId", "locked", "lastEditInDays", "files", "elements"]
+        "required": ["files", "name", "revision", "locked", "lastEditInDays"]
       }
     }
   },
@@ -202,7 +158,8 @@ export const schema = {
   "definitions": {
     "name": {
       "type": "string",
-      "faker": "lorem.word"
+      "faker": "lorem.word",
+      "unique": true
     },
     "active": {
       "type": "boolean"
@@ -210,12 +167,12 @@ export const schema = {
     "group": {
       "type": "string",
       //"pattern": "[a-zA-Z]+(\/[a-zA-Z]+)?",
-			"enum": [
-				"Main",
-				"Material",
-				"Molding",
-				"Part"
-			]
+      "enum": [
+        "Main",
+        "Material",
+        "Molding",
+        "Part"
+      ]
     },
     "position": {
       "type": "number",
