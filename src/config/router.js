@@ -1,8 +1,12 @@
 import {Router} from 'aurelia-router';
-import {inject} from 'aurelia-framework';
 
-@inject(Router)
+/**
+ * @desc Global configuration for the Router
+ *
+ */
 export default class {
+
+  static inject() { return [ Router ]; }
 
   constructor(router) {
     this.router = router;

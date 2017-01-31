@@ -1,11 +1,15 @@
 import * as HttpLogger from 'aurelia-http-logger';
-import {HttpClient} from 'aurelia-fetch-client';
-import {inject} from 'aurelia-framework';
-import {getBaseUrl} from '../env';
-import {PLATFORM} from 'aurelia-pal';
+import { HttpClient } from 'aurelia-fetch-client';
+import { getBaseUrl } from '../env';
+import { PLATFORM } from 'aurelia-pal';
 
-@inject(HttpClient)
+/**
+ * @desc Global configuration for the http client
+ *
+ */
 export default class {
+
+  static inject() { return [ HttpClient ]; }
 
   constructor(http) {
     this.client = http;
