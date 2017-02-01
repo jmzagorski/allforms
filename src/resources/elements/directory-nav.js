@@ -1,8 +1,8 @@
-import {EventAggregator} from 'aurelia-event-aggregator';
-import {buildLocationLinks} from '../../utils';
-import {PLATFORM} from 'aurelia-pal';
-import {inlineView} from 'aurelia-templating';
-import {customElement, bindable, inject} from 'aurelia-framework';
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { buildLocationLinks } from '../../utils';
+import { PLATFORM } from 'aurelia-pal';
+import { inlineView } from 'aurelia-templating';
+import { customElement, bindable } from 'aurelia-framework';
 
 @customElement('directory-nav')
 @inlineView(`
@@ -11,8 +11,9 @@ import {customElement, bindable, inject} from 'aurelia-framework';
     <a href="\${s.url}">\${s.display}</a>
   </span>
 </template>`)
-@inject(EventAggregator)
 export class DirectoryNavCustomElement {
+
+  static inject(){ return [ EventAggregator ];}
 
   @bindable rootName;
 

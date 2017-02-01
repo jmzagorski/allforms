@@ -1,6 +1,11 @@
-import {inject, bindable, customElement, containerless} from 'aurelia-framework';
-import {inlineView} from 'aurelia-templating';
-import {TabGroupCustomElement} from './tab-group';
+import { inlineView } from 'aurelia-templating';
+import { TabGroupCustomElement } from './tab-group';
+import { Store } from 'aurelia-redux-plugin';
+import {
+  bindable,
+  customElement,
+  containerless
+} from 'aurelia-framework';
 
 //needs to be containerless or the bootstrap tab-content won't work
 @containerless()
@@ -12,8 +17,9 @@ import {TabGroupCustomElement} from './tab-group';
 </template>`
 )
 @customElement('tab-content')
-@inject(TabGroupCustomElement)
 export class TabContentCustomElement {
+
+  static inject() { return [ TabGroupCustomElement ]; }
 
   @bindable header;
 
