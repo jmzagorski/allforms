@@ -1,6 +1,9 @@
 import { FormApi } from '../../../../src/api/form-api';
 import { Store } from 'aurelia-redux-plugin';
-import { FormActions } from '../../../../src/domain/index';
+import {
+  FormActions,
+  activateFormSuccess
+} from '../../../../src/domain/index';
 
 describe('the form actions', () => {
   var sut;
@@ -49,4 +52,13 @@ describe('the form actions', () => {
       done();
     });
   });
+
+  it('has an form activated action', () => {
+    const action = activateFormSuccess('a');
+
+    expect(action).toEqual({
+      type: 'ACTIVATE_FORM_SUCCESS',
+      name: 'a'
+    });
+  })
 });

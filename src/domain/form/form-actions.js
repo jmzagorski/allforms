@@ -4,6 +4,7 @@ import { Store } from 'aurelia-redux-plugin';
 export const LOAD_FORMS_SUCCESS = 'LOAD_FORMS_SUCCESS';
 export const ADD_FORM_SUCCESS = 'ADD_FORM_SUCCESS';
 export const EDIT_FORM_SUCCESS = 'EDIT_FORM_SUCCESS';
+export const ACTIVATE_FORM_SUCCESS = 'ACTIVATE_FORM_SUCCESS';
 
 function loadFormsSuccess(forms) {
   return { type: LOAD_FORMS_SUCCESS, forms };
@@ -15,6 +16,10 @@ function addFormSuccess(form) {
 
 function editFormSuccess(form) {
   return { type: EDIT_FORM_SUCCESS, form };
+}
+
+export function activateFormSuccess(name) {
+  return { type: ACTIVATE_FORM_SUCCESS, name };
 }
 
 export class FormActions {
