@@ -24,13 +24,4 @@ describe('the utility functions', () => {
       expect(encodeSpy.calls.count()).toEqual(data.segs.length);
     });
   });
-
-  it('finds the form in the array based on the name', () => {
-    const expectForm = { name: 'a' };
-    const forms = [ expectForm ];
-
-    const actualForm = utils.getForm(forms, 'a');
-
-    expect(actualForm).toBe(expectForm);
-  });
 });

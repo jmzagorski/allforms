@@ -1,5 +1,8 @@
 import { Store } from 'aurelia-redux-plugin';
-import { ElementActions } from './domain/index';
+import {
+  ElementActions,
+  getElements
+} from './domain/index';
 
 export class Design {
   static inject() { return [ Store, ElementActions ]; }
@@ -9,9 +12,11 @@ export class Design {
     this._elementActions = elementActions;
   }
 
+  get elements() {
+    return getElements(this._store.getState());
+  }
+
   async activate(params) {
     await this._elementActions.loadElements(params.form);
-
-    this.elements = this._store.getState().elements;
   }
 }

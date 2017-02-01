@@ -21,7 +21,3 @@ export function importFetch() {
   return !self.fetch ? System.import('isomorphic-fetch') :
     Promise.resolve(self.fetch);
 }
-
-export function getForm(forms, name) {
-  return forms.find(f => f.name === name);
-}

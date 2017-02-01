@@ -4,6 +4,13 @@ import { FormActions } from './form/form-actions';
 import member from './member/member-reducer';
 import forms from './form/form-reducer';
 import elements from './element/element-reducer';
+import {
+  getActiveForm,
+  getFormList
+} from './form/form-selectors';
+import {
+  getElements
+} from './element/element-selectors';
 
 export {
   MemberActions,
@@ -11,6 +18,9 @@ export {
   ElementActions,
   member,
   forms,
-  elements
+  elements,
+  getActiveForm,
+  getFormList,
+  getElements
 };
 

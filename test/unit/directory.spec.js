@@ -2,18 +2,21 @@ import './setup';
 import { Store } from 'aurelia-redux-plugin';
 import { Directory } from '../../src/directory';
 import { Router } from 'aurelia-router';
-import * as utils from '../../src/utils';
+import * as selectors from '../../src/domain/form/form-selectors';
 
 describe('the directory view model', () => {
   let sut;
   let routerSpy;
   let storeSpy;
   let formStub;
+  let getFormSpy;
   const params = { form: 'a' };
 
   beforeEach(() => {
     storeSpy = jasmine.setupSpy('store', Store.prototype);
     routerSpy = jasmine.setupSpy('router', Router.prototype);
+    getFormSpy = spyOn(selectors, 'getActiveForm');
+
     sut = new Directory(routerSpy, storeSpy);
     formStub = {
       name: 'abc',
@@ -22,29 +25,18 @@ describe('the directory view model', () => {
       ]
     };
 
-    storeSpy.getState.and.returnValue({ forms: [ formStub ]});
-    spyOn(utils, 'getForm').and.returnValue(formStub);
+    storeSpy.getState.and.returnValue({ forms: { list: [ formStub ] } });
+    getFormSpy.and.returnValue(formStub);
   });
 
-  it('gets the specific form in the param from the store', () => {
+  it('gets the form', () => {
     formStub.files = [];
+    storeSpy.getState.and.returnValue('a');
 
-    sut.activate(params);
+    const actualForm = sut.form;
 
-    expect(sut.form).toBe(formStub);
-  });
-
-  it('sorts the files in ascending order', () => {
-    // need a name so it does not error, but i don't care about that now
-    routerSpy.routes = [ { name: '' } ];
-    formStub.files = [
-      { priority: 2, name: '' }, { priority: 1, name: '' }
-    ]; 
-
-    sut.activate(params);
-
-    expect(formStub.files[0].priority).toEqual(1);
-    expect(formStub.files[1].priority).toEqual(2);
+    expect(actualForm).toBe(formStub);
+    expect(getFormSpy).toHaveBeenCalledWith('a');
   });
 
   it('throws when the route does not exist', () => {

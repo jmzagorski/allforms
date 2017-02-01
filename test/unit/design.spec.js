@@ -1,5 +1,6 @@
 import './setup';
 import { ElementActions } from '../../src/domain/index';
+import * as selectors from '../../src/domain/element/element-selectors';
 import { Design } from '../../src/design';
 import { Store } from 'aurelia-redux-plugin';
 
@@ -14,19 +15,23 @@ describe('the design view model', () => {
     sut = new Design(storeSpy, elemActionSpy);
   });
 
-  it('loads and gets the elements', async done => {
-    const elements = [];
-    elemActionSpy.loadElements.and.callFake(() => {
-      expect(storeSpy.getState.calls.count()).toEqual(0);  
-      return Promise.resolve();
-    });
-
-    storeSpy.getState.and.returnValue({ elements });
-
+  it('loads the elements', async done => {
     await sut.activate({ form: 'a' });
 
     expect(elemActionSpy.loadElements).toHaveBeenCalledWith('a');
-    expect(sut.elements).toBe(elements);
     done();
+  });
+
+  it('gets the elements', () => {
+    const expectElements = [];
+    const getElemsSpy = spyOn(selectors, 'getElements');
+
+    storeSpy.getState.and.returnValue(expectElements);
+    getElemsSpy.and.returnValue(expectElements)
+
+    const actualElements = sut.elements;
+
+    expect(getElemsSpy.calls.argsFor(0)[0]).toBe(expectElements)
+    expect(actualElements).toBe(expectElements);
   });
 });

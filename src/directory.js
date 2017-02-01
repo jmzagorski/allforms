@@ -1,6 +1,6 @@
+import { getActiveForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
-import { getForm} from './utils';
 
 export class Directory {
 
@@ -11,11 +11,11 @@ export class Directory {
     this._store = store;
   }
 
-  activate(params) {
-    const state = this._store.getState();
-    this.form = getForm(state.forms, params.form);
+  get form() {
+    return getActiveForm(this._store.getState());
+  };
 
-    this.form.files.sort((a, b) => a.priority - b.priority);
+  activate(params) {
     this._createRoutes();
   }
 

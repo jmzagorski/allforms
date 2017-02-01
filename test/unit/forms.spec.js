@@ -2,6 +2,7 @@ import './setup';
 import { Forms } from '../../src/forms';
 import { Router } from 'aurelia-router';
 import { Store } from 'aurelia-redux-plugin';
+import * as selectors from '../../src/domain/form/form-selectors';
 
 describe('the forms view model', () => {
   let sut;
@@ -12,21 +13,23 @@ describe('the forms view model', () => {
     storeSpy = jasmine.setupSpy('store', Store.prototype);
     routerSpy = jasmine.setupSpy('router', Router.prototype);
     sut = new Forms(routerSpy, storeSpy);
-
   });
 
   it('gets all the forms from the current state', () => {
-    const forms = [];
-    storeSpy.getState.and.returnValue({ forms });
+    const expectForms = [];
+    storeSpy.getState.and.returnValue('a');
+    const getFormsSpy = spyOn(selectors, 'getFormList');
+    getFormsSpy.and.returnValue(expectForms);
 
-    sut.activate();
+    const actualForms = sut.forms;
 
-    expect(sut.forms).toBe(forms);
+    expect(actualForms).toBe(expectForms);
+    expect(getFormsSpy).toHaveBeenCalledWith('a');
   });
 
   it('generates a route for each form', () => {
     const forms = [ { name: 'a' }, { name: 'b' }];
-    storeSpy.getState.and.returnValue({ forms });
+    spyOn(selectors, 'getFormList').and.returnValue(forms);
 
     sut.activate();
 
