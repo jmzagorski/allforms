@@ -1,2 +1,2 @@
-export class FillIn {
+export class View {
 }
