@@ -30,6 +30,91 @@ export const schema = {
         "required": ["id", "formId"]
       }
     },
+    "element-types": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          {
+            "id": 1,
+            "builder": "label",
+            "caption": "Label"
+          },
+          {
+            "id": 2,
+            "builder": "text",
+            "caption": "Text"
+          },
+          {
+            "id": 3,
+            "builder": "number",
+            "caption": "Number"
+          },
+          {
+            "id": 4,
+            "builder": "date",
+            "caption": "Date"
+          },
+          {
+            "id": 5,
+            "builder": "formula",
+            "caption": "Formula"
+          },
+          {
+            "id": 6,
+            "builder": "yesno",
+            "caption": "Yes/No"
+          },
+          {
+            "id": 7,
+            "builder": "options",
+            "caption": "Options"
+          },
+          {
+            "id": 8,
+            "builder": "list",
+            "caption": "List"
+          },
+          {
+            "id": 9,
+            "builder": "link",
+            "caption": "Link"
+          },
+          {
+            "id": 10,
+            "builder": "subform",
+            "caption": "Sub-form"
+          },
+          {
+            "id": 11,
+            "builder": "table",
+            "caption": "Small Table"
+          },
+          {
+            "id": 12,
+            "builder": "grid",
+            "caption": "Grid"
+          },
+          {
+            "id": 13,
+            "builder": "tabs",
+            "caption": "Tabs"
+          },
+          {
+            "id": 14,
+            "builder": "title",
+            "caption": "Main Title"
+          },
+          {
+            "id": 15,
+            "builder": "header",
+            "caption": "Section Header"
+          }
+        ]
+      }
+    },
     "forms": {
       "type": "array",
       "minItems": 5,
@@ -37,43 +122,6 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
-          //"elements": {
-          //"type": "array",
-          //"minItems": 3,
-          //"maxItems": 20,
-          //"items": {
-          //"type": "object",
-          //"properties": {
-          //"id": {
-          //"type": "number",
-          //"unique": true,
-          //"minimum": 1
-          //},
-          //"name": {
-          //"$ref": "#/definitions/name"
-          //},
-          //"active": {
-          //"$ref": "#/definitions/active"
-          //},
-          //"group": {
-          //"$ref": "#/definitions/group"
-          //},
-          //"top": {
-          //"$ref": "#/definitions/position"
-          //},
-          //"left": {
-          //"$ref": "#/definitions/position"
-          //},
-          //"bottom": {
-          //"$ref": "#/definitions/position"
-          //},
-          //"right": {
-          //"$ref": "#/definitions/position"
-          //}
-          //},
-          //"required": ["id", "active", "name", "group", "top", "left", "bottom", "right"]
-          //}
-          //},
           "files": {
             "type": "array",
             "minItems": 6,
@@ -154,7 +202,7 @@ export const schema = {
       }
     }
   },
-  "required": ["forms", "member", "elements"],
+  "required": ["forms", "member", "elements", "element-types"],
   "definitions": {
     "name": {
       "type": "string",
