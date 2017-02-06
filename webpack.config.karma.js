@@ -25,6 +25,7 @@ module.exports = {
     sourceMapFilename: DEBUG ? '[name].bundle.map' : '[name].[chunkhash].bundle.map',
     chunkFilename: DEBUG ? '[id].chunk.js' : '[id].[chunkhash].chunk.js'
   },
+  externals: { 'interact.js/dist/interact': 'interact' },
   resolve: {
     modules: [path.resolve(), 'node_modules']
   },

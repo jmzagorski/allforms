@@ -129,7 +129,6 @@ div.au-stagger {
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  /*background-color: #F2F2F2;*/
   border: dashed 4px transparent;
   border-radius: 4px;
   margin: 10px auto 30px;
@@ -143,8 +142,6 @@ div.au-stagger {
   border-color: #aaa;
 }
 
-.drag-drop {
+.draggable {
   position: absolute;
-  top: 50px;
-  left: 50px;
 }

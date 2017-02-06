@@ -5,6 +5,7 @@ import '../styles/styles.css';
 import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap';
+import * as Interact from 'interact.js';
 
 // comment out if you don't want a Promise polyfill (remove also from webpack.common.js)
 import * as Bluebird from 'bluebird';
@@ -21,7 +22,7 @@ export async function configure(aurelia) {
     });
   // Anyone wanting to use HTMLImports to load views, will need to install the following plugin.
   // aurelia.use.plugin('aurelia-html-import-template-loader')
-
+  aurelia.container.registerInstance(Interact, Interact);
   await aurelia.start();
   aurelia.setRoot('app');
 

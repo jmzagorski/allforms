@@ -31,6 +31,7 @@ module.exports = {
     'bootstrap': coreBundles.bootstrap,
     'aurelia': coreBundles.aurelia.filter(pkg => coreBundles.bootstrap.indexOf(pkg) === -1)
   },
+  externals: { 'interact.js/dist/interact': 'interact' },
   output: {
     path: outDir,
     filename: DEBUG ? '[name].bundle.js' : '[name].[chunkhash].bundle.js',
