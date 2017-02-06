@@ -79,7 +79,7 @@ describe('the tab group custom element', () => {
         expect(a.getAttribute('data-toggle')).toEqual(data.type);
         expect(a.innerHTML).toEqual(data.expect)
         done();
-      })
+      });
     });
   });
 
@@ -119,6 +119,25 @@ describe('the tab group custom element', () => {
       setTimeout(() => {
         expect(li[0].className).not.toContain('active');
         expect(li[1].className).toContain('active');
+        done();
+      });
+    });
+  });
+
+  it('removes the tab when called', async done => {
+    const tab1 = {};
+
+    sut.inView(`<tab-group></tab-group>`);
+
+    await sut.create(bootstrap);
+    sut.viewModel.addTab(tab1);
+
+    setTimeout(() => {
+      sut.viewModel.removeTab(tab1);
+
+      setTimeout(() => {
+        const li = document.querySelectorAll('li');
+        expect(li.length).toEqual(0);
         done();
       });
     });

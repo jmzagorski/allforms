@@ -25,4 +25,9 @@ export class TabGroupCustomElement {
 
     this.tabs.push(tab);
   }
+
+  removeTab(tab) {
+    const index = this.tabs.indexOf(tab);
+    this.tabs.splice(index, 1);
+  }
 }
