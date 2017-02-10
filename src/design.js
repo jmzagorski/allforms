@@ -5,6 +5,7 @@ import {
   TemplateActions,
   ElementTypeActions,
   getTemplate,
+  getActiveForm,
   getElementTypes
 } from './domain/index';
 
@@ -16,6 +17,7 @@ export class Design {
     this.designer = {};
     this.builder = '';
     this.template = '';
+    this.style = null;
 
     this._store = store;
     this._templateActions = templateActions;
@@ -29,6 +31,7 @@ export class Design {
 
     const state = this._store.getState();
 
+    this.style = getActiveForm(state).style;
     this.template = getTemplate(state);
     this.elementTypes = getElementTypes(state);
   }
@@ -37,7 +40,7 @@ export class Design {
     const model = { type: this.builder }
     const result = await this.setupMetadata({ detail: { model } });
     if (!result.wasCancelled) {
-      this.designer.addElement(Object.assign({}, model, { options: result.output }));
+      this.designer.createElement(Object.assign({}, model, { options: result.output }));
     }
     this.builder = '';
   }

@@ -1,6 +1,7 @@
 import './setup';
 import * as typeSelectors from '../../src/domain/element-type/element-type-selectors';
 import * as templateSelectors from '../../src/domain/template/template-selectors';
+import * as formSelectors from '../../src/domain/form/form-selectors';
 import { Design } from '../../src/design';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
@@ -16,6 +17,7 @@ describe('the design view model', () => {
   let elemTypeActionSpy;
   let templateSelectorSpy;
   let elemTypeSelectorSpy;
+  let formSelectorSpy;
   let storeSpy
   let dialogSpy;
 
@@ -26,7 +28,10 @@ describe('the design view model', () => {
     dialogSpy = jasmine.setupSpy('dialog', DialogService.prototype);
     templateSelectorSpy = spyOn(templateSelectors, 'getTemplate');
     elemTypeSelectorSpy = spyOn(typeSelectors, 'getElementTypes');
+    formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     sut = new Design(storeSpy, elemTypeActionSpy, dialogSpy, templateActionSpy);
+
+    formSelectorSpy.and.returnValue({ style: '' });
   });
 
   it('instantiates properties to defaults', () => {
@@ -34,6 +39,7 @@ describe('the design view model', () => {
     expect(sut.designer).toEqual({});
     expect(sut.builder).toEqual('');
     expect(sut.template).toEqual('');
+    expect(sut.style).toEqual(null);
   });
 
   it('loads the template before the state is retrieved', async done => {
@@ -90,6 +96,19 @@ describe('the design view model', () => {
     done();
   });
 
+  it('gets the form style from the active form', async done => {
+    const state = {}
+
+    storeSpy.getState.and.returnValue(state);
+    formSelectorSpy.and.returnValue({ style: 'b' });
+
+    await sut.activate({ form: 'a' });
+
+    expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
+    expect(sut.style).toBe('b');
+    done();
+  });
+
   it('resets the builder property after rendering', async done => {
     const dialogResult = { wasCancelled: true };
     sut.builder = 'a';
@@ -103,8 +122,8 @@ describe('the design view model', () => {
 
   it('adds the element to the designer if dialog not cancelled', async done => {
     const dialogResult = { wasCancelled: false, output: 1 };
-    sut.designer = { addElement: () => { } };
-    const designerSpy = spyOn(sut.designer, 'addElement');
+    sut.designer = { createElement: () => { } };
+    const designerSpy = spyOn(sut.designer, 'createElement');
     dialogSpy.open.and.returnValue(dialogResult);
     sut.builder = 'a';
 

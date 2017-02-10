@@ -1,163 +1,144 @@
-import $ from 'jquery';
 import '../../setup';
-import * as interactjs from 'interactjs';
-import {InteractStub} from '../../stubs';
-import {StageComponent} from 'aurelia-testing';
-import {bootstrap} from 'aurelia-bootstrapper-webpack';
-import {DOM} from 'aurelia-pal';
-import using from 'jasmine-data-provider';
+import * as Interact from 'interact.js';
+import { InteractStub, ElementStub } from '../../stubs';
+import { TemplatingEngine } from 'aurelia-framework';
+import { StageComponent } from 'aurelia-testing';
+import { bootstrap } from 'aurelia-bootstrapper-webpack';
+import { DOM } from 'aurelia-pal';
+import * as renderers from '../../../../src/renderers/bootstrap';
 
 describe('the designer custom element', () => {
   let sut;
-  let interactStub;
+  let templatingSpy;
+  let context;
+  // since i throw an error in the bind method, TODO is that a good idea?
+  let dispose = true;
+  let realElement;
 
   beforeEach(() => {
-    interactStub = new InteractStub();
-    spyOn(interactjs, 'interact').and.returnValue(interactStub);
+    //templatingSpy = jasmine.setupSpy('templating', TemplatingEngine.prototype);
+    // FIXME: i cannot figure out a way to mock the attributes so mock the
+    // interactable dependency so we get less potential side affects
+    const interactFunc = jasmine.createSpy('interactFunc');
+    const interactSpy = jasmine.setupSpy('interact', InteractStub.prototype);
+    interactFunc.and.returnValue(interactSpy);
 
-    sut = StageComponent
-      .withResources('resources/elements/designer');
+    sut = StageComponent.withResources('resources/elements/designer');
 
     sut.configure = aurelia => {
       aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(Interact, interactFunc);
+      //aurelia.container.registerInstance(TemplatingEngine, templatingSpy);
     };
 
+    context = { formstyle: 'bootstrap' };
+
+    realElement = document.createElement('div');
+    document.body.appendChild(realElement);
+    spyOn(renderers, 'date').and.returnValue(realElement);
   });
 
   afterEach(() => {
-    sut.dispose();
+    if (dispose) sut.dispose();
+    realElement.parentNode.removeChild(realElement);
+    realElement = null;
   });
 
-  it('configures the drop zone', async done => {
-    sut.inView(`<designer></designer>`);
+  it('throws when the render is not found for the form style', async done => {
+    context.formstyle = 'aaa';
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
 
-    await sut.create(bootstrap);
-
-    const config = interactStub.dropzoneConfig;
-
-    expect(config).toBeDefined();
-    expect(config.accept).toEqual('.drag-drop');
-    expect(config.overlap).toEqual(0.75);
-    done();
-  });
-
-  it('adds and drops borders on callbacks', async done => {
-    const classListSpy = jasmine.createSpyObj('classList', ['add', 'remove']);
-    const event = {
-      target: {
-        classList: classListSpy
-      }
-    };
-    sut.inView(`<designer></designer>`);
-
-    await sut.create(bootstrap);
-
-    const config = interactStub.dropzoneConfig;
-    config.ondropactivate(event);
-    config.ondropdeactivate(event);
-
-    expect(config).toBeDefined();
-    expect(config.accept).toEqual('.drag-drop');
-    expect(config.overlap).toEqual(0.75);
-    expect(classListSpy.add).toHaveBeenCalledWith('drop-active');
-    expect(classListSpy.remove).toHaveBeenCalledWith('drop-active');
-    done();
-  });
-
-  it('configures the draggable object', async done => {
-    sut.inView(`<designer boundary.bind="boundary"></designer>`)
-      .boundTo({boundary: 'edges'});
-
-    await sut.create(bootstrap)
-
-    const config = interactStub.draggableConfig;
-
-    expect(config).toBeDefined();
-    expect(config.inertia).toBeTruthy();
-    expect(config.restrict).toEqual({
-      restriction: 'edges',
-      endOnly: true,
-      elementRect: { top: 0, left: 0, bottom: 0, right: 0}
-    });
-    done();
-  });
-
-  // TODO it uses the injected view but i am not sure stub that
-  it('uses another object if no boundary given', async done => {
-    sut.inView(`<designer boundary.bind="boundary"></designer>`)
-      .boundTo({boundary: null});
-
-    await sut.create(bootstrap)
-
-    const config = interactStub.draggableConfig;
-
-    expect(config.restrict.restriction).toEqual(jasmine.any(Object));
-    done();
-  });
-
-  using([
-    { xAttr: 1, yAttr: 2, x: 2, y: 4 },
-    { xAttr: null, yAttr: null, x: 1, y: 2 },
-  ], data => {
-    it('translates the elements position onmove', async done => {
-      const getAttrSpy = jasmine.createSpy('getAttr');
-      const setAttrSpy = jasmine.createSpy('setAttr');
-
-      getAttrSpy.and.returnValues(data.xAttr, data.yAttr);
-
-      const event = {
-        target: {
-          getAttribute: getAttrSpy,
-          setAttribute: setAttrSpy,
-          style: {
-            webkitTransform: null,
-            transform: null
-          }
-        },
-        dx: 1,
-        dy: 2
-      };
-      sut.inView(`<designer></designer>`);
-
-      await sut.create(bootstrap);
-
-      const config = interactStub.draggableConfig;
-      config.onmove(event);
-      expect(getAttrSpy.calls.first().args).toEqual(['data-x']);
-      expect(getAttrSpy.calls.mostRecent().args).toEqual(['data-y']);
-      expect(event.target.style.webkitTransform)
-        .toEqual(`translate(${data.x}px, ${data.y}px)`);
-      expect(event.target.style.webkitTransform).toEqual(event.target.style.transform);
-      expect(setAttrSpy.calls.first().args).toEqual(['data-x', data.x]);
-      expect(setAttrSpy.calls.mostRecent().args).toEqual(['data-y', data.y]);
+    await sut.create(bootstrap).catch(err => {
+      expect(err).toEqual(new Error('Formstyle not found for aaa'));
+      dispose = false;
       done();
     });
   });
 
-  // TODO test to make sure the value and label in the select are correct
-  it('inserts the selected element into the DOM', async done => {
-    sut.inView(`<designer></designer>`)
+  it('throws when the element renderer is not found', async done => {
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    const ex = () => sut.viewModel.createElement({ type: 'a' });
+
+    expect(ex).toThrow(new Error('Renderer not found for a'));
+    done();
+  });
+
+  it('loops until it finds a valid element id', async done => {
+    const domSpy = spyOn(DOM, 'getElementById');
+    domSpy.and.returnValues(1, undefined);
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    sut.viewModel.createElement({ type: 'date' });
+
+    expect(domSpy.calls.count()).toEqual(2);
+    done();
+  });
+
+  it('sets the draggable element properties', async done => {
+    spyOn(DOM, 'getElementById').and.returnValue(undefined);
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    const actual = sut.viewModel.createElement({ type: 'date' });
+
+    expect(actual.id).toBeGreaterThan(0);
+    expect(actual.ondblclick).not.toEqual(null);
+    expect(actual.getAttribute('draggable')).toEqual('#page-host');
+    expect(actual.getAttribute('draggable-dragdone.delegate'))
+      .toEqual('setDraggablePosition($event)');
+    done();
+  });
+
+  it('dispatches an event on element double click', async done => {
+    let event = null;
+    context.editListener = e => event = e;
+    spyOn(DOM, 'getElementById').and.returnValue(undefined);
+    sut.inView(`<designer onedit.delegate="editListener($event)" formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+    const actual = sut.viewModel.createElement({ type: 'date' });
+
+    actual.ondblclick();
+
+    expect(event).not.toEqual(null);
+    expect(event.bubbles).toBeTruthy();
+    expect(event.detail).toBeDefined();
+    expect(event.detail).toEqual({
+      model: { id: actual.id }
+    })
+    done();
+  });
+
+  it('enhances the element with the template engine', async done => {
+    let enhanced = null;
+    const resources = {};
+    spyOn(DOM, 'getElementById').and.returnValue(undefined);
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
 
     await sut.create(bootstrap);
 
-    const select = document.querySelector('select');
-    let input = document.querySelector('input');
-    select.value = 'textarea';
+    // i am not sure if i can intercept the thisView param in the create method
+    // so call the actual method on the view model to set the private variable
+    sut.viewModel.created(null, { resources });
 
-    expect(input).toEqual(null);
+    spyOn(TemplatingEngine.prototype, 'enhance').and.callThrough().and.callFake(obj => {
+      enhanced = obj;
+    })
 
-    // simulate change event
-    const changeEvent = new CustomEvent('change', { bubbles: true })
-    select.dispatchEvent(changeEvent);
+    const actual = sut.viewModel.createElement({ type: 'date' });
 
-    input = document.querySelector('.dropzone').previousSibling;
-    expect(input.tagName).toEqual('TEXTAREA');
-    expect(input).not.toEqual(null);
-    expect(input.className).toEqual('draggable drag-drop resizable');
-    // let the binding firing
-    setTimeout(() => {
-      expect(select.value).toEqual('');
-      done();
-    });
-  })
+    expect(enhanced).not.toEqual(null);
+    expect(enhanced.element).toEqual(actual);
+    expect(enhanced.bindingContext).toEqual(sut.viewModel);
+    expect(enhanced.resources).toEqual(resources);
+    done();
+  });
 });

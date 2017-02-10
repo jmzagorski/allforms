@@ -1,92 +1,88 @@
-import {interact} from 'interactjs';
-import {customElement, inject, bindable} from 'aurelia-framework';
-import {DOM} from 'aurelia-pal';
-
-
-function _dragMoveListener(event) {
-  const target = event.target;
-  // keep the dragged position in the data-x/data-y attributes
-  const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-  const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-  // translate the element
-  target.style.webkitTransform = target.style.transform =
-    'translate(' + x + 'px, ' + y + 'px)';
-
-  // update the position attributes
-  target.setAttribute('data-x', x);
-  target.setAttribute('data-y', y);
-}
-
-function _createDropZone() {
-  // enable draggables to be dropped into this
-  interact('.dropzone').dropzone({
-    // only accept elements matching this CSS selector
-    accept: '.drag-drop',
-    // Require a 75% element overlap for a drop to be possible
-    overlap: 0.75,
-
-    // listen for drop related events:
-    ondropactivate: function(event) {
-      // add active dropzone area
-      event.target.classList.add('drop-active');
-    },
-    ondropdeactivate: function(event) {
-      // remove active dropzone feedback
-      event.target.classList.remove('drop-active');
-    }
-  });
-}
-
-function _createDraggable(boundary) {
-  interact('.draggable')
-    .draggable({
-      inertia: true,
-      restrict: {
-        restriction: boundary,
-        endOnly: true,
-        elementRect: { top: 0, left: 0, bottom: 0, right: 0 }
-      },
-      onmove: _dragMoveListener
-    });
-}
+import { customElement, bindable, TemplatingEngine } from 'aurelia-framework';
+import { DOM } from 'aurelia-pal';
+import * as renderers from '../../renderers/index';
 
 @customElement('designer')
-@inject(Element)
 export class DesignerCustomElement {
 
-  @bindable boundary;
+  static inject() { return [ Element, TemplatingEngine ]; }
 
-  constructor(element) {
+  @bindable template;
+  @bindable formstyle;
+  element
+
+  _templateEngine;
+  _view;
+  _renderer;
+
+  constructor(element, templateEngine) {
     this.element = element;
-    this.formElement = null;
-    this.dropzone = null;
-    this._view = null;
+    this._templateEngine = templateEngine;
   }
 
-  showElement() {
-    const draggable = DOM.createElement(this.formElement);
-
-    draggable.className = 'draggable drag-drop resizable';
-    this.element.insertBefore(draggable, this.dropzone);
-    this.formElement = "";
-  }
-
-  created(view) {
-    _createDropZone();
-    this._view = view;
+  created(owningView, thisView) {
+    this._view = thisView;
   }
 
   bind(bindingContext, overrideContext) {
-    _createDraggable(this.boundary || this._view);
-    this._view = null;
+    this._renderer = renderers[this.formstyle];
+
+    if (!this._renderer) {
+      throw new Error(`Formstyle not found for ${this.formstyle}`);
+    }
   }
 
-  attached() {
-    this.dropzone = this.element.querySelector('.dropzone');
+  onEditElement(elem) {
+    const editing = new CustomEvent('onedit',
+      { bubbles: true, detail: { model: { id: elem.id } } }
+    )
+
+    this.element.dispatchEvent(editing);
   }
 
-  detached() {}
+  setDraggablePosition(event) {
+    const pos = event.detail.position;
+    const target = event.target;
 
-  unbind() {}
+    target.style.top = pos.top;
+    target.style.bottom = pos.bottom;
+    target.style.right = pos.right;
+    target.style.left = pos.left;
+    target.style.height = pos.height;
+    target.style.width = pos.width;
+
+    this.onSave();
+  }
+
+  createElement(model) { 
+    const elementRenderer = this._renderer[model.type];
+
+    if (!elementRenderer) {
+      throw new Error(`Renderer not found for ${model.type}`);
+    }
+
+    let randomId;
+    do {
+      randomId = Math.floor((Math.random() * 1000) + 1);
+    } 
+    while(DOM.getElementById(randomId));
+
+    const draggable = elementRenderer(model.options);
+    draggable.id = randomId;
+
+    // TODO key press for copy and delete
+    draggable.ondblclick = e => this.onEditElement(draggable);
+
+    draggable.setAttribute('draggable', '#page-host');
+    draggable.setAttribute('draggable-dragdone.delegate', 'setDraggablePosition($event)');
+    this.element.appendChild(draggable);
+
+    this._templateEngine.enhance({
+      element: draggable,
+      bindingContext: this,
+      resources: this._view.resources
+    });
+
+    return draggable;
+  }
 }
