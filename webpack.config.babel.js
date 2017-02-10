@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const WatchIgnorePlugin = webpack.WatchIgnorePlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const AureliaWebpackPlugin = require('aurelia-webpack-plugin');
 const project = require('./package.json');
@@ -84,6 +85,9 @@ module.exports = {
     ]
   },
   plugins: [
+    new WatchIgnorePlugin([
+      path.resolve(__dirname, './src/db.json')
+    ]),
     new webpack.LoaderOptionsPlugin({
       debug: DEBUG,
       devtool: 'source-map',
