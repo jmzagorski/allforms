@@ -2,9 +2,19 @@ import { TemplateApi } from '../../api/template-api';
 import { Store } from 'aurelia-redux-plugin';
 
 export const LOAD_TEMPLATE_SUCCESS = 'LOAD_TEMPLATE_SUCCESS';
+export const ADD_TEMPLATE_SUCCESS = 'ADD_TEMPLATE_SUCCESS';
+export const EDIT_TEMPLATE_SUCCESS = 'EDIT_TEMPLATE_SUCCESS';
 
 function loadTemplateSuccess(template) {
   return { type: LOAD_TEMPLATE_SUCCESS, template };
+}
+
+function addTemplateSuccess(template) {
+  return { type: ADD_TEMPLATE_SUCCESS, template };
+}
+
+function editTemplateSuccess(template) {
+  return { type: EDIT_TEMPLATE_SUCCESS, template };
 }
 
 export class TemplateActions {
@@ -23,5 +33,12 @@ export class TemplateActions {
     const template = await this._api.get(formName);
 
     this._store.dispatch(loadTemplateSuccess(template));
+  }
+
+  async save(template) {
+    const serverVersion = await this._api.save(template);
+
+    template.id ? this._store.dispatch(editTemplateSuccess(serverVersion)) :
+      this._store.dispatch(addTemplateSuccess(serverVersion));
   }
 }

@@ -27,4 +27,27 @@ describe('the template actions', () => {
     expect(storeSpy.dispatch.calls.argsFor(0)[0].template).toBe(template);
     done();
   });
+
+  using([
+    { id: null, type: 'ADD_TEMPLATE_SUCCESS'},
+    { id: undefined, type: 'ADD_TEMPLATE_SUCCESS'},
+    { id: 0, type: 'ADD_TEMPLATE_SUCCESS'},
+    { id: 1, type: 'EDIT_TEMPLATE_SUCCESS'}
+  ], data => {
+    it('adds the template if the ID is not available', async done => {
+      const template = { id: data.id };
+      const serverTemplate = { };
+
+      apiSpy.save.and.returnValue(serverTemplate);
+
+      await sut.save(template);
+
+      expect(apiSpy.save).toHaveBeenCalledWith(template);
+      expect(storeSpy.dispatch).toHaveBeenCalledWith({
+        type: data.type, template: serverTemplate
+      });
+      expect(storeSpy.dispatch.calls.argsFor(0)[0].template).toBe(serverTemplate);
+      done();
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { HttpClient } from 'aurelia-fetch-client';
+import { HttpClient, json } from 'aurelia-fetch-client';
 import { importFetch } from '../utils';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
@@ -20,5 +20,15 @@ export class TemplateApi {
     // coorporating
     return await this._http.fetch(`forms/${formName}/templates`)
       .then(response => response.json());
+  }
+
+  async save(template) {
+    const url = 'templates';
+    const method = template.id ? 'PUT' : 'POST';
+
+    return await this._http.fetch(url, {
+      method: method,
+      body: json(template)
+    }).then(response => response.json());
   }
 }
