@@ -11,13 +11,12 @@ export class ElementApi {
   }
 
   /**
-   * @desc A call to get all the elements for a particular form, searching by
-   * form name
-   * @param {String} formName the name of the form
-   * @return {Array<Element>} the array of elements
+   * @desc A call to get one element by id
+   * @param {Number} id the id of the element
+   * @return {Element} the element
    */
-  async getAllFor(formName) {
-    return await this._http.fetch(`forms/${formName}/elements`)
+  async get(id) {
+    return await this._http.fetch(`elements/${id}`)
       .then(response => response.json());
   }
 

@@ -3,22 +3,23 @@ import { elements } from '../../../../src/domain/index';
 describe('the element reducer', () => {
   var sut;
 
-  it('returns the action elements on load success', () => {
-    const elems = [];
+  it('returns the active element and list on element load success', () => {
+    const elem = { id: 1 };
     const action = {
-      type: 'LOAD_ELEMENTS_SUCCESS',
-      elements: elems
+      type: 'LOAD_ELEMENT_SUCCESS',
+      element: elem
     };
 
     const state = elements(null, action);
 
-    expect(state).toBe(elems);
+    expect(state.list).toContain(elem);
+    expect(state.active).toEqual(1);
   });
 
   it('creates a new array with the new element', () => {
-    const element = { value: '' };
-    const existing = { value: 'blah' };
-    const state = [ existing ];
+    const element = { id: 1 };
+    const existing = { id: 2 };
+    const state = { list: [ existing ] };
     const action = {
       type: 'ADD_ELEMENT_SUCCESS',
       element
@@ -27,14 +28,13 @@ describe('the element reducer', () => {
     const newState = elements(state, action);
 
     expect(newState).not.toBe(state);
-    expect(newState).toContain(element);
-    expect(newState).toContain(existing);
-    expect(newState.map(s => s.value)).toContain('blah');
+    expect(newState.list).toContain(element);
+    expect(newState.list).toContain(existing);
   });
 
   it('creates a new array with the edited element', () => {
     const existing = { id: 5 };
-    const state = [ existing ];
+    const state = { list: [ existing ] };
     const action = {
       type: 'EDIT_ELEMENT_SUCCESS',
       element: existing
@@ -43,8 +43,8 @@ describe('the element reducer', () => {
     const newState = elements(state, action);
 
     expect(newState).not.toBe(state);
-    expect(newState[0]).not.toBe(existing);
-    expect(newState).toContain(existing);
+    expect(newState.list[0]).not.toBe(existing);
+    expect(newState.list).toContain(existing);
   });
 
   it('returns the original state when no action type matches', () => {

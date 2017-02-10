@@ -1,6 +1,7 @@
 import { ElementApi } from '../../../../src/api/element-api';
 import { Store } from 'aurelia-redux-plugin';
 import { ElementActions } from '../../../../src/domain/index';
+import * as selectors from '../../../../src/domain/element/element-selectors';
 
 describe('the element actions', () => {
   var sut;
@@ -13,18 +14,31 @@ describe('the element actions', () => {
     sut = new ElementActions(apiSpy, storeSpy);
   });
 
-  it('loads the elements from the form name', async done => {
-    const elements = [];
+  it('loads the element by id for the form from the api', async done => {
+    const element = {};
 
-    apiSpy.getAllFor.and.returnValue(elements);
+    spyOn(selectors, 'getElements').and.returnValue([]);
+    apiSpy.get.and.returnValue(element);
 
-    await sut.loadElements('anythin');
+    await sut.loadElement(1);
 
-    expect(apiSpy.getAllFor).toHaveBeenCalledWith('anythin');
+    expect(apiSpy.get).toHaveBeenCalledWith(1);
     expect(storeSpy.dispatch).toHaveBeenCalledWith({
-      type: 'LOAD_ELEMENTS_SUCCESS', elements
+      type: 'LOAD_ELEMENT_SUCCESS', element
     });
-    expect(storeSpy.dispatch.calls.argsFor(0)[0].elements).toBe(elements);
+    expect(storeSpy.dispatch.calls.argsFor(0)[0].element).toBe(element);
+    done();
+  });
+
+  it('loads the element from the store without calling the api', async done => {
+    const element = { id: 1 };
+
+    spyOn(selectors, 'getElements').and.returnValue([ element ]);
+
+    await sut.loadElement(1);
+
+    expect(apiSpy.get).not.toHaveBeenCalled();
+    expect(storeSpy.dispatch.calls.argsFor(0)[0].element).toBe(element);
     done();
   });
 

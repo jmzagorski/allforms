@@ -1,15 +1,15 @@
 <template>
   <require from="./resources/elements/designer"></require>
-  <require from="./resources/elements/tab-group"></require>
-  <require from="./resources/elements/tab-content"></require>
 
-  <tab-group if.bind="elements.length">
-    <tab-content header="${g.group}" repeat.for="g of elements | group:'group'">
-      <designer boundardy="#page-host"></designer>
-    </tab-content>
-  </tab-group>
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <select id="toolbox" name="toolbox" value.bind="builder"
+      change.delegate="renderElement()">
+      <option value="">Select an element</option>
+      <option repeat.for="e of elementTypes | sort:'caption'"
+        model.bind="e.builder">${e.caption}</option>
+    </select>
+  </section>
 
-  <!--for new forms-->
-  <designer if.bind="!elements.length" boundardy="#page-host"></designer>
+  <designer view-model.ref="designer" innerhtml.bind="template"></designer>
 
 </template>

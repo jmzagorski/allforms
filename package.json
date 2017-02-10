@@ -34,7 +34,7 @@
     "webpack": "cross-env BABEL_ENV=webpack ./node_modules/.bin/webpack",
     "webpack-dev-server": "cross-env BABEL_ENV=node ./node_modules/.bin/webpack-dev-server",
     "prestart-mockapi": "npm run generate-mock-data",
-    "start-mockapi": "json-server --watch src/db.json --port 9001 --host 0.0.0.0 --routes build/routes.json --id name",
+    "start-mockapi": "json-server src/db.json --port 9001 --host 0.0.0.0 --routes build/routes.json --id name",
     "generate-mock-data": "cross-env BABEL_ENV=node babel-node ./build/generate-mockdata"
   },
   "repository": {
@@ -55,13 +55,17 @@
   "homepage": "https://github.com/jmzagorski/allforms#readme",
   "aurelia": {
     "build": {
-      "resources": []
+      "resources": [
+        "aurelia-form/dist/commonjs/aurelia-form"
+      ]
     }
   },
   "dependencies": {
     "aurelia-bootstrapper-webpack": "^1.1.0",
+    "aurelia-dialog": "^1.0.0-beta.3.0.1",
     "aurelia-event-aggregator": "^1.0.0",
     "aurelia-fetch-client": "^1.0.1",
+    "aurelia-form": "^0.4.0",
     "aurelia-framework": "^1.0.7",
     "aurelia-history-browser": "^1.0.0",
     "aurelia-http-logger": "^2.0.0",
@@ -76,7 +80,9 @@
     "aurelia-templating-binding": "^1.1.0",
     "aurelia-templating-resources": "^1.2.0",
     "aurelia-templating-router": "^1.0.0",
+    "aurelia-validatejs": "^0.7.0",
     "aurelia-value-converters": "^1.0.2",
+    "aurelia-view-manager": "^0.1.0",
     "babel-polyfill": "^6.20.0",
     "bluebird": "^3.4.6",
     "bootstrap": "^3.3.7",

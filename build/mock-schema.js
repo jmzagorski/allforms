@@ -11,6 +11,31 @@ export const schema = {
       },
       "required": ["loginName"]
     },
+    "templates": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "unique": true,
+            "minimum": 1
+          },
+          "name": {
+            "type": "string",
+            "unique": true
+          },
+          "formId": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          }
+        },
+        "required": ["id", "name", "formId"]
+      }
+    },
     "elements": {
       "type": "array",
       "minItems": 1,
@@ -23,94 +48,85 @@ export const schema = {
             "unique": true,
             "minimum": 1
           },
+          "name": {
+            "type": "string",
+            "unique": true
+          },
           "formId": {
-            "$ref": "#/definitions/name"
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
           }
         },
-        "required": ["id", "formId"]
+        "required": ["id", "name", "formId"]
       }
     },
     "element-types": {
       "type": "array",
-      "minItems": 15,
-      "maxItems": 15,
+      "minItems": 12,
+      "maxItems": 12,
       "uniqueItems": true,
       "items": {
         "enum": [
           {
-            "id": 1,
+            "name": 1,
             "builder": "label",
             "caption": "Label"
           },
           {
-            "id": 2,
+            "name": 2,
             "builder": "text",
             "caption": "Text"
           },
           {
-            "id": 3,
+            "name": 3,
             "builder": "number",
             "caption": "Number"
           },
           {
-            "id": 4,
+            "name": 4,
             "builder": "date",
             "caption": "Date"
           },
           {
-            "id": 5,
-            "builder": "formula",
-            "caption": "Formula"
-          },
-          {
-            "id": 6,
-            "builder": "yesno",
+            "name": 5,
+            "builder": "checkbox",
             "caption": "Yes/No"
           },
           {
-            "id": 7,
-            "builder": "options",
+            "name": 6,
+            "builder": "radio",
             "caption": "Options"
           },
           {
-            "id": 8,
-            "builder": "list",
+            "name": 7,
+            "builder": "select",
             "caption": "List"
           },
           {
-            "id": 9,
+            "name": 8,
             "builder": "link",
             "caption": "Link"
           },
           {
-            "id": 10,
-            "builder": "subform",
+            "name": 9,
+            "builder": "iframe",
             "caption": "Sub-form"
           },
           {
-            "id": 11,
-            "builder": "table",
-            "caption": "Small Table"
+            "name": 10,
+            "builder": "attachments",
+            "caption": "File"
           },
           {
-            "id": 12,
-            "builder": "grid",
-            "caption": "Grid"
-          },
-          {
-            "id": 13,
+            "name": 11,
             "builder": "tabs",
             "caption": "Tabs"
           },
           {
-            "id": 14,
-            "builder": "title",
-            "caption": "Main Title"
-          },
-          {
-            "id": 15,
+            "name": 12,
             "builder": "header",
-            "caption": "Section Header"
+            "caption": "Header"
           }
         ]
       }
@@ -122,10 +138,37 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          },
+          "summary": {
+            "$ref": "#/definitions/summary"
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "bootstrap"
+            ]
+          },
+          "snapshot": {
+            "type": "string",
+            "faker": "date.past"
+          },
+          "lastComment": {
+            "type": "string",
+            "faker": "lorem.sentence"
+          },
+          "lastEditInDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90
+          },
           "files": {
             "type": "array",
-            "minItems": 6,
-            "maxItems": 6,
+            "minItems": 8,
+            "maxItems": 8,
             "uniqueItems": true,
             "items": {
               "enum": [
@@ -158,51 +201,35 @@ export const schema = {
                   "priority": 4
                 },
                 {
+                  "name": "snapshots",
+                  "lastComment": "took a snapshot of something",
+                  "lastEditInDays": 60,
+                  "icon": "camera-retro",
+                  "priority": 6
+                },
+                {
                   "name": "users",
                   "lastComment": "removed an unauth user now",
                   "lastEditInDays": 60,
                   "icon": "file-text-o",
-                  "priority": 5
+                  "priority": 7
                 },
                 {
                   "name": "history",
                   "lastComment": "the last comment on anything",
                   "lastEditInDays": 2,
                   "icon": "file-text-o",
-                  "priority": 6
+                  "priority": 8
                 }
               ]
             }
-          },
-          "name": {
-            "$ref": "#/definitions/name"
-          },
-          "summary": {
-            "$ref": "#/definitions/summary"
-          },
-          "revision": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 10
-          },
-          "locked": {
-            "type": "boolean"
-          },
-          "lastComment": {
-            "type": "string",
-            "faker": "lorem.sentence"
-          },
-          "lastEditInDays": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 90
           }
         },
-        "required": ["files", "name", "revision", "locked", "lastEditInDays"]
+        "required": ["name", "style", "lastEditInDays", "files" ]
       }
     }
   },
-  "required": ["forms", "member", "elements", "element-types"],
+  "required": [ "forms", "member", "templates", "elements", "element-types" ],
   "definitions": {
     "name": {
       "type": "string",

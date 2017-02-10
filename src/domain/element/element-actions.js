@@ -1,12 +1,13 @@
 import { ElementApi } from '../../api/element-api';
 import { Store } from 'aurelia-redux-plugin';
+import { getElements } from './element-selectors';
 
-export const LOAD_ELEMENTS_SUCCESS = 'LOAD_ELEMENTS_SUCCESS';
+export const LOAD_ELEMENT_SUCCESS = 'LOAD_ELEMENT_SUCCESS';
 export const ADD_ELEMENT_SUCCESS = 'ADD_ELEMENT_SUCCESS';
 export const EDIT_ELEMENT_SUCCESS = 'EDIT_ELEMENT_SUCCESS';
 
-function loadElementsSuccess(elements) {
-  return { type: LOAD_ELEMENTS_SUCCESS, elements };
+function loadElementSuccess(element) {
+  return { type: LOAD_ELEMENT_SUCCESS, element };
 }
 
 function addElementSuccess(element) {
@@ -26,13 +27,15 @@ export class ElementActions {
   }
 
   /**
-   * @desc Gets all the form elements and dispatches to all listening actions
-   * @param {String} formName the name of the form
+   * @desc Gets the element by id and dispatches to all listening actions
+   * @param {Number} id the id of the element
    */
-  async loadElements(formName) {
-    const elements = await this._api.getAllFor(formName);
+  async loadElement(id) {
+    let element = getElements(this._store.getState()).find(e => e.id === id);
 
-    this._store.dispatch(loadElementsSuccess(elements));
+    if (!element) element = await this._api.get(id);
+
+    this._store.dispatch(loadElementSuccess(element));
   }
 
   /**

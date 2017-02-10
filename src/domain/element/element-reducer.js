@@ -5,22 +5,28 @@ import * as types from './element-actions';
  * the origina state
  *
  */
-export default function elementReducer(state = [ ], action) {
+export default function elementReducer(state = { list: [], active: null }, action) {
   switch (action.type) {
-    case types.LOAD_ELEMENTS_SUCCESS:
-      return action.elements;
+    case types.LOAD_ELEMENT_SUCCESS:
+      const list = state ? state.list : [];
+
+      return Object.assign({}, state, {
+        active: action.element.id
+      }, { 
+        list: [ ...list, action.element ]
+      });
 
     case types.ADD_ELEMENT_SUCCESS:
-      return [
-        ...state,
-        Object.assign({}, action.element)
-      ];
+      return Object.assign({}, state, {
+        list: [ ...state.list, Object.assign({}, action.element) ]
+      });
 
     case types.EDIT_ELEMENT_SUCCESS:
-      return [
-        ...state.filter(element => element.id !== action.element.id),
-        Object.assign({}, action.element)
-      ];
+      return Object.assign({}, state, {
+        list: [
+          ...state.list.filter(elem => elem.id !== action.element.id),
+          Object.assign({}, action.element)]
+      });
 
     default:
       return state;

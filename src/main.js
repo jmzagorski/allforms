@@ -16,6 +16,10 @@ export async function configure(aurelia) {
     .standardConfiguration()
     .developmentLogging()
     .plugin('aurelia-value-converters')
+    .plugin('aurelia-dialog')
+    .plugin('aurelia-view-manager')
+    .plugin('aurelia-validatejs')
+    .plugin('aurelia-form')
     //.plugin('aurelia-animator-css')
     .plugin('aurelia-redux-plugin', {
       store: createStore(rootReducer)

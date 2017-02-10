@@ -1,22 +1,51 @@
 import { Store } from 'aurelia-redux-plugin';
+import { DialogService } from 'aurelia-dialog';
+import { Metadata } from './metadata';
 import {
-  ElementActions,
-  getElements
+  TemplateActions,
+  ElementTypeActions,
+  getTemplate,
+  getElementTypes
 } from './domain/index';
 
 export class Design {
-  static inject() { return [ Store, ElementActions ]; }
+  static inject() { return [ Store, ElementTypeActions, DialogService, TemplateActions ]; }
 
-  constructor(store, elementActions) {
+  constructor(store, elementTypeActions, dialogService, templateActions) {
+    this.elementTypes = [];
+    this.designer = {};
+    this.builder = '';
+    this.template = '';
+
     this._store = store;
-    this._elementActions = elementActions;
-  }
-
-  get elements() {
-    return getElements(this._store.getState());
+    this._templateActions = templateActions;
+    this._elementTypeActions = elementTypeActions;
+    this._dialogService = dialogService;
   }
 
   async activate(params) {
-    await this._elementActions.loadElements(params.form);
+    await this._elementTypeActions.loadAll();
+    await this._templateActions.loadTemplateFor(params.form);
+
+    const state = this._store.getState();
+
+    this.template = getTemplate(state);
+    this.elementTypes = getElementTypes(state);
+  }
+
+  async renderElement() {
+    const model = { type: this.builder }
+    const result = await this.setupMetadata({ detail: { model } });
+    if (!result.wasCancelled) {
+      this.designer.addElement(Object.assign({}, model, { options: result.output }));
+    }
+    this.builder = '';
+  }
+
+  async setupMetadata(event) {
+    return await this._dialogService.open({
+      viewModel: Metadata,
+      model: event.detail.model
+    });
   }
 }
