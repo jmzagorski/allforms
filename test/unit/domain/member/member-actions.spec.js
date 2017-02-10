@@ -13,7 +13,7 @@ describe('the member actions', () => {
     sut = new MemberActions(apiSpy, storeSpy);
   });
 
-  it('loads the current members', async done => {
+  it('loads the current member', async done => {
     const member = {};
 
     apiSpy.getCurrent.and.returnValue(member);

@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 export function buildLocationLinks(location, start) {
   start = start || 0;
   location = location || window.location;
@@ -19,5 +21,4 @@ export function buildLocationLinks(location, start) {
 
 export function importFetch() {
   return !self.fetch ? System.import('isomorphic-fetch') :
-    Promise.resolve(self.fetch);
-}
+    Promise.resolve(self.fetch); }
