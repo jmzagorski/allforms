@@ -37,6 +37,11 @@ export default class {
         moduleId: './design',
         nav: false
       }, {
+        route: '/:form/snapshots',
+        name: 'snapshots',
+        moduleId: './snapshots',
+        nav: false
+      }, {
         route: '/:form/lookups',
         name: 'lookups',
         moduleId: './lookups',
