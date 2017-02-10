@@ -2,6 +2,10 @@
   <require from="./resources/elements/designer"></require>
 
   <section class="au-animate col-md-offset-2 col-md-8" >
+  <button class="btn btn-link" click.delegate="saveTemplate()">
+    Save Layout
+    <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>
+  </button>
     <select id="toolbox" name="toolbox" value.bind="builder"
       change.delegate="renderElement()">
       <option value="">Select an element</option>
@@ -10,6 +14,7 @@
     </select>
   </section>
 
-  <designer formstyle.bind="style" view-model.ref="designer" innerhtml.bind="template"></designer>
+  <designer formstyle.bind="style" view-model.ref="designer" innerhtml.bind="template.html">
+  </designer>
 
 </template>

@@ -16,9 +16,10 @@ export class Design {
     this.elementTypes = [];
     this.designer = {};
     this.builder = '';
-    this.template = '';
+    this.template = { id: 0, html: '' };
     this.style = null;
 
+    this._form = null;
     this._store = store;
     this._templateActions = templateActions;
     this._elementTypeActions = elementTypeActions;
@@ -31,8 +32,9 @@ export class Design {
 
     const state = this._store.getState();
 
-    this.style = getActiveForm(state).style;
-    this.template = getTemplate(state);
+    this._form = getActiveForm(state);
+    this.style = this._form.style;
+    this.template = getTemplate(state) || this.template;
     this.elementTypes = getElementTypes(state);
   }
 
@@ -50,5 +52,11 @@ export class Design {
       viewModel: Metadata,
       model: event.detail.model
     });
+  }
+
+  async saveTemplate() {
+    this.template.formId = this._form.name;
+    this.template.html = this.designer.element.innerHTML;
+    this._templateActions.save(this.template);
   }
 }

@@ -10,6 +10,7 @@ import {
   TemplateActions,
   ElementTypeActions
 } from '../../src/domain/index';
+import using from 'jasmine-data-provider';
 
 describe('the design view model', () => {
   let sut;
@@ -31,14 +32,14 @@ describe('the design view model', () => {
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     sut = new Design(storeSpy, elemTypeActionSpy, dialogSpy, templateActionSpy);
 
-    formSelectorSpy.and.returnValue({ style: '' });
+    formSelectorSpy.and.returnValue({ style: '', name: 'abc' });
   });
 
   it('instantiates properties to defaults', () => {
     expect(sut.elementTypes).toEqual([]);
     expect(sut.designer).toEqual({});
     expect(sut.builder).toEqual('');
-    expect(sut.template).toEqual('');
+    expect(sut.template).toEqual({ id: 0, html: '' });
     expect(sut.style).toEqual(null);
   });
 
@@ -68,18 +69,22 @@ describe('the design view model', () => {
     done();
   });
 
-  it('gets the template from the selector', async done => {
-    const template = { };
-    const state = {};
+  using([
+    { template: undefined, expect: { id: 0, html: '' } },
+    { template: { id: 1 }, expect: { id: 1 } }
+  ], data => {
+    it('gets the template from the selector', async done => {
+      const state = {};
 
-    storeSpy.getState.and.returnValue(state);
-    templateSelectorSpy.and.returnValue(template)
+      storeSpy.getState.and.returnValue(state);
+      templateSelectorSpy.and.returnValue(data.template)
 
-    await sut.activate({ form: 'a' });
+      await sut.activate({ form: 'a' });
 
-    expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-    expect(sut.template).toEqual(template);
-    done();
+      expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
+      expect(sut.template).toEqual(data.expect);
+      done();
+    });
   });
 
   it('gets the element types from the selector', async done => {
@@ -145,5 +150,17 @@ describe('the design view model', () => {
     expect(dialogSpy.open).toHaveBeenCalledWith({
       viewModel: Metadata, model
     });
+  });
+
+  it('saves the template ojbject', async done => {
+    sut.designer = { element: { innerHTML: 'a' } };
+    await sut.activate({ form: 'a' });
+
+    sut.saveTemplate();
+
+    expect(sut.template.formId).toEqual('abc');
+    expect(sut.template.html).toEqual('a');
+    expect(templateActionSpy.save.calls.argsFor(0)[0]).toBe(sut.template);
+    done();
   });
 });
