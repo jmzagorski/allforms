@@ -9,14 +9,12 @@ import * as renderers from '../../../../src/renderers/bootstrap';
 
 describe('the designer custom element', () => {
   let sut;
-  let templatingSpy;
   let context;
   // since i throw an error in the bind method, TODO is that a good idea?
-  let dispose = true;
+  let dispose;
   let realElement;
 
   beforeEach(() => {
-    //templatingSpy = jasmine.setupSpy('templating', TemplatingEngine.prototype);
     // FIXME: i cannot figure out a way to mock the attributes so mock the
     // interactable dependency so we get less potential side affects
     const interactFunc = jasmine.createSpy('interactFunc');
@@ -28,10 +26,10 @@ describe('the designer custom element', () => {
     sut.configure = aurelia => {
       aurelia.use.standardConfiguration();
       aurelia.container.registerInstance(Interact, interactFunc);
-      //aurelia.container.registerInstance(TemplatingEngine, templatingSpy);
     };
 
     context = { formstyle: 'bootstrap' };
+    dispose = true;
 
     realElement = document.createElement('div');
     document.body.appendChild(realElement);
@@ -54,6 +52,25 @@ describe('the designer custom element', () => {
       dispose = false;
       done();
     });
+  });
+
+  it('enhances existing children on attached', async done => {
+    context.html = '<div id="dummy"></div>'
+    sut.inView(`<designer innerhtml.bind="html" formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+
+    const enhanceSpy = spyOn(TemplatingEngine.prototype, 'enhance').and.callThrough();
+
+    await sut.create(bootstrap);
+    const child = document.querySelector('#dummy');
+    const call = enhanceSpy.calls.mostRecent().args;
+
+    expect(call[0].element).toBe(child);
+    expect(call[0].bindingContext).toBe(sut.viewModel);
+    // TODO - this is a private variable but i dont know how to make the test
+    // work any other way
+    expect(call[0].resources).toBe(sut.viewModel._view.resources);
+    done();
   });
 
   it('throws when the element renderer is not found', async done => {
@@ -90,29 +107,11 @@ describe('the designer custom element', () => {
 
     expect(actual.id).toBeGreaterThan(0);
     expect(actual.ondblclick).not.toEqual(null);
+    expect(actual.onkeyup).not.toEqual(null);
     expect(actual.getAttribute('draggable')).toEqual('#page-host');
     expect(actual.getAttribute('draggable-dragdone.delegate'))
       .toEqual('setDraggablePosition($event)');
-    done();
-  });
-
-  it('dispatches an event on element double click', async done => {
-    let event = null;
-    context.editListener = e => event = e;
-    spyOn(DOM, 'getElementById').and.returnValue(undefined);
-    sut.inView(`<designer onedit.delegate="editListener($event)" formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-    await sut.create(bootstrap);
-    const actual = sut.viewModel.createElement({ type: 'date' });
-
-    actual.ondblclick();
-
-    expect(event).not.toEqual(null);
-    expect(event.bubbles).toBeTruthy();
-    expect(event.detail).toBeDefined();
-    expect(event.detail).toEqual({
-      model: { id: actual.id }
-    })
+    expect(actual.getAttribute('data-element-type')).toEqual('date');
     done();
   });
 
@@ -131,7 +130,7 @@ describe('the designer custom element', () => {
 
     spyOn(TemplatingEngine.prototype, 'enhance').and.callThrough().and.callFake(obj => {
       enhanced = obj;
-    })
+    });
 
     const actual = sut.viewModel.createElement({ type: 'date' });
 
@@ -139,6 +138,50 @@ describe('the designer custom element', () => {
     expect(enhanced.element).toEqual(actual);
     expect(enhanced.bindingContext).toEqual(sut.viewModel);
     expect(enhanced.resources).toEqual(resources);
+    done();
+  });
+
+  it('sets the element position', async done => {
+    const event = {
+      target: { style: { } },
+      detail: {
+        position: {
+          top: 1,
+          bottom: 2,
+          right: 3,
+          left: 4,
+          height: 5,
+          width: 6
+        }
+      }
+    };
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    sut.viewModel.setDraggablePosition(event);
+
+    expect(event.target.style.top).toEqual('1px');
+    done();
+  });
+
+  it('dispatches an edit event on element double click', async done => {
+    let event = null;
+    context.editListener = e => event = e;
+    spyOn(DOM, 'getElementById').and.returnValue(undefined);
+    sut.inView(`<designer onedit.delegate="editListener($event)" formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+    const actual = sut.viewModel.createElement({ type: 'date' });
+
+    actual.ondblclick();
+
+    expect(event).not.toEqual(null);
+    expect(event.bubbles).toBeTruthy();
+    expect(event.detail).toBeDefined();
+    expect(event.detail).toEqual({
+      model: { id: actual.id }
+    })
     done();
   });
 });
