@@ -39,7 +39,7 @@ describe('the design view model', () => {
     expect(sut.elementTypes).toEqual([]);
     expect(sut.designer).toEqual({});
     expect(sut.builder).toEqual('');
-    expect(sut.template).toEqual({ id: 0, html: '' });
+    expect(sut.template).toEqual({ name: null, html: '' });
     expect(sut.style).toEqual(null);
   });
 
@@ -70,8 +70,8 @@ describe('the design view model', () => {
   });
 
   using([
-    { template: undefined, expect: { id: 0, html: '' } },
-    { template: { id: 1 }, expect: { id: 1 } }
+    { template: undefined, expect: { name: null, html: '' } },
+    { template: { name: 'a' }, expect: { name: 'a' } }
   ], data => {
     it('gets the template from the selector', async done => {
       const state = {};
@@ -158,7 +158,7 @@ describe('the design view model', () => {
 
     sut.saveTemplate();
 
-    expect(sut.template.formId).toEqual('abc');
+    expect(sut.template.name).toEqual('abc');
     expect(sut.template.html).toEqual('a');
     expect(templateActionSpy.save.calls.argsFor(0)[0]).toBe(sut.template);
     done();
