@@ -26,7 +26,7 @@ export const schema = {
           "html": {
             "type": "string",
             "enum": [""]
-          },
+          }
         },
         "required": [ "name", "html" ]
       }
