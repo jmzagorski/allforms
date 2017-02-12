@@ -56,6 +56,11 @@ export default class {
         name: 'history',
         moduleId: './history',
         nav: false
+      }, {
+        route: '/:form/settings',
+        name: 'settings',
+        moduleId: './settings',
+        nav: false
       }]);
     });
   }

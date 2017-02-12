@@ -162,8 +162,8 @@ export const schema = {
           },
           "files": {
             "type": "array",
-            "minItems": 8,
-            "maxItems": 8,
+            "minItems": 9,
+            "maxItems": 9,
             "uniqueItems": true,
             "items": {
               "enum": [
@@ -215,6 +215,13 @@ export const schema = {
                   "lastEditInDays": 2,
                   "icon": "file-text-o",
                   "priority": 8
+                },
+                {
+                  "name": "settings",
+                  "lastComment": "changed form setting",
+                  "lastEditInDays": 9,
+                  "icon": "cog",
+                  "priority": 9
                 }
               ]
             }
