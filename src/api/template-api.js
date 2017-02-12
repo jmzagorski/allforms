@@ -16,9 +16,7 @@ export class TemplateApi {
    * @return {Template} the template object
    */
   async get(formName) {
-    // TODO api should be templates/${formname} but json server is not
-    // coorporating
-    return await this._http.fetch(`forms/${formName}/templates`)
+    return await this._http.fetch(`templates/${formName}`)
       .then(response => response.json());
   }
 

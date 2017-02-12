@@ -18,22 +18,17 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "number",
-            "unique": true,
-            "minimum": 1
-          },
           "name": {
-            "type": "string",
-            "unique": true
-          },
-          "formId": {
             "type": "string",
             "faker": "lorem.word",
             "unique": true
-          }
+          },
+          "html": {
+            "type": "string",
+            "enum": [""]
+          },
         },
-        "required": ["id", "name", "formId"]
+        "required": [ "name", "html" ]
       }
     },
     "elements": {

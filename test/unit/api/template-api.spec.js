@@ -17,7 +17,7 @@ describe('the template api', () => {
 
     const actualTemplate = await sut.get('a');
 
-    expect(httpStub.url).toEqual('forms/a/templates');
+    expect(httpStub.url).toEqual('templates/a');
     expect(actualTemplate).toBe(httpStub.itemStub);
     done();
   });
