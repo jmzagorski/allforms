@@ -27,7 +27,6 @@ export class ElementApi {
    * original passed in
    */
   async save(element) {
-    // can't figure out how json server can override normal routes
     const url = 'elements';
     const method = element.id ? 'PUT' : 'POST';
 

@@ -6,7 +6,7 @@ import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import * as renderers from '../../../../src/renderers/index';
 import using from 'jasmine-data-provider';
 
-describe('the designer custom element', () => {
+describe('the dropzone custom attribute', () => {
   let sut;
   let interactStub;
 

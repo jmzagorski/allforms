@@ -1,3 +1,4 @@
+// TODO - Mandatory should not be in the base
 const baseSchema = [{
   key: 'name',
   type: 'string'
