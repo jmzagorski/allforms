@@ -1,5 +1,6 @@
 import { TemplateApi } from '../../api/template-api';
 import { Store } from 'aurelia-redux-plugin';
+import { getTemplate } from './template-selectors';
 
 export const LOAD_TEMPLATE_SUCCESS = 'LOAD_TEMPLATE_SUCCESS';
 export const ADD_TEMPLATE_SUCCESS = 'ADD_TEMPLATE_SUCCESS';
@@ -36,9 +37,14 @@ export class TemplateActions {
   }
 
   async save(template) {
-    const serverVersion = await this._api.save(template);
+    const localVersion = getTemplate(this._store.getState());
 
-    template.id ? this._store.dispatch(editTemplateSuccess(serverVersion)) :
+    if (localVersion.name) {
+      const serverVersion = await this._api.edit(template);
+      this._store.dispatch(editTemplateSuccess(serverVersion));
+    } else {
+      const serverVersion = await this._api.add(template);
       this._store.dispatch(addTemplateSuccess(serverVersion));
+    }
   }
 }

@@ -22,16 +22,15 @@ describe('the template api', () => {
     done();
   });
 
-  using([
-    { id: null, method: 'POST' },
-    { id: undefined, method: 'POST' },
-    { id: 0, method: 'POST' },
-    { id: 1, method: 'PUT' }
+  using([ 
+    { method: 'POST', url: 'templates' },
+    { method: 'PUT', url: 'templates/a'}
   ], data => {
-    it('saves the new template based on the id', async done => {
-      const template = { id: data.id, formName: 'test' }
+    it('saves the new template for put and post', async done => {
+      const template = { name: 'a' };
       const returnedTemplate = {};
       const fr = new FileReader();
+      let serverTemplate;
 
       httpStub.itemStub = returnedTemplate;
       fr.addEventListener('loadend', () => {
@@ -39,9 +38,9 @@ describe('the template api', () => {
         done();
       });
 
-      const serverTemplate = await sut.save(template);
+      serverTemplate = data.method === 'POST' ? await sut.add(template) : await sut.edit(template);
 
-      expect(httpStub.url).toEqual('templates');
+      expect(httpStub.url).toEqual(data.url);
       expect(httpStub.blob.method).toEqual(data.method);
       expect(serverTemplate).not.toBe(template);
       expect(serverTemplate).toBe(returnedTemplate);

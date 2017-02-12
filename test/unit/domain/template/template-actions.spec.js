@@ -1,16 +1,20 @@
 import { TemplateApi } from '../../../../src/api/template-api';
 import { TemplateActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
+import * as selectors from '../../../../src/domain/template/template-selectors';
 
 describe('the template actions', () => {
-  var sut;
-  var storeSpy;
-  var apiSpy;
+  let sut;
+  let storeSpy;
+  let apiSpy;
+  let selectorSpy;
 
   beforeEach(() => {
     storeSpy = jasmine.setupSpy('store', Store.prototype);
     apiSpy = jasmine.setupSpy('api', TemplateApi.prototype);
     sut = new TemplateActions(apiSpy, storeSpy);
+
+    selectorSpy = spyOn(selectors, 'getTemplate');
   });
 
   it('loads the template from the form name', async done => {
@@ -28,26 +32,47 @@ describe('the template actions', () => {
     done();
   });
 
-  using([
-    { id: null, type: 'ADD_TEMPLATE_SUCCESS'},
-    { id: undefined, type: 'ADD_TEMPLATE_SUCCESS'},
-    { id: 0, type: 'ADD_TEMPLATE_SUCCESS'},
-    { id: 1, type: 'EDIT_TEMPLATE_SUCCESS'}
-  ], data => {
-    it('adds the template if the ID is not available', async done => {
-      const template = { id: data.id };
+  using([null, undefined, ''], name => {
+    it('adds the template if the name is not available', async done => {
+      const template = { name };
       const serverTemplate = { };
+      const state = {};
 
-      apiSpy.save.and.returnValue(serverTemplate);
+      storeSpy.getState.and.returnValue(state);
+      apiSpy.add.and.returnValue(serverTemplate);
+      selectorSpy.and.returnValue(template);
 
       await sut.save(template);
 
-      expect(apiSpy.save).toHaveBeenCalledWith(template);
+      expect(apiSpy.add).toHaveBeenCalledWith(template);
+      expect(apiSpy.edit).not.toHaveBeenCalled();
+      expect(selectorSpy.calls.argsFor(0)[0]).toBe(state);
       expect(storeSpy.dispatch).toHaveBeenCalledWith({
-        type: data.type, template: serverTemplate
+        type: 'ADD_TEMPLATE_SUCCESS', template: serverTemplate
       });
       expect(storeSpy.dispatch.calls.argsFor(0)[0].template).toBe(serverTemplate);
       done();
     });
+  });
+
+  it('edits the template if the name is available', async done => {
+    const template = { name: 'a' };
+    const serverTemplate = { };
+    const state = { };
+
+    storeSpy.getState.and.returnValue(state);
+    selectorSpy.and.returnValue(template);
+    apiSpy.edit.and.returnValue(serverTemplate);
+
+    await sut.save(template);
+
+    expect(apiSpy.edit).toHaveBeenCalledWith(template);
+    expect(apiSpy.add).not.toHaveBeenCalled();
+    expect(selectorSpy.calls.argsFor(0)[0]).toBe(state);
+    expect(storeSpy.dispatch).toHaveBeenCalledWith({
+      type: 'EDIT_TEMPLATE_SUCCESS', template: serverTemplate
+    });
+    expect(storeSpy.dispatch.calls.argsFor(0)[0].template).toBe(serverTemplate);
+    done();
   });
 });

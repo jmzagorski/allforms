@@ -20,12 +20,16 @@ export class TemplateApi {
       .then(response => response.json());
   }
 
-  async save(template) {
-    const url = 'templates';
-    const method = template.id ? 'PUT' : 'POST';
+  async edit(template) {
+    return await this._http.fetch(`templates/${template.name}`, {
+      method: 'PUT',
+      body: json(template)
+    }).then(response => response.json());
+  }
 
-    return await this._http.fetch(url, {
-      method: method,
+  async add(template) {
+    return await this._http.fetch('templates', {
+      method: 'POST',
       body: json(template)
     }).then(response => response.json());
   }
