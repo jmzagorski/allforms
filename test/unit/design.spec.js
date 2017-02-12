@@ -33,13 +33,14 @@ describe('the design view model', () => {
     sut = new Design(storeSpy, elemTypeActionSpy, dialogSpy, templateActionSpy);
 
     formSelectorSpy.and.returnValue({ style: '', name: 'abc' });
+    templateSelectorSpy.and.returnValue({ html: '' });
   });
 
   it('instantiates properties to defaults', () => {
     expect(sut.elementTypes).toEqual([]);
     expect(sut.designer).toEqual({});
     expect(sut.builder).toEqual('');
-    expect(sut.template).toEqual({ name: null, html: '' });
+    expect(sut.html).toEqual('');
     expect(sut.style).toEqual(null);
   });
 
@@ -70,8 +71,8 @@ describe('the design view model', () => {
   });
 
   using([
-    { template: undefined, expect: { name: null, html: '' } },
-    { template: { name: 'a' }, expect: { name: 'a' } }
+    { template: {}, expect: { name: null, html: '' } },
+    { template: { name: 'a', html: 'b' }, expect: { name: 'a', html: 'b' } }
   ], data => {
     it('gets the template from the selector', async done => {
       const state = {};
@@ -82,7 +83,7 @@ describe('the design view model', () => {
       await sut.activate({ form: 'a' });
 
       expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-      expect(sut.template).toEqual(data.expect);
+      expect(sut.html).toEqual(data.expect.html);
       done();
     });
   });
@@ -158,9 +159,9 @@ describe('the design view model', () => {
 
     sut.saveTemplate();
 
-    expect(sut.template.name).toEqual('abc');
-    expect(sut.template.html).toEqual('a');
-    expect(templateActionSpy.save.calls.argsFor(0)[0]).toBe(sut.template);
+    expect(templateActionSpy.save.calls.argsFor(0)[0]).toEqual({
+      name: 'abc', html: 'a'
+    });
     done();
   });
 });

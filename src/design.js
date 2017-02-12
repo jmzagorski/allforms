@@ -16,7 +16,7 @@ export class Design {
     this.elementTypes = [];
     this.designer = {};
     this.builder = '';
-    this.template = { name: null, html: '' };
+    this.html = '';
     this.style = null;
 
     this._form = null;
@@ -31,10 +31,11 @@ export class Design {
     await this._templateActions.loadTemplateFor(params.form);
 
     const state = this._store.getState();
+    const template = getTemplate(state);
 
     this._form = getActiveForm(state);
     this.style = this._form.style;
-    this.template = getTemplate(state) || this.template;
+    this.html = template.html || this.html;
     this.elementTypes = getElementTypes(state);
   }
 
@@ -55,8 +56,9 @@ export class Design {
   }
 
   async saveTemplate() {
-    this.template.name = this._form.name;
-    this.template.html = this.designer.element.innerHTML;
-    this._templateActions.save(this.template);
+    this._templateActions.save({
+      name: this._form.name,
+      html: this.designer.element.innerHTML
+    });
   }
 }
