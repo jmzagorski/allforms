@@ -111,7 +111,7 @@ export const schema = {
           {
             "name": 10,
             "builder": "attachments",
-            "caption": "File"
+            "caption": "Attachment"
           },
           {
             "name": 11,

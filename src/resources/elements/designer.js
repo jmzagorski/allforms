@@ -9,7 +9,10 @@ export class DesignerCustomElement {
 
   @bindable template;
   @bindable formstyle;
-  element
+  @bindable interact;
+  element;
+  resize = false;
+  drag = true;
 
   _templateEngine;
   _view;
@@ -18,6 +21,12 @@ export class DesignerCustomElement {
   constructor(element, templateEngine) {
     this.element = element;
     this._templateEngine = templateEngine;
+
+    // need to keep this on the class to bind to the attribute
+    this.dragOptions = {
+      restriction: '#page-host',
+      enabled: true
+    };
   }
 
   created(owningView, thisView) {
@@ -39,18 +48,6 @@ export class DesignerCustomElement {
     }
   }
 
-  setDraggablePosition(event) {
-    const pos = event.detail.position;
-    const target = event.target;
-
-    target.style.top = `${pos.top}px`;
-    target.style.bottom = `${pos.bottom}px`;
-    target.style.right = `${pos.right}px`;
-    target.style.left = `${pos.left}px`;
-    target.style.height = `${pos.height}px`;
-    target.style.width = `${pos.width}px`;
-  }
-
   createElement(model) { 
     const elementRenderer = this._renderer[model.type];
 
@@ -65,16 +62,19 @@ export class DesignerCustomElement {
 
     // TODO key press for copy and delete
     draggable.ondblclick = e => this._onEditElement(draggable);
-    draggable.onkeyup = e => this._copyPaste(e, draggable);
 
-    draggable.setAttribute('draggable', '#page-host');
-    draggable.setAttribute('draggable-dragdone.delegate', 'setDraggablePosition($event)');
+    draggable.setAttribute('draggable.bind', 'dragOptions');
+    draggable.setAttribute('resizable.bind', 'resize');
     draggable.setAttribute('data-element-type', model.type);
     this.element.appendChild(draggable);
 
     this._enhance(draggable);
 
     return draggable;
+  }
+
+  interactChanged(newVal, oldVal) {
+    this.resize = newVal === 'resize';
   }
 
   _onEditElement(elem) {
@@ -84,14 +84,6 @@ export class DesignerCustomElement {
     )
 
     this.element.dispatchEvent(editing);
-  }
-
-  // TODO make attribute
-  _copyPaste(event, draggable) {
-    if (event.key === 'c' && event.ctrlKey) {
-      const model = { type: draggable.getAttribute('data-element-type') };
-      this._onEditElement(model);
-    }
   }
 
   _enhance(element) {

@@ -18,7 +18,7 @@ describe('the designer custom element', () => {
     // FIXME: i cannot figure out a way to mock the attributes so mock the
     // interactable dependency so we get less potential side affects
     const interactFunc = jasmine.createSpy('interactFunc');
-    const interactSpy = jasmine.setupSpy('interact', InteractStub.prototype);
+    const interactSpy = new InteractStub();
     interactFunc.and.returnValue(interactSpy);
 
     sut = StageComponent.withResources('resources/elements/designer');
@@ -97,7 +97,7 @@ describe('the designer custom element', () => {
     done();
   });
 
-  it('sets the draggable element properties', async done => {
+  it('sets the interact element properties', async done => {
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
@@ -107,10 +107,8 @@ describe('the designer custom element', () => {
 
     expect(actual.id).toBeGreaterThan(0);
     expect(actual.ondblclick).not.toEqual(null);
-    expect(actual.onkeyup).not.toEqual(null);
-    expect(actual.getAttribute('draggable')).toEqual('#page-host');
-    expect(actual.getAttribute('draggable-dragdone.delegate'))
-      .toEqual('setDraggablePosition($event)');
+    expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
+    expect(actual.getAttribute('resizable.bind')).toEqual('resize');
     expect(actual.getAttribute('data-element-type')).toEqual('date');
     done();
   });
@@ -138,30 +136,6 @@ describe('the designer custom element', () => {
     expect(enhanced.element).toEqual(actual);
     expect(enhanced.bindingContext).toEqual(sut.viewModel);
     expect(enhanced.resources).toEqual(resources);
-    done();
-  });
-
-  it('sets the element position', async done => {
-    const event = {
-      target: { style: { } },
-      detail: {
-        position: {
-          top: 1,
-          bottom: 2,
-          right: 3,
-          left: 4,
-          height: 5,
-          width: 6
-        }
-      }
-    };
-    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-    await sut.create(bootstrap);
-
-    sut.viewModel.setDraggablePosition(event);
-
-    expect(event.target.style.top).toEqual('1px');
     done();
   });
 

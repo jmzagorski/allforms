@@ -12,13 +12,13 @@ import {
 export class Design {
   static inject() { return [ Store, ElementTypeActions, DialogService, TemplateActions ]; }
 
-  constructor(store, elementTypeActions, dialogService, templateActions) {
-    this.elementTypes = [];
-    this.designer = {};
-    this.builder = '';
-    this.html = '';
-    this.style = null;
+  interactable = 'drag';
+  designer = {};
+  elementTypes= [];
+  html = '';
+  style = null;
 
+  constructor(store, elementTypeActions, dialogService, templateActions) {
     this._form = null;
     this._store = store;
     this._templateActions = templateActions;
@@ -39,13 +39,12 @@ export class Design {
     this.elementTypes = getElementTypes(state);
   }
 
-  async renderElement() {
-    const model = { type: this.builder }
+  async renderElement(elementType) {
+    const model = { type: elementType.builder }
     const result = await this.setupMetadata({ detail: { model } });
     if (!result.wasCancelled) {
       this.designer.createElement(Object.assign({}, model, { options: result.output }));
     }
-    this.builder = '';
   }
 
   async setupMetadata(event) {

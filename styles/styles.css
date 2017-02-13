@@ -116,9 +116,7 @@ div.au-stagger {
   content: ' /';
 }
 
-/*
- * DESIGNER CSS
- */
+/* Interact CSS */
 /*similar to pagehost*/
 .dropzone {
   height: 100%;
@@ -144,4 +142,31 @@ div.au-stagger {
 
 .draggable {
   position: absolute;
+}
+
+/** Radio Buttons **/
+/*http://viralpatel.net/blogs/css-radio-button-checkbox-background/*/
+
+/*
+Hide radio button (the round disc)
+we will use just the label to create pushbutton effect
+ */
+input[type=radio] {
+  display:none; 
+}
+
+/*
+Change the look'n'feel of labels (which are adjacent to radiobuttons).
+Add some margin, padding to label
+ */
+input[type=radio] + label {
+  display:inline-block;
+}
+/*
+Change background color for label next to checked radio button
+to make it look like highlighted button
+ */
+input[type=radio]:checked + label { 
+  background-image: none;
+  background-color:#d0d0d0;
 }

@@ -1,4 +1,3 @@
-import * as renderers from '../../renderers/index';
 import * as Interact from 'interact.js';
 
 function dragHandler(event) {
@@ -16,18 +15,6 @@ function dragHandler(event) {
   target.setAttribute('data-y', y);
 }
 
-function dragEndHandler(event) {
-  const element = event.target;
-  const position = element.getBoundingClientRect();
-
-  element.dispatchEvent(
-    new CustomEvent('draggable-dragdone', {
-      bubbles: true,
-      detail: { position },
-    })
-  );
-}
-
 export class DraggableCustomAttribute {
   static inject() { return [ Element, Interact ]; }
 
@@ -39,16 +26,17 @@ export class DraggableCustomAttribute {
     this.element.classList.add('draggable');
   }
 
+  // TODO - how to observe the enabled property to turn this on and off
   bind() {
     this._interactable = this._interact(this.element).draggable({
+      enabled: this.value.enabled,
       inertia: true,
       restrict: {
-        restriction: this.value,
+        restriction: this.value.restriction,
         endOnly: true,
         elementRect: { top: 0, left: 0, bottom: 0, right: 0 }
       },
-      onmove: dragHandler,
-      onend: dragEndHandler
+      onmove: dragHandler
     });
   }
 

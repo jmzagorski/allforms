@@ -41,17 +41,17 @@ export class InteractStub {
 
   constructor() {
     this.wasUnset = false;
-    this.events = [];
     this.options = {};
+    this.events = [];
   }
 
   dropzone(config) {
-    this.dropzoneConfig = config;
+    this.options.dropzone = config;
     return this;
   }
 
   draggable(config) {
-    this.draggableConfig = config;
+    this.options.drag = config;
     return this;
   }
 

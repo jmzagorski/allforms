@@ -8,6 +8,7 @@ import using from 'jasmine-data-provider';
 describe('the draggable custom attribute', () => {
   let sut;
   let interactStub;
+  let context;
 
   beforeEach(() => {
     const interactFunc = jasmine.createSpy('interactFunc');
@@ -21,19 +22,22 @@ describe('the draggable custom attribute', () => {
       aurelia.container.registerInstance(Interact, interactFunc);
     };
 
+    context = { options: { restriction: 'test', enabled: true } };
   });
 
   afterEach(() => sut.dispose());
 
   it('configures the draggable options', async done => {
-    sut.inView(`<div draggable="test"></div>`);
+    sut.inView(`<div draggable.bind="options"></div>`)
+      .boundTo(context);
 
     await sut.create(bootstrap)
-    const config = interactStub.draggableConfig;
+    const config = interactStub.options.drag;
 
     expect(sut.element.classList).toContain('draggable');
     expect(config).toBeDefined();
     expect(config.inertia).toBeTruthy();
+    expect(config.enabled).toBeTruthy();
     expect(config.restrict).toEqual({
       restriction: 'test',
       endOnly: true,
@@ -64,10 +68,11 @@ describe('the draggable custom attribute', () => {
         dx: 1,
         dy: 2
       };
-      sut.inView(`<div draggable></div>`);
+      sut.inView(`<div draggable.bind="options"></div>`)
+        .boundTo(context);
 
       await sut.create(bootstrap);
-      const config = interactStub.draggableConfig;
+      const config = interactStub.options.drag;
       config.onmove(event);
 
       expect(getAttrSpy.calls.first().args).toEqual(['data-x']);
@@ -81,31 +86,14 @@ describe('the draggable custom attribute', () => {
     });
   });
 
-  it('emits drag end event on drag end', async done => {
-    const rectSpy = jasmine.createSpy('boundingRect');
-    const dispatchSpy = jasmine.createSpy('dispatch');
-    const position = {};
-    let emittedEvent = null;
+  it('unsets the interactable on unbind', async done => {
+    sut.inView(`<div draggable.bind="options"></div>`)
+      .boundTo(context);
+    await sut.create(bootstrap)
 
-    rectSpy.and.returnValues(position);
-    dispatchSpy.and.callFake(e => emittedEvent = e)
+    sut.viewModel.unbind();
 
-    const event = {
-      target: {
-        getBoundingClientRect: rectSpy,
-        dispatchEvent: dispatchSpy
-      }
-    };
-    sut.inView(`<div draggable></div>`);
-
-    await sut.create(bootstrap);
-    const config = interactStub.draggableConfig;
-    config.onend(event);
-
-    expect(emittedEvent).not.toEqual(null);
-    expect(emittedEvent.detail).toBeDefined();
-    expect(emittedEvent.detail.position).toBe(position);
-    expect(emittedEvent.bubbles).toBeTruthy();
+    expect(interactStub.unset).toBeTruthy();
     done();
   });
 });

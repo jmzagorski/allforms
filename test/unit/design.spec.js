@@ -39,7 +39,7 @@ describe('the design view model', () => {
   it('instantiates properties to defaults', () => {
     expect(sut.elementTypes).toEqual([]);
     expect(sut.designer).toEqual({});
-    expect(sut.builder).toEqual('');
+    expect(sut.interactable).toEqual('drag');
     expect(sut.html).toEqual('');
     expect(sut.style).toEqual(null);
   });
@@ -115,30 +115,30 @@ describe('the design view model', () => {
     done();
   });
 
-  it('resets the builder property after rendering', async done => {
-    const dialogResult = { wasCancelled: true };
-    sut.builder = 'a';
-    dialogSpy.open.and.returnValue(dialogResult);
-
-    await sut.renderElement();
-
-    expect(sut.builder).toEqual('');
-    done();
-  });
-
-  it('adds the element to the designer if dialog not cancelled', async done => {
+  it('calls to create the element if dialog not cancelled', async done => {
     const dialogResult = { wasCancelled: false, output: 1 };
     sut.designer = { createElement: () => { } };
     const designerSpy = spyOn(sut.designer, 'createElement');
     dialogSpy.open.and.returnValue(dialogResult);
-    sut.builder = 'a';
 
-    await sut.renderElement();
+    await sut.renderElement({ builder: 'a' });
 
     expect(designerSpy).toHaveBeenCalledWith({
       type: 'a',
       options: 1
     });
+    done();
+  });
+
+  it('does not create the element if dialog is cancelled', async done => {
+    const dialogResult = { wasCancelled: true, output: 1 };
+    sut.designer = { createElement: () => { } };
+    const designerSpy = spyOn(sut.designer, 'createElement');
+    dialogSpy.open.and.returnValue(dialogResult);
+
+    await sut.renderElement({ builder: 'a' });
+
+    expect(designerSpy).not.toHaveBeenCalled();
     done();
   });
 

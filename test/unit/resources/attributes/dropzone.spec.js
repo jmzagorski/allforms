@@ -3,7 +3,6 @@ import * as  Interact from 'interact.js';
 import { InteractStub } from '../../stubs';
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
-import * as renderers from '../../../../src/renderers/index';
 import using from 'jasmine-data-provider';
 
 describe('the dropzone custom attribute', () => {
@@ -29,7 +28,7 @@ describe('the dropzone custom attribute', () => {
 
   it('configures the drop zone options', async done => {
     await sut.create(bootstrap);
-    const config = interactStub.dropzoneConfig;
+    const config = interactStub.options.dropzone;
 
     expect(sut.element.classList).toContain('dropzone');
     expect(config).toBeDefined();
@@ -46,7 +45,7 @@ describe('the dropzone custom attribute', () => {
 
     await sut.create(bootstrap);
 
-    const config = interactStub.dropzoneConfig;
+    const config = interactStub.options.dropzone;
     config.ondropactivate(event);
     config.ondropdeactivate(event);
 
