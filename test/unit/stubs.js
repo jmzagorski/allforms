@@ -39,11 +39,33 @@ export class RouterStub {
 
 export class InteractStub {
 
+  constructor() {
+    this.wasUnset = false;
+    this.events = [];
+    this.options = {};
+  }
+
   dropzone(config) {
     this.dropzoneConfig = config;
+    return this;
   }
 
   draggable(config) {
     this.draggableConfig = config;
+    return this;
+  }
+
+  resizable(config) {
+    this.options.resize = config;
+    return this;
+  }
+
+  on(event, callback) {
+    this.events.push({ event, callback });
+    return this;
+  }
+
+  unset() {
+    this.wasUnset = true
   }
 }
