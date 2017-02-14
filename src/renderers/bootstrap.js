@@ -210,7 +210,6 @@ export function _createInput(options) {
   label.htmlfor = input.id = options.id;
   input.type = options.type;
   input.className = 'form-control';
-  input.setAttribute('disabled', options.disabled);
 
   formgroup.appendChild(label);
   formgroup.appendChild(input);

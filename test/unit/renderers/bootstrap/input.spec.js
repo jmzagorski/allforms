@@ -6,7 +6,7 @@ describe('the boostrap input renderer', () => {
   let options;
 
   beforeEach(() => {
-    options = { name: 'a', id: "3", type: 'number', disabled: true }
+    options = { name: 'a', id: "3", type: 'number' }
   })
 
   using([ 
@@ -29,7 +29,6 @@ describe('the boostrap input renderer', () => {
       expect(input.id).toEqual(options.id);
       expect(input.type).toEqual(data.type);
       expect(input.className).toEqual('form-control');
-      expect(input.disabled).toEqual(options.disabled);
     });
   });
 
