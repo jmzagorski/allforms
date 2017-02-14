@@ -115,7 +115,7 @@ export const schema = {
           },
           {
             "name": 11,
-            "builder": "tabs",
+            "builder": "tab",
             "caption": "Tabs"
           },
           {

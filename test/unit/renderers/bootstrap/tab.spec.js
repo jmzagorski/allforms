@@ -2,22 +2,14 @@ import '../../setup';
 import { tab } from '../../../../src/renderers/bootstrap';
 
 describe('the boostrap tab renderer', () => {
-  let element;
 
-  afterEach(() => {
-    if (element) {
-      element.parentNode.removeChild(element);
-      element = null;
-    }
-  })
-
-  it('creates a new bootstrap tab when does not exist', () => {
-    const options = { id: 'navtab', header: 'te st', type: 'pill' };
+  it('creates a new bootstrap tab group', () => {
+    const options = { name: 'navtab', headers: 'te st', type: 'pill' };
 
     const sut = tab(options);
 
     expect(sut.tagName).toEqual('DIV');
-    expect(sut.id).toEqual(options.id);
+    expect(sut.id).toEqual(options.name);
 
     const nav = sut.children[0];
     expect(nav.tagName).toEqual('UL');
@@ -39,53 +31,39 @@ describe('the boostrap tab renderer', () => {
 
     const content = contentWrapper.children[0];
     expect(content.tagName).toEqual('DIV');
+    expect(content.id).toContain('navtabtest');
     expect(content.className).toEqual('tab-pane fade in active');
   });
 
-  it('uses an exiting tab when exists', () => {
-    const options = { id: 'navtab' };
-    element = tab(options);
-    document.body.appendChild(element);
+  using([
+    ['same,same'],
+    ['same, same'],
+  ], headers => {
+    it('throws when naming the same header', () => {
+      const options = { name: 'navtab', headers };
 
-    const navtab = tab(options);
+      const ex = () => tab(options);
 
-    expect(navtab).toBe(element);
-    // test that the ul is the same
-    expect(navtab.children[0]).toBe(element.children[0]);
-    // test that the content wrapper is the same
-    expect(navtab.children[1]).toBe(element.children[1]);
+      expect(ex).toThrow(new Error('Cannot have duplicate headers'));
+    });
   });
 
-  it('throws when naming the same header', () => {
-    const options = { id: 'navtab', header: 'same' };
-    element = tab(options);
-    document.body.appendChild(element);
+  it('activates the first tab header', () => {
+    const options = { name: 'navtab', headers: 'Main, Sub' };
 
-    const ex = () => tab(options);
+    const tabGroup = tab(options);
 
-    expect(ex).toThrow();
-  });
-
-  it('activates the most recent tab added', () => {
-    const options = { id: 'navtab' };
-    element = tab(options);
-    document.body.appendChild(element);
-
-    tab(options);
-
-    expect(element.children[0].children[0].className).not.toEqual('active');
-    expect(element.children[0].children[1].className).toEqual('active');
+    expect(tabGroup.children[0].children[0].className).toEqual('active');
+    expect(tabGroup.children[0].children[1].className).not.toEqual('active');
   });
 
   it('activates the tab on click', () => {
-    const options = { id: 'navtab' };
-    element = tab(options);
-    document.body.appendChild(element);
+    const options = { headers: 'Main, Sub', name: 'navtab' };
 
-    tab(options);
-    element.querySelectorAll('a')[0].click();
+    var tabGroup = tab(options);
+    tabGroup.querySelectorAll('a')[0].click();
 
-    expect(element.children[0].children[0].className).toEqual('active');
-    expect(element.children[0].children[1].className).not.toEqual('active');
+    expect(tabGroup.children[0].children[0].className).toEqual('active');
+    expect(tabGroup.children[0].children[1].className).not.toEqual('active');
   });
 });

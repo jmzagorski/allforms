@@ -85,6 +85,6 @@ export const header = [ ...baseSchema, {
 }];
 
 export const tab = [ ...baseSchema, {
-  key: 'header',
+  key: 'headers',
   type: 'string'
 }];

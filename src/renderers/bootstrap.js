@@ -1,4 +1,5 @@
 import { DOM } from 'aurelia-pal';
+import { hasDuplicates } from '../utils';
 
 export function date(options) {
   const datepicker = DOM.createElement('div');
@@ -121,45 +122,43 @@ export function attachments(options) {
  * @param {Options} options the tab options
  */
 export function tab(options) {
-  const header = options.id + (options.header ? options.header.replace(/ /g, '') : '');
-  let wrapper = DOM.getElementById(options.id);
-
-  if (!wrapper) wrapper = _createTabGroup(options.id, options.type);
-
+  const wrapper = _createTabGroup(options.name, options.type);
   const list = wrapper.children[0];
   const contentWrapper = wrapper.children[1];
+  const headers = options.headers.split(',');
 
-  for (let a of list.getElementsByTagName('a')) {
-    if (a.textContent === options.header) {
-      throw new Error('Cannot have duplicate headers');
-    }
+  if (hasDuplicates(headers.map(h => h.trim()))) {
+    throw new Error(`Cannot have duplicate headers`);
   }
 
-  const item = DOM.createElement('li');
-  const a = DOM.createElement('a');
-  const content = DOM.createElement('div');
+  for (var i = 0; i < headers.length; i++) {
+    const header = headers[i];
+    const hrefId = (options.name + header).replace(/ /g, '');
+    const item = DOM.createElement('li');
+    const a = DOM.createElement('a');
+    const content = DOM.createElement('div');
+    a.setAttribute('data-toggle', options.type);
+    a.href = `#${hrefId}`;
+    a.textContent = header;
+    content.id = hrefId;
 
-  a.setAttribute('data-toggle', options.type);
-  a.href = `#${header}`;
-  content.id = header;
-  a.textContent = options.header;
+    if (i === 0) {
+      content.className = 'tab-pane fade in active';
+      item.className = 'active';
+    }
 
-  item.appendChild(a);
-  list.appendChild(item);
-  contentWrapper.appendChild(content);
+    item.appendChild(a);
+    list.appendChild(item);
+    contentWrapper.appendChild(content);
 
-  _deactivateAllTabs(contentWrapper.children);
-  _deactivateAllTabs(list.children);
-  content.className = 'tab-pane fade in active';
-  item.className = 'active';
-
-  a.onclick = function(e) {
-    _deactivateAllTabs(contentWrapper.children);
-    _deactivateAllTabs(list.children);
-    item.classList.add('active');
-    content.classList.add('in');
-    content.classList.add('active');
-  };
+    a.onclick = function(e) {
+      _deactivateAllTabs(contentWrapper.children);
+      _deactivateAllTabs(list.children);
+      item.classList.add('active');
+      content.classList.add('in');
+      content.classList.add('active');
+    };
+  }
 
   return wrapper;
 }

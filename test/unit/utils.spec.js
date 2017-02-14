@@ -24,4 +24,16 @@ describe('the utility functions', () => {
       expect(encodeSpy.calls.count()).toEqual(data.segs.length);
     });
   });
+
+  it('returns true when has duplicates', () => {
+    const actual = utils.hasDuplicates(['a','a']);
+
+    expect(actual).toBeTruthy();
+  });
+
+  it('returns false when has duplicates', () => {
+    const actual = utils.hasDuplicates(['a','b']);
+
+    expect(actual).toBeFalsy();
+  });
 });

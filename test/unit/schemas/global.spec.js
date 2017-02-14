@@ -138,7 +138,7 @@ describe('the global (shared) schemas', () => {
     const tab = schemas.tab;
 
     expect(tab).toEqual([ ...shouldBeInAll, {
-      key: 'header',
+      key: 'headers',
       type: 'string'
     }]);
   });

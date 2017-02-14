@@ -22,3 +22,12 @@ export function buildLocationLinks(location, start) {
 export function importFetch() {
   return !self.fetch ? System.import('isomorphic-fetch') :
     Promise.resolve(self.fetch); }
+
+export function hasDuplicates(array) {
+  for (let i = 0; i < array.length; i++) {
+
+    if (array.indexOf(array[i]) !== i) return true;
+  }
+
+  return false;
+}
