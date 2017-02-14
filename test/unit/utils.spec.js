@@ -36,4 +36,11 @@ describe('the utility functions', () => {
 
     expect(actual).toBeFalsy();
   });
+
+  it('returns a ranom Id between 1 and 1000', () => {
+    const actual = utils.randomId();
+
+    expect(actual).toBeGreaterThan(0);
+    expect(actual).toBeLessThan(1000);
+  });
 });

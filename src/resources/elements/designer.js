@@ -1,4 +1,5 @@
 import { customElement, bindable, TemplatingEngine } from 'aurelia-framework';
+import { randomId } from '../../utils';
 import { DOM } from 'aurelia-pal';
 import * as renderers from '../../renderers/index';
 
@@ -97,11 +98,11 @@ export class DesignerCustomElement {
 
 // TODO move to utils
 function _genRandomId() {
-  let randomId;
+  let id;
   do {
-    randomId = Math.floor((Math.random() * 1000) + 1);
+    id = randomId();
   } 
-  while(DOM.getElementById(randomId));
+  while(DOM.getElementById(id));
 
-  return randomId;
+  return id;
 }
