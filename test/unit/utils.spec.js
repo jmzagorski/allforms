@@ -43,4 +43,30 @@ describe('the utility functions', () => {
     expect(actual).toBeGreaterThan(0);
     expect(actual).toBeLessThan(1000);
   });
+
+  it('sets the default value for an element (not an option)', () => {
+    const el = document.createElement('input');
+    el.type = 'input';
+    el.value = 1;
+
+    utils.setDefaultVal(el);
+
+    expect(el.defaultValue).toEqual(el.value);
+  });
+
+  using([ true, false ], checked => {
+    it('sets the default value for a checkbox', () => {
+      const el = document.createElement('input');
+      el.type = 'checkbox';
+      el.value = 'on';
+      el.checked = checked;
+
+      utils.setDefaultVal(el);
+      const attr = el.getAttribute('checked') == null ? false : true;
+
+      expect(el.defaultValue).toEqual(el.value);
+      expect(el.checked).toEqual(checked);
+      expect(attr).toEqual(checked);
+    });
+  });
 });

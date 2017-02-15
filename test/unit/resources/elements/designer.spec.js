@@ -1,11 +1,12 @@
 import '../../setup';
 import * as Interact from 'interact.js';
+import * as renderers from '../../../../src/renderers/bootstrap';
+import * as utils from '../../../../src/utils';
 import { InteractStub, ElementStub } from '../../stubs';
 import { TemplatingEngine } from 'aurelia-framework';
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import { DOM } from 'aurelia-pal';
-import * as renderers from '../../../../src/renderers/bootstrap';
 
 describe('the designer custom element', () => {
   let sut;
@@ -13,6 +14,7 @@ describe('the designer custom element', () => {
   // since i throw an error in the bind method, TODO is that a good idea?
   let dispose;
   let realElement;
+  let setDefaultSpy;
 
   beforeEach(() => {
     // FIXME: i cannot figure out a way to mock the attributes so mock the
@@ -34,6 +36,7 @@ describe('the designer custom element', () => {
     realElement = document.createElement('div');
     document.body.appendChild(realElement);
     spyOn(renderers, 'date').and.returnValue(realElement);
+    setDefaultSpy = spyOn(utils, 'setDefaultVal');
   });
 
   afterEach(() => {
@@ -156,6 +159,18 @@ describe('the designer custom element', () => {
     expect(event.detail).toEqual({
       model: { id: actual.id }
     })
+    done();
+  });
+
+  it('sets the default value on change', async done => {
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+    const actual = sut.viewModel.createElement({ type: 'date' });
+
+    actual.onchange({ target: actual });
+
+    expect(setDefaultSpy).toHaveBeenCalledWith(actual);
     done();
   });
 });

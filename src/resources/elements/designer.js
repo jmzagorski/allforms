@@ -1,5 +1,5 @@
 import { customElement, bindable, TemplatingEngine } from 'aurelia-framework';
-import { randomId } from '../../utils';
+import { randomId, setDefaultVal } from '../../utils';
 import { DOM } from 'aurelia-pal';
 import * as renderers from '../../renderers/index';
 
@@ -61,8 +61,6 @@ export class DesignerCustomElement {
     const draggable = elementRenderer(model.options);
     draggable.id = randomId;
 
-    // TODO key press for copy and delete
-    draggable.ondblclick = e => this._onEditElement(draggable);
 
     draggable.setAttribute('draggable.bind', 'dragOptions');
     draggable.setAttribute('resizable.bind', 'resize');
@@ -88,6 +86,8 @@ export class DesignerCustomElement {
   }
 
   _enhance(element) {
+    element.ondblclick = e => this._onEditElement(element);
+    element.onchange = e => setDefaultVal(e.target);
     this._templateEngine.enhance({
       element,
       bindingContext: this,
