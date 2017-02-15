@@ -8,6 +8,10 @@ const baseSchema = [{
   default: true,
   label: false
 }, {
+  key: 'Quantity',
+  type: 'number',
+  default: 1
+}, {
   key: 'mandatory',
   type: 'bool',
   default: false,
