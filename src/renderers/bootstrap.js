@@ -185,19 +185,15 @@ function _deactivateAllTabs(tabs) {
 }
 
 export function _createOption(options) {
-  const div = DOM.createElement('div');
   const label = DOM.createElement('label');
   const input = DOM.createElement('input');
 
-  div.className = options.type + (options.inline ? '-inline' : '');
-  label.textContent = options.name
   input.type = options.type;
   input.name = options.name;
+  label.innerHTML = input.outerHTML + options.name
+  label.className = `${options.type}-inline`;
 
-  div.appendChild(label);
-  label.appendChild(input);
-
-  return div;
+  return label;
 }
 
 export function _createInput(options) {
