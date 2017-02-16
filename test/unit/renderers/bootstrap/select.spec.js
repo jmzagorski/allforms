@@ -1,12 +1,16 @@
 import '../../setup';
 import { select } from '../../../../src/renderers/bootstrap';
+import * as utils from '../../../../src/utils';
 
 describe('the select input renderer', () => {
   let sut;
 
-  it('creates a bootstrap select list', () => {
-    const option = { text: 'hi', value: "12" };
-    const options = { name: 'a', id: 'b', options: [ option ] };
+  it('creates a bootstrap select list', done => {
+    const blob = new Blob([JSON.stringify('id:a')], {type : 'application/json'});
+    const options = { name: 'a', id: 'b', optionSrc: [ blob ] };
+    const parseSpy = spyOn(utils, 'parseCsv').and.returnValue([['hi', 'bye']]);
+
+    parseSpy.and.returnValue([['hi', 'bye']]);
 
     const sut = select(options);
 
@@ -22,10 +26,14 @@ describe('the select input renderer', () => {
     expect(select.tagName).toEqual('SELECT');
     expect(select.id).toEqual(options.id);
     expect(select.className).toEqual('form-control');
-    expect(select.options.length).toEqual(2);
-    expect(select.options[0].text).toEqual('Select a value');
-    expect(select.options[0].value).toEqual('');
-    expect(select.options[1].text).toEqual(option.text);
-    expect(select.options[1].value).toEqual(option.value);
+
+    // setTimeout so onload can fire for FileReader
+    setTimeout(() => {
+      expect(parseSpy).toHaveBeenCalledWith('"id:a"', '\n', ',');
+      expect(select.options.length).toEqual(1);
+      expect(select.options[0].text).toEqual('bye');
+      expect(select.options[0].value).toEqual('hi');
+      done();
+    });
   });
 });

@@ -45,6 +45,7 @@ export function randomId() {
 // make dom renderers
 export function setDefaultVal(el) {
   const canCheck = el.type === 'checkbox' || el.type === 'radio';
+  const canSelect = el.type === 'select-one';
   el.defaultValue = el.value;
 
   if (canCheck) {
@@ -54,4 +55,32 @@ export function setDefaultVal(el) {
       el.removeAttribute('checked');
     }
   }
+
+  if (canSelect) {
+    for (let i = 0; i < el.options.length; i++) {
+      el.options[i].removeAttribute('selected');
+    }
+    el.options[el.options.selectedIndex].setAttribute('selected', true);
+  }
+}
+
+export function parseCsv(text, lineTerminator, cellTerminator) {
+  const lines = text.split(lineTerminator);
+  const data = [];
+
+  for (let line of lines) {
+    const values = [];
+
+    if (line !== "") {
+
+      const cells = line.split(cellTerminator);
+
+      for (let cell of cells) values.push(cell);
+    }
+
+    data.push(values);
+  }
+
+  return data;
+
 }

@@ -1,5 +1,5 @@
 import { DOM } from 'aurelia-pal';
-import { hasDuplicates } from '../utils';
+import { hasDuplicates, parseCsv } from '../utils';
 
 export function date(options) {
   const datepicker = DOM.createElement('div');
@@ -56,13 +56,15 @@ export function select(options) {
   label.htmlfor = select.id = options.id;
   select.className = 'form-control';
 
-  select.options[0] = new Option('Select a value', '');
-
-  for (let i = 0; i < options.options.length; i++) {
-    const kvp = options.options[i];
-    // +1 because of the default above
-    select.options[i + 1] = new Option(kvp.text, kvp.value);
-  }
+  const fr = new FileReader();
+  fr.readAsText(options.optionSrc[0]);
+  fr.onload = () => {
+    const data = parseCsv(fr.result, '\n', ',');
+    for (let i = 0; i < data.length; i++) {
+      // +1 because of the default above
+      select.options[i] = new Option(data[i][1], data[i][0]);
+    }
+  };
 
   formgroup.appendChild(label);
   formgroup.appendChild(select);

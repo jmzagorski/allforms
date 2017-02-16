@@ -69,4 +69,31 @@ describe('the utility functions', () => {
       expect(attr).toEqual(checked);
     });
   });
+
+  it('sets the default options for a select', () => {
+    const opt1 = new Option(1,2);
+    const opt2 = new Option(3,4);
+    const el = document.createElement('select');
+    el.options[0] = opt1;
+    el.options[1] = opt2;
+    el.selectedIndex = 0;
+    opt2.setAttribute('selected', true)
+
+    utils.setDefaultVal(el);
+
+    expect(el.defaultValue).toEqual(el.value);
+    expect(opt2.getAttribute('selected')).toEqual(null);
+    expect(opt1.getAttribute('selected')).toBeTruthy();
+  });
+
+  it('parses a basic csv string', () => {
+    const text = 't,a,b\nb,v,y';
+
+    const result = utils.parseCsv(text, '\n', ',');
+
+    expect(result).toEqual([
+      ['t','a','b'],
+      ['b','v','y']
+    ]);
+  });
 });
