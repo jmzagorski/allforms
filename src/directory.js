@@ -11,6 +11,7 @@ export class Directory {
     this._store = store;
   }
 
+  // TODO move to property or use decorator
   get form() {
     return getActiveForm(this._store.getState());
   };
