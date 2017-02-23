@@ -21,6 +21,22 @@ describe('the bootstrap schemas', () => {
     });
   });
 
+  it('sets the alert schema', () => {
+    const alert = schemas.alert;
+
+    expect(alert).toContain({
+      key: 'type',
+      type: 'select',
+      default: 'info',
+      options: [
+        { text: 'success', value: 'success' },
+        { text: 'info', value: 'info' },
+        { text: 'danger', value: 'danger' },
+        { text: 'warning', value: 'warning' }
+      ]
+    });
+  });
+
   it('sets the tab schema', () => {
     const tab = schemas.tab;
 

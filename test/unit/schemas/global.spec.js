@@ -66,10 +66,13 @@ describe('the global (shared) schemas', () => {
   it('sets the label schema', () => {
     const label = schemas.label;
 
-    expect(label).toEqual([ ...shouldBeInAll, {
-      key: 'type',
-      type: 'string'
-    }]);
+    expect(label).toEqual(shouldBeInAll);
+  });
+
+  it('sets the alert schema', () => {
+    const alert = schemas.alert;
+
+    expect(alert).toEqual(shouldBeInAll);
   });
 
   it('sets the select schema', () => {

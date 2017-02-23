@@ -1,6 +1,13 @@
 import { DOM } from 'aurelia-pal';
 import { hasDuplicates, parseCsv } from '../utils';
 
+export function alert(options) {
+  const div = DOM.createElement('div');
+  div.className = `alert alert-${options.type}`;
+  div.innerHTML = options.name;
+  return div;
+}
+
 export function date(options) {
   const datepicker = DOM.createElement('div');
   const input = DOM.createElement('input');

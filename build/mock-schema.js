@@ -51,15 +51,19 @@ export const schema = {
             "type": "string",
             "faker": "lorem.word",
             "unique": true
-          }
+          },
+          "formula": {
+            "type": "string",
+            "faker": "lorem.sentence"
+          },
         },
         "required": ["id", "name", "formId"]
       }
     },
     "element-types": {
       "type": "array",
-      "minItems": 12,
-      "maxItems": 12,
+      "minItems": 13,
+      "maxItems": 13,
       "uniqueItems": true,
       "items": {
         "enum": [
@@ -122,6 +126,11 @@ export const schema = {
             "name": 12,
             "builder": "header",
             "caption": "Header"
+          },
+          {
+            "name": 13,
+            "builder": "alert",
+            "caption": "Alert"
           }
         ]
       }

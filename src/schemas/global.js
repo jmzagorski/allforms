@@ -36,11 +36,8 @@ export const number = [ ...baseSchema, {
 export const checkbox = [ ...baseSchema ];
 export const radio = [ ...baseSchema ];
 export const attachments = [ ...baseSchema ];
-
-export const label = [ ...baseSchema, {
-  key: 'type',
-  type: 'string'
-}];
+export const label = [ ...baseSchema ];
+export const alert = [ ...baseSchema ];
 
 export const select = [ ...baseSchema, {
   key: 'optionSrc',
