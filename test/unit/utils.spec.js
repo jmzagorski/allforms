@@ -37,7 +37,7 @@ describe('the utility functions', () => {
     expect(actual).toBeFalsy();
   });
 
-  it('returns a ranom Id between 1 and 1000', () => {
+  it('returns a random Id between 1 and 1000', () => {
     const actual = utils.randomId();
 
     expect(actual).toBeGreaterThan(0);
@@ -77,13 +77,15 @@ describe('the utility functions', () => {
     el.options[0] = opt1;
     el.options[1] = opt2;
     el.selectedIndex = 0;
+
+    // set opt2 as selected
     opt2.setAttribute('selected', true)
 
     utils.setDefaultVal(el);
 
-    expect(el.defaultValue).toEqual(el.value);
-    expect(opt2.getAttribute('selected')).toEqual(null);
+    expect(el.defaultValue).toEqual('2');
     expect(opt1.getAttribute('selected')).toBeTruthy();
+    expect(opt2.getAttribute('selected')).toEqual(null);
   });
 
   it('parses a basic csv string', () => {
@@ -96,4 +98,43 @@ describe('the utility functions', () => {
       ['b','v','y']
     ]);
   });
+
+  it('finds the ending character', () => {
+    const text = 'Hello(okay(again()))';
+
+    const result = utils.getEndingCharPos(text, text.indexOf('(', '('));
+
+    expect(result).toEqual(text.length - 1);
+  });
+
+  it('gets all the indices of the search string', () => {
+    const text = 'Okay(ok(tryagain)ok)Okay';
+
+    const result = utils.getIndicesOf('ok', text);
+
+    expect(result).toEqual([5, 17]);
+  });
+
+  using ([
+    { val: {}, expect: true },
+    { val: [], expect: false },
+    { val: 'a', expect: false },
+    { val: null, expect: false },
+    { val: undefined, expect: false }
+  ], data => {
+    it('returns true when value is an object', () => {
+      const result = utils.isObject(data.val);
+
+      expect(result).toEqual(data.expect);
+    });
+  });
+
+  it('replaces a string between two indices', () => {
+    const text = 'The dog meowed loudly';
+
+    const result = utils.replaceBetween(text, 8, 14, 'barked');
+
+    expect(result).toEqual('The dog barked loudly');
+  });
+
 });

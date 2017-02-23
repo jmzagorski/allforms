@@ -84,3 +84,49 @@ export function parseCsv(text, lineTerminator, cellTerminator) {
   return data;
 
 }
+
+export function getEndingCharPos(str, start, char) {
+  let braces = 0;
+  let index = start;
+
+  for (let i = start; i <= str.length; ++i) {
+    switch (str[i]) {
+      case '(':
+        ++braces;
+        break;
+      case ')':
+        --braces;
+        break;
+    }
+
+    if (braces === 0) break;
+    index++;
+  }
+
+  return index === -1 ? str.length : index;
+}
+
+export function getIndicesOf(searchStr, str) {
+  const searchStrLen = searchStr.length;
+
+  if (searchStrLen == 0) return [];
+
+  const indices = [];
+  let startIndex = 0;
+  let index = 0;
+
+  while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+    indices.push(index);
+    startIndex = index + searchStrLen;
+  }
+
+  return indices;
+}
+
+export function isObject(val) {
+  return Object.prototype.toString.call(val) === '[object Object]';
+}
+
+export function replaceBetween(str, start, end, replace) {
+  return str.substring(0, start) + replace + str.substring(end);
+}
