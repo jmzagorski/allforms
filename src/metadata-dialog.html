@@ -1,0 +1,29 @@
+<template>
+  <require from="./resources/elements/tab-group"></require>
+  <require from="./resources/elements/tab-content"></require>
+
+  <ai-dialog>
+    <ai-dialog-body>
+
+      <ul class="nav nav-pills">
+        <li role="presentation" repeat.for="view of views" >
+          <a href="#" class="text-center" click.delegate="switchView(view)">
+            ${view}
+          </a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <compose view-model.bind="currentView" model.bind="element"></compose>
+      </div>
+
+    </ai-dialog-body>
+    <ai-dialog-footer>
+      <button type="button" class="btn btn-primary" click.delegate="submit()">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-danger" click.delegate="cancel()">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </ai-dialog-footer>
+  </ai-dialog>
+</template>

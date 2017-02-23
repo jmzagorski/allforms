@@ -5,7 +5,7 @@ import * as formSelectors from '../../src/domain/form/form-selectors';
 import { Design } from '../../src/design';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
-import { Metadata } from '../../src/metadata';
+import { MetadataDialog } from '../../src/metadata-dialog';
 import {
   TemplateActions,
   ElementTypeActions
@@ -149,7 +149,7 @@ describe('the design view model', () => {
     sut.setupMetadata(event);
 
     expect(dialogSpy.open).toHaveBeenCalledWith({
-      viewModel: Metadata, model
+      viewModel: MetadataDialog, model
     });
   });
 

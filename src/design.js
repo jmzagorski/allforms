@@ -1,6 +1,6 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
-import { Metadata } from './metadata';
+import { MetadataDialog } from './metadata-dialog';
 import {
   TemplateActions,
   ElementTypeActions,
@@ -49,7 +49,7 @@ export class Design {
 
   async setupMetadata(event) {
     return await this._dialogService.open({
-      viewModel: Metadata,
+      viewModel: MetadataDialog,
       model: event.detail.model
     });
   }

@@ -1,20 +1,4 @@
 <template>
-  <ai-dialog>
-    <ai-dialog-body>
-
-      <schema-form
-        schema.bind="elemForm.schema"
-        model.bind="elemForm.data">
-      </schema-form>
-
-    </ai-dialog-body>
-    <ai-dialog-footer>
-      <button type="button" class="btn btn-primary" click.delegate="submit()">
-        <i class="fa fa-floppy-o" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-danger" click.delegate="cancel()">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </button>
-    </ai-dialog-footer>
-  </ai-dialog>
+  <schema-form schema.bind="schema" model.bind="data">
+  </schema-form>
 </template>
