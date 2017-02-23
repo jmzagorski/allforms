@@ -42,6 +42,17 @@ describe('the element actions', () => {
     done();
   });
 
+  it('resolves the promise by doing nothing when id is undefined', async done => {
+    const selectSpy = spyOn(selectors, 'getElements');
+
+    await sut.loadElement();
+
+    expect(apiSpy.get).not.toHaveBeenCalled();
+    expect(selectSpy).not.toHaveBeenCalled();
+    expect(storeSpy.dispatch).not.toHaveBeenCalled();
+    done();
+  });
+
   using([
     { id: null, type: 'ADD_ELEMENT_SUCCESS'},
     { id: undefined, type: 'ADD_ELEMENT_SUCCESS'},

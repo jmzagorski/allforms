@@ -31,6 +31,9 @@ export class ElementActions {
    * @param {Number} id the id of the element
    */
   async loadElement(id) {
+    // this is to prevent pointless api calls
+    if (typeof id === 'undefined') return Promise.resolve();
+
     let element = getElements(this._store.getState()).find(e => e.id === id);
 
     if (!element) element = await this._api.get(id);
