@@ -6,6 +6,7 @@ import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap';
 import * as Interact from 'interact.js';
+import * as macros from './functions/excel/macros';
 
 // comment out if you don't want a Promise polyfill (remove also from webpack.common.js)
 import * as Bluebird from 'bluebird';
@@ -27,6 +28,9 @@ export async function configure(aurelia) {
   // Anyone wanting to use HTMLImports to load views, will need to install the following plugin.
   // aurelia.use.plugin('aurelia-html-import-template-loader')
   aurelia.container.registerInstance(Interact, Interact);
+
+  for (let macro in macros) aurelia.use.singleton('ExcelMacro', macros[macro])
+
   await aurelia.start();
   aurelia.setRoot('app');
 
