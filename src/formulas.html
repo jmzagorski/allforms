@@ -1,0 +1,22 @@
+<template>
+  <require from="./resources/attributes/textcomplete"></require>
+
+  <div class="form-group">
+    <textarea rows="8" cols="50" value.bind="element.formula"
+      textcomplete.bind="funcNames">
+    </textarea>
+  </div>
+
+
+  <div class="form-group">
+    <button class="btn btn-default" type="button" click.delegate="verify()">
+      Verify
+    </button>
+  </div>
+
+  <!--check for null or else false will hide this-->
+  <span show.bind="verifyMessage != null" 
+    class="alert ${verified ? 'alert-success' : 'alert-danger'}">
+    ${verifyMessage}
+  </span>
+</template>
