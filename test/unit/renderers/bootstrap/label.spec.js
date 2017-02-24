@@ -5,7 +5,7 @@ describe('the boostrap label renderer', () => {
   let sut;
 
   it('creates a bootstrap label', () => {
-    const options = { type: 'a', name: 'g' };
+    const options = { type: 'a', text: 'g' };
 
     const sut = label(options);
 

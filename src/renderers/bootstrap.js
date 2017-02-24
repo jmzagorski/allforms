@@ -1,37 +1,38 @@
 import { DOM } from 'aurelia-pal';
-import { hasDuplicates, parseCsv } from '../utils';
+import { hasDuplicates, parseCsv, randomId } from '../utils';
+
+// TODO generate random name
+// TODO a lot of this is not bootstrap specific, abstract away from this module
+//export function create(type, options) {
+  //const elems = [];
+  //const name = _genRandomId();
+  
+  //for (let i = 0; i < options.qty; i++) {
+    //const elem = window[type](options);
+
+    //// set the same name so elements like radios are grouped togther
+    //elem.name = name;
+
+    //if (options.required) elem.required = true;
+
+    //elems.push(elem);
+  //}
+
+  //return elems;
+//}
 
 export function alert(options) {
   const div = DOM.createElement('div');
   div.className = `alert alert-${options.type}`;
-  div.innerHTML = options.name;
+  div.innerHTML = options.text;
   return div;
 }
 
-export function date(options) {
-  const datepicker = DOM.createElement('div');
-  const input = DOM.createElement('input');
-  const addon = DOM.createElement('div');
-  const span = DOM.createElement('span');
-
-  datepicker.className = 'input-group date';
-  datepicker.setAttribute('data-provide', 'datepicker');
-  input.type = 'text';
-  input.className = 'form-control datepicker';
-  input.setAttribute('data-date-format', options.format);
-  addon.className = 'input-group-addon';
-  span.className = 'glyphicon glyphicon-th';
-
-  datepicker.appendChild(input);
-  datepicker.appendChild(addon);
-  addon.appendChild(span);
-
-  return datepicker;
-}
-
-export function number(options) {
-  options.type = 'number';
-  return _createInput(options);
+export function attachments(options) {
+  options.type = 'file';
+  const files = _createInput(options)
+  files.setAttribute('multiple', true);
+  return files;
 }
 
 export function checkbox(options) {
@@ -39,18 +40,60 @@ export function checkbox(options) {
   return _createOption(options);
 }
 
-export function radio(options) {
-  options.type = 'radio';
-  return _createOption(options);
+export function date(options) {
+  options.type = 'date';
+  const elem = _createInput(options);
+  const input = elem.querySelector('input');
+  input.setAttribute('max', options.max);
+  input.setAttribute('min', options.min);
+
+  return elem;
+}
+
+export function header(options) {
+  const header = DOM.createElement(`h${options.size}`);
+  header.textContent = options.text;
+  return header;
+}
+
+export function iframe(options) {
+  const iframe = DOM.createElement('iframe');
+  iframe.src = options.href;
+  iframe.width = options.width;
+  iframe.height = options.height;
+  return iframe;
 }
 
 export function label(options) {
   const span = DOM.createElement('span');
 
   span.className = `label label-${options.type}`;
-  span.textContent = options.name;
+  span.textContent = options.text;
 
   return span;
+}
+
+export function link(options) {
+  const link = DOM.createElement('a');
+  link.href = options.href;
+  link.textContent = options.text;
+  link.onclick = e => e.preventDefault();
+  return link;
+}
+
+export function number(options) {
+  options.type = 'number';
+  const elem = _createInput(options);
+  const input = elem.querySelector('input');
+  input.setAttribute('max', options.max);
+  input.setAttribute('min', options.min);
+
+  return elem;
+}
+
+export function radio(options) {
+  options.type = 'radio';
+  return _createOption(options);
 }
 
 export function select(options) {
@@ -59,7 +102,7 @@ export function select(options) {
   const select = DOM.createElement('select');
 
   formgroup.className = 'form-group'
-  label.textContent = options.name
+  label.textContent = options.label;
   label.htmlfor = select.id = options.id;
   select.className = 'form-control';
 
@@ -80,58 +123,16 @@ export function select(options) {
 }
 
 export function text(options) {
-  const formgroup = DOM.createElement('div');
-  const label = DOM.createElement('label');
-  const text = DOM.createElement('textarea');
+  options.type = 'text';
+  const elem = _createInput(options);
+  const input = elem.querySelector('input');
+  input.setAttribute('pattern', `.{${options.min}, ${options.max}}`);
 
-  formgroup.className = "form-group"
-  label.textContent = options.name;
-  label.htmlfor = text.id = options.id;
-  text.className = 'form-control';
-  text.rows = options.rows;
-
-  formgroup.appendChild(label);
-  formgroup.appendChild(text);
-
-  return formgroup;
+  return elem;
 }
 
-export function link(options) {
-  const link = DOM.createElement('a');
-  link.href = options.href;
-  link.textContent = options.name;
-  link.onclick = e => e.preventDefault();
-  return link;
-}
-
-export function iframe(options) {
-  const iframe = DOM.createElement('iframe');
-  iframe.src = options.href;
-  iframe.width = options.width;
-  iframe.height = options.height;
-  return iframe;
-}
-
-export function header(options) {
-  const header = DOM.createElement(`h${options.size}`);
-  header.textContent = options.name;
-  return header;
-}
-
-export function attachments(options) {
-  options.type = 'file';
-  const files = _createInput(options)
-  files.setAttribute('multiple', true);
-  return files;
-}
-
-/**
- * @desc Creates on tab nav and tab content. Pass in an existing tab-nav id to
- * append to tab to an existing group
- * @param {Options} options the tab options
- */
 export function tab(options) {
-  const wrapper = _createTabGroup(options.name, options.type);
+  const wrapper = _createTabGroup(options.id, options.type);
   const list = wrapper.children[0];
   const contentWrapper = wrapper.children[1];
   const headers = options.headers.split(',');
@@ -142,7 +143,7 @@ export function tab(options) {
 
   for (var i = 0; i < headers.length; i++) {
     const header = headers[i];
-    const hrefId = (options.name + header).replace(/ /g, '');
+    const hrefId = (options.id + header).replace(/ /g, '');
     const item = DOM.createElement('li');
     const a = DOM.createElement('a');
     const content = DOM.createElement('div');
@@ -172,6 +173,8 @@ export function tab(options) {
   return wrapper;
 }
 
+// PRIVATE HELPER FUNCTIONS
+
 function _createTabGroup(groupId, tabType) {
   const wrapper = DOM.createElement('div');
   const list = DOM.createElement('ul');
@@ -198,8 +201,7 @@ export function _createOption(options) {
   const input = DOM.createElement('input');
 
   input.type = options.type;
-  input.name = options.name;
-  label.innerHTML = input.outerHTML + options.name
+  label.innerHTML = input.outerHTML + options.label
   label.className = `${options.type}-inline`;
 
   return label;
@@ -211,7 +213,7 @@ export function _createInput(options) {
   const input = DOM.createElement('input');
 
   formgroup.className = 'form-group';
-  label.textContent = options.name;
+  label.textContent = options.label;
   label.htmlfor = input.id = options.id;
   input.type = options.type;
   input.className = 'form-control';
@@ -220,4 +222,14 @@ export function _createInput(options) {
   formgroup.appendChild(input);
 
   return formgroup;
+}
+
+function _genRandomId() {
+  let id;
+  do {
+    id = randomId();
+  } 
+  while(DOM.getElementsByName(id));
+
+  return id;
 }

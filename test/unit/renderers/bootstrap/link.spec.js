@@ -5,7 +5,7 @@ describe('the boostrap link renderer', () => {
   let sut;
 
   it('creates a bootstrap link', () => {
-    const options = { href: 'hahababa', name: 'a' };
+    const options = { href: 'hahababa', text: 'a' };
 
     const sut = link(options);
 

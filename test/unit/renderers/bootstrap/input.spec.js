@@ -6,12 +6,14 @@ describe('the boostrap input renderer', () => {
   let options;
 
   beforeEach(() => {
-    options = { name: 'a', id: "3", type: 'number' }
+    options = { label: 'a', id: "3", type: 'number' }
   })
 
   using([ 
     { method: 'number', type: 'number' },
-    { method: 'attachments', type: 'file' } 
+    { method: 'attachments', type: 'file' },
+    { method: 'date', type: 'text' },
+    { method: 'text', type: 'text' } 
   ], data => {
     it('creates a bootstrap input type', () => {
       const sut = renderers[data.method](options);
@@ -21,7 +23,7 @@ describe('the boostrap input renderer', () => {
 
       const label = sut.children[0];
       expect(label.tagName).toEqual('LABEL');
-      expect(label.textContent).toEqual(options.name);
+      expect(label.textContent).toEqual(options.label);
       expect(label.htmlfor).toEqual(options.id);
 
       const input = sut.children[1];
@@ -36,5 +38,26 @@ describe('the boostrap input renderer', () => {
     const sut = renderers.attachments(options);
 
     expect(sut.getAttribute('multiple')).toBeTruthy();
+  });
+
+  using([ 'number', 'date' ], method => {
+    it('sets the max and min attribute on the number and date', () => {
+      options.min = 1;
+      options.max = 3;
+
+      const sut = renderers[method](options);
+
+      expect(sut.children[1].getAttribute('min')).toEqual('1');
+      expect(sut.children[1].getAttribute('max')).toEqual('3');
+    });
+  });
+
+  it('sets the pattern attribute on the text', () => {
+    options.min = 1;
+    options.max = 3;
+
+    const sut = renderers.text(options);
+
+    expect(sut.children[1].getAttribute('pattern')).toEqual('.{1, 3}');
   });
 });

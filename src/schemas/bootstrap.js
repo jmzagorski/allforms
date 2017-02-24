@@ -2,7 +2,6 @@
 
 import * as globalSchemas from './global';
 
-
 export const label = [ 
   ...globalSchemas.label, {
     key: 'type',

@@ -1,14 +1,6 @@
 import * as schemas from '../../../src/schemas/global.js';
 
-const shouldBeInAll = [{
-  key: 'name',
-  type: 'string'
-}, {
-  key: 'Create label from name',
-  type: 'bool',
-  default: true,
-  label: false
-}, {
+const common = [{
   key: 'Quantity',
   type: 'number',
   default: 1
@@ -19,23 +11,39 @@ const shouldBeInAll = [{
   label: false
 }];
 
+const label = {
+  key: 'label',
+  type: 'string'
+};
+
+const text = {
+  key: 'text',
+  type: 'string'
+};
+
 describe('the global (shared) schemas', () => {
   let sut;
 
   it('sets the date schema', () => {
     const date = schemas.date;
 
-    expect(date).toEqual([...shouldBeInAll, {
+    expect(date).toEqual([...common, label, {
       key: 'format',
       type: 'string',
       default: 'mm/dd/yyyy'
+    }, {
+      key: 'min',
+      type: 'date'
+    }, {
+      key: 'max',
+      type: 'date'
     }]);
   });
 
   it('sets the number schema', () => {
     const input = schemas.number;
 
-    expect(input).toEqual([...shouldBeInAll, {
+    expect(input).toEqual([...common, label, {
       key: 'min',
       type: 'number',
       default: 0
@@ -48,37 +56,37 @@ describe('the global (shared) schemas', () => {
   it('sets the checkbox schema', () => {
     const option = schemas.checkbox;
 
-    expect(option).toEqual(shouldBeInAll);
+    expect(option).toEqual([ ...common, label ]);
   });
 
   it('sets the radio schema', () => {
     const option = schemas.radio;
 
-    expect(option).toEqual(shouldBeInAll);
+    expect(option).toEqual([ ...common, label ]);
   });
 
   it('sets the attachments schema', () => {
     const attachments = schemas.attachments;
 
-    expect(attachments).toEqual(shouldBeInAll);
+    expect(attachments).toEqual([ common[0], label ]);
   });
 
   it('sets the label schema', () => {
     const label = schemas.label;
 
-    expect(label).toEqual(shouldBeInAll);
+    expect(label).toEqual([ common[0], text ]);
   });
 
   it('sets the alert schema', () => {
     const alert = schemas.alert;
 
-    expect(alert).toEqual(shouldBeInAll);
+    expect(alert).toEqual([ common[0], text ]);
   });
 
   it('sets the select schema', () => {
     const select = schemas.select;
 
-    expect(select).toEqual([ ...shouldBeInAll, {
+    expect(select).toEqual([ ...common, label, {
       key: 'optionSrc',
       type: 'file',
       label: 'Options File'
@@ -88,17 +96,20 @@ describe('the global (shared) schemas', () => {
   it('sets the text schema', () => {
     const text = schemas.text;
 
-    expect(text).toEqual([ ...shouldBeInAll, {
-      key: 'rows',
+    expect(text).toEqual([ ...common, label, {
+      key: 'min',
       type: 'number',
-      default: 5
+      default: 0
+    }, {
+      key: 'max',
+      type: 'number'
     }]);
   });
 
   it('sets the link schema', () => {
     const link = schemas.link;
 
-    expect(link).toEqual([ ...shouldBeInAll, {
+    expect(link).toEqual([ common[0], text, {
       key: 'href',
       label: 'source',
       type: 'string'
@@ -108,7 +119,7 @@ describe('the global (shared) schemas', () => {
   it('sets the iframe schema', () => {
     const iframe = schemas.iframe;
 
-    expect(iframe).toEqual([ ...shouldBeInAll, {
+    expect(iframe).toEqual([{
       key: 'href',
       label: 'source',
       type: 'string'
@@ -126,7 +137,11 @@ describe('the global (shared) schemas', () => {
   it('sets the header schema', () => {
     const header = schemas.header;
 
-    expect(header).toEqual([ ...shouldBeInAll, {
+    expect(header).toEqual([{
+      key: 'Quantity',
+      type: 'number',
+      default: 1
+    }, text, {
       key: 'size',
       type: 'select',
       default: 1,
@@ -144,7 +159,7 @@ describe('the global (shared) schemas', () => {
   it('sets the tab schema', () => {
     const tab = schemas.tab;
 
-    expect(tab).toEqual([ ...shouldBeInAll, {
+    expect(tab).toEqual([{
       key: 'headers',
       type: 'string'
     }]);

@@ -4,12 +4,12 @@ import { tab } from '../../../../src/renderers/bootstrap';
 describe('the boostrap tab renderer', () => {
 
   it('creates a new bootstrap tab group', () => {
-    const options = { name: 'navtab', headers: 'te st', type: 'pill' };
+    const options = { id: 'navtab', headers: 'te st', type: 'pill' };
 
     const sut = tab(options);
 
     expect(sut.tagName).toEqual('DIV');
-    expect(sut.id).toEqual(options.name);
+    expect(sut.id).toEqual(options.id);
 
     const nav = sut.children[0];
     expect(nav.tagName).toEqual('UL');
@@ -40,7 +40,7 @@ describe('the boostrap tab renderer', () => {
     ['same, same'],
   ], headers => {
     it('throws when naming the same header', () => {
-      const options = { name: 'navtab', headers };
+      const options = { id: 'navtab', headers };
 
       const ex = () => tab(options);
 
@@ -49,7 +49,7 @@ describe('the boostrap tab renderer', () => {
   });
 
   it('activates the first tab header', () => {
-    const options = { name: 'navtab', headers: 'Main, Sub' };
+    const options = { id: 'navtab', headers: 'Main, Sub' };
 
     const tabGroup = tab(options);
 
@@ -58,7 +58,7 @@ describe('the boostrap tab renderer', () => {
   });
 
   it('activates the tab on click', () => {
-    const options = { headers: 'Main, Sub', name: 'navtab' };
+    const options = { headers: 'Main, Sub', id: 'navtab' };
 
     var tabGroup = tab(options);
     tabGroup.querySelectorAll('a')[0].click();

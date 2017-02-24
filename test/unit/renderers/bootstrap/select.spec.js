@@ -7,7 +7,7 @@ describe('the select input renderer', () => {
 
   it('creates a bootstrap select list', done => {
     const blob = new Blob([JSON.stringify('id:a')], {type : 'application/json'});
-    const options = { name: 'a', id: 'b', optionSrc: [ blob ] };
+    const options = { label: 'a', id: 'b', optionSrc: [ blob ] };
     const parseSpy = spyOn(utils, 'parseCsv').and.returnValue([['hi', 'bye']]);
 
     parseSpy.and.returnValue([['hi', 'bye']]);
@@ -19,7 +19,7 @@ describe('the select input renderer', () => {
 
     const label = sut.children[0];
     expect(label.tagName).toEqual('LABEL');
-    expect(label.textContent).toEqual(options.name);
+    expect(label.textContent).toEqual(options.label);
     expect(label.htmlfor).toEqual(options.id);
 
     const select = sut.children[1];

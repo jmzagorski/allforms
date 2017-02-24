@@ -7,18 +7,17 @@ describe('the option renderer', () => {
 
   using([ 'radio', 'checkbox' ], method => {
     it('creates a bootstrap checkbox or radio', () => {
-      const options = { name: 'b' };
+      const options = { label: 'b' };
 
       const label = renderers[method](options);
       const input = label.children[0];
 
       expect(label.tagName).toEqual('LABEL');
-      expect(label.innerHTML).toEqual(input.outerHTML + options.name);
+      expect(label.innerHTML).toEqual(input.outerHTML + options.label);
       expect(label.className).toEqual(`${method}-inline`);
 
       expect(input.tagName).toEqual('INPUT');
       expect(input.type).toEqual(method);
-      expect(input.name).toEqual(options.name);
     });
   });
 });

@@ -1,63 +1,75 @@
-// TODO - Mandatory should not be in the base
-const baseSchema = [{
-  key: 'name',
+const labelSchema = {
+  key: 'label',
   type: 'string'
-}, {
-  key: 'Create label from name',
-  type: 'bool',
-  default: true,
-  label: false
-}, {
+};
+
+const textSchema = {
+  key: 'text',
+  type: 'string'
+};
+
+const minSchema = {
+  key: 'min',
+  type: 'number',
+  default: 0
+};
+
+const maxSchema = {
+  key: 'max',
+  type: 'number'
+};
+
+const qtySchema = {
   key: 'Quantity',
   type: 'number',
   default: 1
-}, {
+};
+
+const requiredSchema = {
   key: 'mandatory',
   type: 'bool',
   default: false,
   label: false
-}];
+};
 
-export const date = [ ...baseSchema, {
+// many elements use this schema
+const base = [ qtySchema, requiredSchema ];
+
+export const date = [ ...base, labelSchema, {
   key: 'format',
   type: 'string',
   default: 'mm/dd/yyyy'
-}];
-
-export const number = [ ...baseSchema, {
+}, {
   key: 'min',
-  type: 'number',
-  default: 0
+  type: 'date'
 }, {
   key: 'max',
-  type: 'number'
+  type: 'date'
 }];
 
-export const checkbox = [ ...baseSchema ];
-export const radio = [ ...baseSchema ];
-export const attachments = [ ...baseSchema ];
-export const label = [ ...baseSchema ];
-export const alert = [ ...baseSchema ];
+export const number = [ ...base, labelSchema, minSchema, maxSchema ];
+export const checkbox = [ ...base, labelSchema ];
+export const radio = [ ...base, labelSchema ];
+export const attachments = [ qtySchema, labelSchema ];
+export const label = [ qtySchema, textSchema ];
+export const alert = [ qtySchema, textSchema ];
 
-export const select = [ ...baseSchema, {
+export const select = [ ...base, labelSchema, {
   key: 'optionSrc',
   type: 'file',
   label: 'Options File'
 }];
 
-export const text = [ ...baseSchema, {
-  key: 'rows',
-  type: 'number',
-  default: 5
-}];
+// min and max can be validated in HTML5 with pattern .{min, max}
+export const text = [ ...base, labelSchema, minSchema, maxSchema ];
 
-export const link = [ ...baseSchema, {
+export const link = [ qtySchema, textSchema, {
   key: 'href',
   label: 'source',
   type: 'string'
 }];
 
-export const iframe = [ ...baseSchema, {
+export const iframe = [{
   key: 'href',
   label: 'source',
   type: 'string'
@@ -71,7 +83,7 @@ export const iframe = [ ...baseSchema, {
   default: 300
 }];
 
-export const header = [ ...baseSchema, {
+export const header = [ qtySchema, textSchema, {
   key: 'size',
   type: 'select',
   default: 1,
@@ -85,7 +97,7 @@ export const header = [ ...baseSchema, {
   ]
 }];
 
-export const tab = [ ...baseSchema, {
+export const tab = [{
   key: 'headers',
   type: 'string'
 }];
