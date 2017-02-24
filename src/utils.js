@@ -86,10 +86,12 @@ export function parseCsv(text, lineTerminator, cellTerminator) {
 }
 
 export function getEndingCharPos(str, start, char) {
+  const charStart = str.indexOf(char, start);
   let braces = 0;
-  let index = start;
+  let index = charStart;
 
-  for (let i = start; i <= str.length; ++i) {
+  for (let i = charStart; i <= str.length; ++i) {
+    debugger;
     switch (str[i]) {
       case '(':
         ++braces;
@@ -109,15 +111,14 @@ export function getEndingCharPos(str, start, char) {
 export function getIndicesOf(searchStr, str) {
   const searchStrLen = searchStr.length;
 
-  if (searchStrLen == 0) return [];
+  if (searchStrLen === 0) return [];
 
   const indices = [];
-  let startIndex = 0;
-  let index = 0;
+  const regex = new RegExp(`\\b${searchStr}\\b`, 'g');
+  let match = null;
 
-  while ((index = str.indexOf(searchStr, startIndex)) > -1) {
-    indices.push(index);
-    startIndex = index + searchStrLen;
+  while((match = regex.exec(str))) {
+    indices.push(match.index);
   }
 
   return indices;

@@ -102,7 +102,7 @@ describe('the utility functions', () => {
   it('finds the ending character', () => {
     const text = 'Hello(okay(again()))';
 
-    const result = utils.getEndingCharPos(text, text.indexOf('(', '('));
+    const result = utils.getEndingCharPos(text, 5, '(');
 
     expect(result).toEqual(text.length - 1);
   });

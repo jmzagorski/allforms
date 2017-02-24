@@ -78,7 +78,6 @@ export class ExcelEngine {
     macroIndexes = macroIndexes.sort((a,b) => a.index - b.index);
 
     for (let mi of macroIndexes) {
-      debugger;
       const func = await mi.macro.transform(...args)
       formula = this._replaceText(formula, mi.macro.constructor.name.toUpperCase(), func);
     }
@@ -91,10 +90,10 @@ export class ExcelEngine {
   }
 
   _replaceText(formula, search, replace) {
-    let index = 0;
-    while((index = formula.indexOf(search)) !== -1) {
-      const end = getEndingCharPos(formula, index, '(')
-      formula = replaceBetween(formula, index, end + 1, replace);
+    let match = null;
+    while((match = formula.match(`\\b${search}\\b`))) {
+      const end = getEndingCharPos(formula, match.index, '(')
+      formula = replaceBetween(formula, match.index, end + 1, replace);
     }
 
     return formula;
