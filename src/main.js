@@ -29,7 +29,13 @@ export async function configure(aurelia) {
   // aurelia.use.plugin('aurelia-html-import-template-loader')
   aurelia.container.registerInstance(Interact, Interact);
 
-  for (let macro in macros) aurelia.use.singleton('ExcelMacro', macros[macro])
+  for (let macro in macros) {
+    const type = Object.prototype.toString.call(macros[macro]);
+    // only register classes
+    if (type === '[object Function]') {
+      aurelia.container.registerSingleton('ExcelMacros', macros[macro])
+    }
+  }
 
   await aurelia.start();
   aurelia.setRoot('app');
