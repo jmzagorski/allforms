@@ -27,7 +27,7 @@ describe('the form reducer', () => {
     it('returns the state with the active form', () => {
       const action = {
         type: 'ACTIVATE_FORM_SUCCESS',
-        name: data.active
+        id: data.active
       };
 
       const state = forms(data.state, action);

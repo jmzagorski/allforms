@@ -22,7 +22,7 @@ describe('the metadata dialog view model', () => {
     elemSelectorSpy = spyOn(elemSelectors, 'getActiveElement');
     sut = new MetadataDialog(elemActionSpy, dialogSpy, storeSpy);
 
-    formSelectorSpy.and.returnValue({ name: 'a', style: 'bootstrap' });
+    formSelectorSpy.and.returnValue({ id: 'a', style: 'bootstrap' });
   });
 
   it('instantiates the view model', () => {
@@ -36,7 +36,7 @@ describe('the metadata dialog view model', () => {
       const model = { id: 1, type: 'ab' };
       const state = {};
       storeSpy.getState.and.returnValue(state);
-      formSelectorSpy.and.returnValue({ style: 'xx', name: 'test' });
+      formSelectorSpy.and.returnValue({ style: 'xx', id: 'test' });
       elemSelectorSpy.and.returnValue(element);
 
       // make sure we load the element first!
@@ -55,7 +55,6 @@ describe('the metadata dialog view model', () => {
       if (element) {
         expect(sut.element).toBe(element);
       } else {
-        expect(sut.element.formName).toEqual('test');
         expect(sut.element.formId).toEqual('test');
       }
 

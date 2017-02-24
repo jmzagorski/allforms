@@ -19,7 +19,7 @@ describe('the directory view model', () => {
 
     sut = new Directory(routerSpy, storeSpy);
     formStub = {
-      name: 'abc',
+      id: 'abc',
       files: [
         { priority: 1 }, { priority: 2 }
       ]

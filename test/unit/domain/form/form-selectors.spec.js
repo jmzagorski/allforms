@@ -7,8 +7,8 @@ describe('the form selectors', () => {
 
   beforeEach(() => {
     forms = [
-      { name: 'a', files: [ { priority: 7 }, { priority: 4 } ]},
-      { name: 'b', files: [ { priority: 2 }, { priority: 1 } ]}
+      { id: 'a', files: [ { priority: 7 }, { priority: 4 } ]},
+      { id: 'b', files: [ { priority: 2 }, { priority: 1 } ]}
     ];
     state = {
       forms: {
@@ -21,7 +21,7 @@ describe('the form selectors', () => {
   it('returns the active form', () => {
     const active = selectors.getActiveForm(state);
 
-    expect(active.name).toEqual('a');
+    expect(active.id).toEqual('a');
   });
 
   it('returns the active form with files sorted', () => {

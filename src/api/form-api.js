@@ -22,13 +22,13 @@ export class FormApi {
 
   /**
    * @desc A call to save a form
-   * @param {Form} form the form to save
+   * @param {Form} form the form object to save
    * @return {Form} the form from the api, not the original parameter
    *
    */
   async save(form) {
     const url = 'forms';
-    const method = form.name ? 'PUT' : 'POST';
+    const method = form.id ? 'PUT' : 'POST';
 
     return await this._http.fetch(url, {
       method: method,

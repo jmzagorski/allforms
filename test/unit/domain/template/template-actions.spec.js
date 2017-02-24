@@ -17,7 +17,7 @@ describe('the template actions', () => {
     selectorSpy = spyOn(selectors, 'getTemplate');
   });
 
-  it('loads the template from the form name', async done => {
+  it('loads the template from the form id', async done => {
     const template = {};
 
     apiSpy.get.and.returnValue(template);
@@ -32,9 +32,9 @@ describe('the template actions', () => {
     done();
   });
 
-  using([null, undefined, ''], name => {
-    it('adds the template if the name is not available', async done => {
-      const template = { name };
+  using([null, undefined, ''], id => {
+    it('adds the template if the id is not available', async done => {
+      const template = { id };
       const serverTemplate = { };
       const state = {};
 
@@ -55,8 +55,8 @@ describe('the template actions', () => {
     });
   });
 
-  it('edits the template if the name is available', async done => {
-    const template = { name: 'a' };
+  it('edits the template if the id is available', async done => {
+    const template = { id: 'a' };
     const serverTemplate = { };
     const state = { };
 

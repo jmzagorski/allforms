@@ -91,7 +91,6 @@ export function getEndingCharPos(str, start, char) {
   let index = charStart;
 
   for (let i = charStart; i <= str.length; ++i) {
-    debugger;
     switch (str[i]) {
       case '(':
         ++braces;

@@ -28,7 +28,7 @@ describe('the forms view model', () => {
   });
 
   it('generates a route for each form', () => {
-    const forms = [ { name: 'a' }, { name: 'b' }];
+    const forms = [ { id: 'a' }, { id: 'b' }];
     spyOn(selectors, 'getFormList').and.returnValue(forms);
 
     sut.activate();

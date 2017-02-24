@@ -31,12 +31,7 @@ export class MetadataDialog {
     this.element = getActiveElement(this._store.getState());
 
     if (!this.element) {
-      //this.element = this._createDefaultElement(model.type);
-      // TODO only need one, but JSON server needs two right now
-      this.element = {
-        formName: form.name,
-        formId: form.name
-      };
+      this.element = { formId: form.id };
     }
 
     // view model properties only, no need to persist these

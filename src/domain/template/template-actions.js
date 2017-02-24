@@ -28,10 +28,10 @@ export class TemplateActions {
 
   /**
    * @desc Gets the template and dispatches that object in a success event
-   * @param {String} formName the name of the form
+   * @param {String} formId the id of the form
    */
-  async loadTemplateFor(formName) {
-    const template = await this._api.get(formName);
+  async loadTemplateFor(formId) {
+    const template = await this._api.get(formId);
 
     this._store.dispatch(loadTemplateSuccess(template));
   }
@@ -39,7 +39,7 @@ export class TemplateActions {
   async save(template) {
     const localVersion = getTemplate(this._store.getState());
 
-    if (localVersion.name) {
+    if (localVersion.id) {
       const serverVersion = await this._api.edit(template);
       this._store.dispatch(editTemplateSuccess(serverVersion));
     } else {

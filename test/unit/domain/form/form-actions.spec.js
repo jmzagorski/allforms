@@ -31,13 +31,13 @@ describe('the form actions', () => {
   });
 
   using([
-    { name: null, type: 'ADD_FORM_SUCCESS'},
-    { name: undefined, type: 'ADD_FORM_SUCCESS'},
-    { name: '', type: 'ADD_FORM_SUCCESS'},
-    { name: 'a', type: 'EDIT_FORM_SUCCESS'}
+    { id: null, type: 'ADD_FORM_SUCCESS'},
+    { id: undefined, type: 'ADD_FORM_SUCCESS'},
+    { id: '', type: 'ADD_FORM_SUCCESS'},
+    { id: 'a', type: 'EDIT_FORM_SUCCESS'}
   ], data => {
-    it('adds the form if the name is not available', async done => {
-      const form = { name: data.name };
+    it('adds the form if the id is not available', async done => {
+      const form = { id: data.id };
       const serverForm = { };
 
       apiSpy.save.and.returnValue(serverForm);
@@ -53,12 +53,12 @@ describe('the form actions', () => {
     });
   });
 
-  it('has an form activated action', () => {
+  it('has a form activated action', () => {
     const action = activateFormSuccess('a');
 
     expect(action).toEqual({
       type: 'ACTIVATE_FORM_SUCCESS',
-      name: 'a'
+      id: 'a'
     });
   })
 });

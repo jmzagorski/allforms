@@ -56,7 +56,7 @@ export class Design {
 
   async saveTemplate() {
     this._templateActions.save({
-      name: this._form.name,
+      id: this._form.id,
       html: this.designer.element.innerHTML
     });
   }

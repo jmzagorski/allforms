@@ -22,13 +22,13 @@ describe('the form api', () => {
   });
 
   using([
-    { name: null, method: 'POST' },
-    { name: undefined, method: 'POST' },
-    { name: '', method: 'POST' },
-    { name: 'something', method: 'PUT' }
+    { id: null, method: 'POST' },
+    { id: undefined, method: 'POST' },
+    { id: '', method: 'POST' },
+    { id: 'something', method: 'PUT' }
   ], data => {
-    it('saves the new form based on the name', async done => {
-      const form = { name: data.name, summary: 'asda' };
+    it('saves the new form based on the id', async done => {
+      const form = { id: data.id, summary: 'asda' };
       const returnedForm = {};
       const fr = new FileReader();
 

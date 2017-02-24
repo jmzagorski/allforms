@@ -18,8 +18,8 @@ function editFormSuccess(form) {
   return { type: EDIT_FORM_SUCCESS, form };
 }
 
-export function activateFormSuccess(name) {
-  return { type: ACTIVATE_FORM_SUCCESS, name };
+export function activateFormSuccess(id) {
+  return { type: ACTIVATE_FORM_SUCCESS, id };
 }
 
 export class FormActions {
@@ -48,7 +48,7 @@ export class FormActions {
   async saveForm(form) {
     const serverVersion = await this._api.save(form);
 
-    form.name ? this._store.dispatch(editFormSuccess(serverVersion)) :
+    form.id ? this._store.dispatch(editFormSuccess(serverVersion)) :
       this._store.dispatch(addFormSuccess(serverVersion));
   }
 }

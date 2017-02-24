@@ -16,7 +16,7 @@ export class Forms {
 
   activate() {
     this.forms.forEach(f => {
-      f.url = this._router.generate('dir', { form: f.name });
+      f.url = this._router.generate('dir', { form: f.id });
     });
   }
 }

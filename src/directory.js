@@ -26,7 +26,7 @@ export class Directory {
 
       if (!route) throw Error(`No route found for ${f.name}`);
 
-      f.url = this._router.generate(route.name, { form: this.form.name });
+      f.url = this._router.generate(route.name, { form: this.form.id });
     });
   }
 }

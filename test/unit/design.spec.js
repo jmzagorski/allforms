@@ -32,7 +32,7 @@ describe('the design view model', () => {
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     sut = new Design(storeSpy, elemTypeActionSpy, dialogSpy, templateActionSpy);
 
-    formSelectorSpy.and.returnValue({ style: '', name: 'abc' });
+    formSelectorSpy.and.returnValue({ style: '', id: 'abc' });
     templateSelectorSpy.and.returnValue({ html: '' });
   });
 
@@ -71,8 +71,8 @@ describe('the design view model', () => {
   });
 
   using([
-    { template: {}, expect: { name: null, html: '' } },
-    { template: { name: 'a', html: 'b' }, expect: { name: 'a', html: 'b' } }
+    { template: {}, expect: { id: null, html: '' } },
+    { template: { id: 'a', html: 'b' }, expect: { id: 'a', html: 'b' } }
   ], data => {
     it('gets the template from the selector', async done => {
       const state = {};
@@ -160,7 +160,7 @@ describe('the design view model', () => {
     sut.saveTemplate();
 
     expect(templateActionSpy.save.calls.argsFor(0)[0]).toEqual({
-      name: 'abc', html: 'a'
+      id: 'abc', html: 'a'
     });
     done();
   });

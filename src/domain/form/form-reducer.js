@@ -10,7 +10,7 @@ export default function formReducer(state = {}, action) {
 
     case ACTIVATE_FORM_SUCCESS:
       return Object.assign({}, state, {
-        active: action.name
+        active: action.id
       });
 
     default:

@@ -18,7 +18,7 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
-          "name": {
+          "id": {
             "type": "string",
             "faker": "lorem.word",
             "unique": true
@@ -28,7 +28,7 @@ export const schema = {
             "enum": [""]
           }
         },
-        "required": [ "name", "html" ]
+        "required": [ "id", "html" ]
       }
     },
     "elements": {
@@ -43,10 +43,6 @@ export const schema = {
             "unique": true,
             "minimum": 1
           },
-          "name": {
-            "type": "string",
-            "unique": true
-          },
           "formId": {
             "type": "string",
             "faker": "lorem.word",
@@ -57,7 +53,7 @@ export const schema = {
             "faker": "lorem.sentence"
           },
         },
-        "required": ["id", "name", "formId"]
+        "required": ["id", "formId"]
       }
     },
     "element-types": {
@@ -142,6 +138,11 @@ export const schema = {
       "items": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          },
           "name": {
             "type": "string",
             "faker": "lorem.word",
@@ -236,7 +237,7 @@ export const schema = {
             }
           }
         },
-        "required": ["name", "style", "lastEditInDays", "files" ]
+        "required": ["id", "name", "style", "lastEditInDays", "files" ]
       }
     }
   },
