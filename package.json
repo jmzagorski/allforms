@@ -34,7 +34,7 @@
     "webpack": "cross-env BABEL_ENV=webpack ./node_modules/.bin/webpack",
     "webpack-dev-server": "cross-env BABEL_ENV=node ./node_modules/.bin/webpack-dev-server",
     "prestart-mockapi": "npm run generate-mock-data",
-    "start-mockapi": "json-server src/db.json --middlewares ./build/nocontent-middleware.js --port 9001 --host 0.0.0.0 --routes build/routes.json",
+    "start-mockapi": "cross-env BABEL_ENV=node babel-node ./build/server.js",
     "generate-mock-data": "cross-env BABEL_ENV=node babel-node ./build/generate-mockdata"
   },
   "repository": {

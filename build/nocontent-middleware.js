@@ -6,9 +6,9 @@
  */
 module.exports = function (req, res, next) {
   // not sure why baseUrl is empty
-  var isTemplate = req.path.lastIndexOf('/templates', 0) === 0;
+  var watching = req.path.lastIndexOf('/api/templates', 0) === 0;
 
-  if (isTemplate && !res.locals.data) {
+  if (watching && !res.locals.data) {
     // if you set the data property than json-server will not throw a 404
     res.locals.data = {};
   }
