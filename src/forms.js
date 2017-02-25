@@ -8,13 +8,11 @@ export class Forms {
   constructor(router, store) {
     this._router = router;
     this._store = store;
+    this.forms = [];
   }
 
-  get forms() {
-    return getFormList(this._store.getState());
-  };
-
   activate() {
+    this.forms = getFormList(this._store.getState());
     this.forms.forEach(f => {
       f.url = this._router.generate('dir', { form: f.id });
     });

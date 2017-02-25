@@ -7,16 +7,13 @@ export class Directory {
   static inject() { return [ Router, Store ]; }
 
   constructor(router, store) {
+    this.form = null;
     this._router = router;
     this._store = store;
   }
 
-  // TODO move to property or use decorator
-  get form() {
-    return getActiveForm(this._store.getState());
-  };
-
   activate(params) {
+    this.form = getActiveForm(this._store.getState());
     this._createRoutes();
   }
 

@@ -33,9 +33,9 @@ describe('the directory view model', () => {
     formStub.files = [];
     storeSpy.getState.and.returnValue('a');
 
-    const actualForm = sut.form;
+    sut.activate();
 
-    expect(actualForm).toBe(formStub);
+    expect(sut.form).toBe(formStub);
     expect(getFormSpy).toHaveBeenCalledWith('a');
   });
 
