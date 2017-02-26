@@ -112,8 +112,8 @@ div.au-stagger {
   }
 }
 
-.segment::after {
-  content: ' /';
+.breadcrumb {
+  background-color: transparent;
 }
 
 /* Interact CSS */

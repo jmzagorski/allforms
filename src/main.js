@@ -1,10 +1,10 @@
 // we want font-awesome to load as soon as possible to show the fa-spinner
 import { createStore } from 'redux';
 import rootReducer from './root-reducer';
-import '../styles/styles.css';
 import 'font-awesome/css/font-awesome.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap';
+import '../styles/styles.css';
 import * as Interact from 'interact.js';
 import * as macros from './functions/excel/macros';
 

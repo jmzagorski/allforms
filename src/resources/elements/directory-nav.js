@@ -7,9 +7,9 @@ import { customElement, bindable } from 'aurelia-framework';
 @customElement('directory-nav')
 @inlineView(`
 <template>
-  <span class="segment" repeat.for="s of segments">
-    <a href="\${s.url}">\${s.display}</a>
-  </span>
+  <ul class="breadcrumb">
+    <li repeat.for="s of segments"><a href="\${s.url}">\${s.display}</a></li>
+  </ul>
 </template>`)
 export class DirectoryNavCustomElement {
 
