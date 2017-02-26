@@ -76,14 +76,16 @@ describe('the directory nav custom element', () => {
       });
 
       await sut.create(bootstrap);
-      const links = document.querySelectorAll('span a');
-      expect(links.length).toEqual(3);
-      expect(links[0].getAttribute('href')).toEqual(data.href);
-      expect(links[0].innerHTML).toEqual('home');
-      expect(links[1].getAttribute('href')).toEqual('.net');
-      expect(links[1].innerHTML).toEqual('first');
-      expect(links[2].getAttribute('href')).toEqual('.com');
-      expect(links[2].innerHTML).toEqual('second');
+      const ul = document.querySelector('ul');
+      const link = document.querySelectorAll('ul li a');
+      expect(ul.className).toEqual('breadcrumb');
+      expect(link.length).toEqual(3);
+      expect(link[0].getAttribute('href')).toEqual(data.href);
+      expect(link[0].innerHTML).toEqual('home');
+      expect(link[1].getAttribute('href')).toEqual('.net');
+      expect(link[1].innerHTML).toEqual('first');
+      expect(link[2].getAttribute('href')).toEqual('.com');
+      expect(link[2].innerHTML).toEqual('second');
       done();
     });
   })
