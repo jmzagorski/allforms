@@ -13,6 +13,7 @@ import elements from './element/element-reducer';
 import elementTypes from './element-type/element-type-reducer';
 import { getElementTypes } from './element-type/element-type-selectors';
 import { getTemplate } from './template/template-selectors';
+import { getActiveMember } from './member/member-selectors';
 import {
   getActiveForm,
   getFormList
@@ -39,6 +40,7 @@ export {
   getElements,
   getActiveElement,
   getElementTypes,
+  getActiveMember,
   activateFormSuccess
 };
 
