@@ -7,7 +7,9 @@
   <div id="page-host">
     <section class="col-md-offset-2 col-md-8">
       <h4>
-        <directory-nav root-name.bind="username"></directory-nav>
+        <!--leave one time binding because of readonly property and dirty checking-->
+        <!--with aurelia-->
+        <directory-nav root-name.one-time="member.loginName"></directory-nav>
       </h4>
     </section>
     <router-view></router-view>

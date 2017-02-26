@@ -2,6 +2,7 @@ import './setup';
 import HttpConfig from '../../src/config/http-client';
 import { App } from '../../src/app';
 import { Store } from 'aurelia-redux-plugin';
+import * as selectors from '../../src/domain/member/member-selectors';
 
 describe('the app view model', () => {
   let sut;
@@ -49,15 +50,16 @@ describe('the app view model', () => {
     done();
   });
 
-  it('sets the username from the member', async done => {
-    initialStateFxSpy.and.callFake(() => {
-      expect(storeSpy.getState.calls.count()).toEqual(0);  
-    });
+  it('gets the member name', () => {
+    const selectorSpy = spyOn(selectors, 'getActiveMember');
+    const state = {};
+    const member = {};
+    storeSpy.getState.and.returnValue(state);
+    selectorSpy.and.returnValue(member);
 
-    await sut.activate();
+    const actualMember = sut.member;
 
-    expect(initialStateFxSpy).toHaveBeenCalled();
-    expect(sut.username).toEqual('joe');
-    done();
+    expect(selectorSpy.calls.argsFor(0)[0]).toBe(state);
+    expect(sut.member).toBe(member);
   });
 });
