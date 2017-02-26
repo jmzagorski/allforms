@@ -8,7 +8,9 @@
       </div>
       <table class="table">
         <tbody>
-          <tr repeat.for="f of forms">
+          <!--since forms is a readonly property it is important to keep oneTime as-->
+          <!--the binding behavior so aurelia does not dirty check it-->
+          <tr repeat.for="f of forms & oneTime">
             <td>
               <i class="fa fa-folder fa-fw" aria-hidden="true"></i>
               <a href.bind="f.url">&nbsp; ${f.id}</a>

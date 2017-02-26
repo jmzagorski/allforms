@@ -18,13 +18,14 @@ describe('the forms view model', () => {
   it('gets all the forms from the current state', () => {
     const expectForms = [ { id: 'b' } ];
     const state = [ { id: 'a' } ];
-    storeSpy.getState.and.returnValue(state);
     const getFormsSpy = spyOn(selectors, 'getFormList');
+
+    storeSpy.getState.and.returnValue(state);
     getFormsSpy.and.returnValue(expectForms);
 
-    sut.activate();
+    const actualForms = sut.forms;
 
-    expect(sut.forms).toBe(expectForms);
+    expect(actualForms).toBe(expectForms);
     expect(getFormsSpy).toHaveBeenCalledWith(state);
   });
 
