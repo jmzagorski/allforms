@@ -18,6 +18,8 @@ export default function elementReducer(state = { list: [], active: null }, actio
 
     case types.ADD_ELEMENT_SUCCESS:
       return Object.assign({}, state, {
+        active: action.element.id
+      }, { 
         list: [ ...state.list, Object.assign({}, action.element) ]
       });
 

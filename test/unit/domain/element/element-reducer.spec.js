@@ -30,6 +30,7 @@ describe('the element reducer', () => {
     expect(newState).not.toBe(state);
     expect(newState.list).toContain(element);
     expect(newState.list).toContain(existing);
+    expect(newState.active).toEqual(element.id)
   });
 
   it('creates a new array with the edited element', () => {
