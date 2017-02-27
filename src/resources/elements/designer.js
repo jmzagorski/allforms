@@ -1,7 +1,9 @@
 import { customElement, bindable, TemplatingEngine, inlineView } from 'aurelia-framework';
-import { randomId, setDefaultVal } from '../../utils';
+import { setDefaultVal } from '../../utils';
 import { DOM } from 'aurelia-pal';
 import * as renderers from '../../renderers/index';
+
+const DATA_ELEM_TYPE = 'data-element-type';
 
 @customElement('designer')
 @inlineView(`
@@ -41,6 +43,7 @@ export class DesignerCustomElement {
   bind(bindingContext, overrideContext) {
     this._renderer = renderers[this.formstyle];
 
+    // TODO set a default style instead of throwing error
     if (!this._renderer) {
       throw new Error(`Formstyle not found for ${this.formstyle}`);
     }
@@ -63,26 +66,24 @@ export class DesignerCustomElement {
 
   attached() {
     // use this type of iterating because having issues with unit tetsts
-    for (let i = 0; i < this.element.children.length; i++) {
-      this._enhance(this.element.children[i]);
+    for (let i = 0; i < this._formWrapper.children.length; i++) {
+      this._enhance(this._formWrapper.children[i]);
     }
   }
 
   createElement(model) { 
-    const elementRenderer = this._renderer[model.type];
+    const elementRenderer = this._renderer[model.elementType];
 
     if (!elementRenderer) {
-      throw new Error(`Renderer not found for ${model.type}`);
+      throw new Error(`Renderer not found for ${model.elementType}`);
     }
 
-    const randomId = _genRandomId();
-
-    const draggable = elementRenderer(model.options);
-    draggable.id = randomId;
+    const draggable = elementRenderer(model);
+    draggable.id = model.id;
 
     draggable.setAttribute('draggable.bind', 'dragOptions');
     draggable.setAttribute('resizable.bind', 'resize');
-    draggable.setAttribute('data-element-type', model.type);
+    draggable.setAttribute(DATA_ELEM_TYPE, model.elementType);
     this._formWrapper.appendChild(draggable);
 
     this._enhance(draggable);
@@ -97,8 +98,13 @@ export class DesignerCustomElement {
   _onEditElement(elem) {
     const editing = new CustomEvent('onedit', {
       bubbles: true,
-      detail: { model: { id: elem.id } } }
-    )
+      detail: {
+        model: {
+          id: elem.id,
+          type:  elem.getAttribute(DATA_ELEM_TYPE)
+        }
+      }
+    });
 
     this.element.dispatchEvent(editing);
   }

@@ -82,7 +82,7 @@ describe('the designer custom element', () => {
   });
 
   it('enhances existing children on attached', async done => {
-    context.html = '<form id="dummy"></form>'
+    context.html = '<form><div id="dummy"></div></form>'
     sut.inView(`<designer innerhtml.bind="html" formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
 
@@ -90,13 +90,17 @@ describe('the designer custom element', () => {
 
     await sut.create(bootstrap);
     const child = document.querySelector('#dummy');
-    const call = enhanceSpy.calls.mostRecent().args;
+    const call = enhanceSpy.calls.mostRecent().args[0];
 
-    expect(call[0].element).toBe(child);
-    expect(call[0].bindingContext).toBe(sut.viewModel);
+    // 2 because aurelia-testing must call it and 1 for my one div in the form
+    expect(enhanceSpy.calls.count()).toEqual(2);
+    expect(call.element).toBe(child);
+    expect(call.bindingContext).toBe(sut.viewModel);
     // TODO - this is a private variable but i dont know how to make the test
     // work any other way
-    expect(call[0].resources).toBe(sut.viewModel._view.resources);
+    expect(call.resources).toBe(sut.viewModel._view.resources);
+    expect(child.ondblclick).not.toEqual(null);
+    expect(child.onchange).not.toEqual(null);
     done();
   });
 
@@ -105,22 +109,9 @@ describe('the designer custom element', () => {
       .boundTo(context);
     await sut.create(bootstrap);
 
-    const ex = () => sut.viewModel.createElement({ type: 'a' });
+    const ex = () => sut.viewModel.createElement({ elementType: 'a' });
 
     expect(ex).toThrow(new Error('Renderer not found for a'));
-    done();
-  });
-
-  it('loops until it finds a valid element id', async done => {
-    const domSpy = spyOn(DOM, 'getElementById');
-    domSpy.and.returnValues(1, undefined);
-    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-    await sut.create(bootstrap);
-
-    sut.viewModel.createElement({ type: 'date' });
-
-    expect(domSpy.calls.count()).toEqual(2);
     done();
   });
 
@@ -130,9 +121,9 @@ describe('the designer custom element', () => {
       .boundTo(context);
     await sut.create(bootstrap);
 
-    const actual = sut.viewModel.createElement({ type: 'date' });
+    const actual = sut.viewModel.createElement({ id: 1, elementType: 'date' });
 
-    expect(actual.id).toBeGreaterThan(0);
+    expect(actual.id).toEqual('1');
     expect(actual.ondblclick).not.toEqual(null);
     expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
     expect(actual.getAttribute('resizable.bind')).toEqual('resize');
@@ -158,7 +149,7 @@ describe('the designer custom element', () => {
       enhanced = obj;
     });
 
-    const actual = sut.viewModel.createElement({ type: 'date' });
+    const actual = sut.viewModel.createElement({ elementType: 'date' });
 
     expect(enhanced).not.toEqual(null);
     expect(enhanced.element).toEqual(actual);
@@ -174,7 +165,7 @@ describe('the designer custom element', () => {
     sut.inView(`<designer onedit.delegate="editListener($event)" formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
     await sut.create(bootstrap);
-    const actual = sut.viewModel.createElement({ type: 'date' });
+    const actual = sut.viewModel.createElement({ id: 1, elementType: 'date' });
 
     actual.ondblclick();
 
@@ -182,7 +173,7 @@ describe('the designer custom element', () => {
     expect(event.bubbles).toBeTruthy();
     expect(event.detail).toBeDefined();
     expect(event.detail).toEqual({
-      model: { id: actual.id }
+      model: { type: 'date', id: actual.id }
     })
     done();
   });
@@ -191,7 +182,7 @@ describe('the designer custom element', () => {
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
     await sut.create(bootstrap);
-    const actual = sut.viewModel.createElement({ type: 'date' });
+    const actual = sut.viewModel.createElement({ elementType: 'date' });
 
     actual.onchange({ target: actual });
 
