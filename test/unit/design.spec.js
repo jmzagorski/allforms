@@ -37,14 +37,13 @@ describe('the design view model', () => {
   });
 
   it('instantiates properties to defaults', () => {
-    expect(sut.elementTypes).toEqual([]);
-    expect(sut.designer).toEqual({});
-    expect(sut.interactable).toEqual('drag');
     expect(sut.html).toEqual('');
     expect(sut.style).toEqual(null);
+    expect(sut.designer).toEqual({});
+    expect(sut.interactable).toEqual('drag');
   });
 
-  it('loads the template before the state is retrieved', async done => {
+  it('loads the template data during activate', async done => {
     // make sure the loading is before the state calling
     templateActionSpy.loadTemplateFor.and.callFake(() => {
       expect(storeSpy.getState.calls.count()).toEqual(0);
@@ -53,11 +52,10 @@ describe('the design view model', () => {
     await sut.activate({ form: 'a' });
 
     expect(templateActionSpy.loadTemplateFor).toHaveBeenCalledWith('a');
-    expect(storeSpy.getState.calls.count()).toEqual(1);
     done();
   });
 
-  it('loads the element types before the state is retrieved', async done => {
+  it('loads the element types during activate', async done => {
     // make sure the loading is before the state calling
     elemTypeActionSpy.loadAll.and.callFake(() => {
       expect(storeSpy.getState.calls.count()).toEqual(0);
@@ -66,8 +64,20 @@ describe('the design view model', () => {
     await sut.activate({ form: 'a' });
 
     expect(elemTypeActionSpy.loadAll).toHaveBeenCalled();
-    expect(storeSpy.getState.calls.count()).toEqual(1);
     done();
+  });
+
+  it('gets the element types', () => {
+    const state = {};
+    const types = [];
+
+    storeSpy.getState.and.returnValue(state);
+    elemTypeSelectorSpy.and.returnValue(types)
+
+    const elemTypes = sut.elementTypes;
+
+    expect(elemTypeSelectorSpy.calls.argsFor(0)[0]).toBe(state)
+    expect(sut.elementTypes).toBe(types);
   });
 
   using([
@@ -88,30 +98,17 @@ describe('the design view model', () => {
     });
   });
 
-  it('gets the element types from the selector', async done => {
-    const state = {}
-    const types = [];
-
-    storeSpy.getState.and.returnValue(state);
-    elemTypeSelectorSpy.and.returnValue(types)
-
-    await sut.activate({ form: 'a' });
-
-    expect(elemTypeSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-    expect(sut.elementTypes).toBe(types);
-    done();
-  });
-
-  it('gets the form style from the active form', async done => {
+  it('gets the form properties from the active form', async done => {
     const state = {}
 
     storeSpy.getState.and.returnValue(state);
-    formSelectorSpy.and.returnValue({ style: 'b' });
+    formSelectorSpy.and.returnValue({ id: 1, style: 'b' });
 
     await sut.activate({ form: 'a' });
 
     expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
     expect(sut.style).toBe('b');
+    expect(sut.formId).toBe(1);
     done();
   });
 

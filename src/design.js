@@ -12,31 +12,36 @@ import {
 export class Design {
   static inject() { return [ Store, ElementTypeActions, DialogService, TemplateActions ]; }
 
-  interactable = 'drag';
-  designer = {};
-  elementTypes= [];
-  html = '';
-  style = null;
-
   constructor(store, elementTypeActions, dialogService, templateActions) {
-    this._form = null;
+    this.html = '';
+    this.style = null;
+    this.designer = {};
+    this.interactable = 'drag'
+
     this._store = store;
     this._templateActions = templateActions;
     this._elementTypeActions = elementTypeActions;
     this._dialogService = dialogService;
   }
 
+  get _state() {
+    return this._store.getState();
+  }
+
+  get elementTypes() {
+    return getElementTypes(this._state);
+  }
+
   async activate(params) {
     await this._elementTypeActions.loadAll();
     await this._templateActions.loadTemplateFor(params.form);
 
-    const state = this._store.getState();
-    const template = getTemplate(state);
+    const template = getTemplate(this._state);
+    const form = getActiveForm(this._state);
 
-    this._form = getActiveForm(state);
-    this.style = this._form.style;
     this.html = template.html || this.html;
-    this.elementTypes = getElementTypes(state);
+    this.formId = form.id;
+    this.style = form.style;
   }
 
   async renderElement(elementType) {
@@ -56,7 +61,7 @@ export class Design {
 
   async saveTemplate() {
     this._templateActions.save({
-      id: this._form.id,
+      id: this.formId,
       html: this.designer.element.innerHTML
     });
   }
