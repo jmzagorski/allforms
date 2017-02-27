@@ -1,7 +1,9 @@
 import { DOM } from 'aurelia-pal';
 import { hasDuplicates, parseCsv, randomId } from '../utils';
 
-// TODO generate random name
+// TODO pass in name from options and use that to populate the names in the
+// formula type ahead. Store the name in the name attribute, then do i need to
+// store it in the element object?
 // TODO a lot of this is not bootstrap specific, abstract away from this module
 //export function create(type, options) {
   //const elems = [];

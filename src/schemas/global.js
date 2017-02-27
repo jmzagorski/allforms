@@ -32,8 +32,13 @@ const requiredSchema = {
   label: false
 };
 
+const nameSchema = {
+  key: 'name',
+  type: 'string'
+}
+
 // many elements use this schema
-const base = [ qtySchema, requiredSchema ];
+const base = [ nameSchema, qtySchema, requiredSchema ];
 
 export const date = [ ...base, labelSchema, {
   key: 'format',
@@ -52,7 +57,7 @@ export const checkbox = [ ...base, labelSchema ];
 export const radio = [ ...base, labelSchema ];
 export const attachments = [ qtySchema, labelSchema ];
 export const label = [ qtySchema, textSchema ];
-export const alert = [ qtySchema, textSchema ];
+export const alert = [ nameSchema, qtySchema, textSchema ];
 
 export const select = [ ...base, labelSchema, {
   key: 'optionSrc',

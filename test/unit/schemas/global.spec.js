@@ -1,6 +1,9 @@
 import * as schemas from '../../../src/schemas/global.js';
 
 const common = [{
+  key: 'name',
+  type: 'string'
+}, {
   key: 'Quantity',
   type: 'number',
   default: 1
@@ -68,19 +71,19 @@ describe('the global (shared) schemas', () => {
   it('sets the attachments schema', () => {
     const attachments = schemas.attachments;
 
-    expect(attachments).toEqual([ common[0], label ]);
+    expect(attachments).toEqual([ common[1], label ]);
   });
 
   it('sets the label schema', () => {
     const label = schemas.label;
 
-    expect(label).toEqual([ common[0], text ]);
+    expect(label).toEqual([ common[1], text ]);
   });
 
   it('sets the alert schema', () => {
     const alert = schemas.alert;
 
-    expect(alert).toEqual([ common[0], text ]);
+    expect(alert).toEqual([ common[0], common[1], text ]);
   });
 
   it('sets the select schema', () => {
@@ -109,7 +112,7 @@ describe('the global (shared) schemas', () => {
   it('sets the link schema', () => {
     const link = schemas.link;
 
-    expect(link).toEqual([ common[0], text, {
+    expect(link).toEqual([ common[1], text, {
       key: 'href',
       label: 'source',
       type: 'string'

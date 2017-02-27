@@ -19,7 +19,7 @@ export const label = [
 ];
 
 export const alert = [ 
-  ...globalSchemas.label, {
+  ...globalSchemas.alert, {
     key: 'type',
     type: 'select',
     default: 'info',
