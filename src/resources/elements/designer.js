@@ -1,33 +1,37 @@
-import { customElement, bindable, TemplatingEngine } from 'aurelia-framework';
+import { customElement, bindable, TemplatingEngine, inlineView } from 'aurelia-framework';
 import { randomId, setDefaultVal } from '../../utils';
 import { DOM } from 'aurelia-pal';
 import * as renderers from '../../renderers/index';
 
 @customElement('designer')
+@inlineView(`
+<template>
+  <require from="../attributes/draggable"></require>
+  <require from="../attributes/resizable"></require>
+</template>
+`)
 export class DesignerCustomElement {
 
   static inject() { return [ Element, TemplatingEngine ]; }
 
-  @bindable template;
   @bindable formstyle;
   @bindable interact;
-  element;
-  resize = false;
-  drag = true;
-
-  _templateEngine;
-  _view;
-  _renderer;
 
   constructor(element, templateEngine) {
     this.element = element;
-    this._templateEngine = templateEngine;
+    this.resize = false;
+    this.drag = false;
 
     // need to keep this on the class to bind to the attribute
     this.dragOptions = {
       restriction: '#page-host',
       enabled: true
     };
+
+    this._templateEngine = templateEngine;
+    this._formWrapper = null;
+    this._view = null;
+    this._renderer = null;
   }
 
   created(owningView, thisView) {
@@ -39,6 +43,21 @@ export class DesignerCustomElement {
 
     if (!this._renderer) {
       throw new Error(`Formstyle not found for ${this.formstyle}`);
+    }
+
+    // make sure there always is a form wrapper
+    this._formWrapper = this.element.querySelector('form');
+
+    if (!this._formWrapper) {
+      this._formWrapper = DOM.createElement('form');
+
+      // if there is html without a form wrapper, wrap it all in a form
+      if (this.element.innerHTML) {
+        this._formWrapper.innerHTML = this.element.innerHTML;
+        this.element.innerHTML = '';
+      }
+
+      this.element.appendChild(this._formWrapper);
     }
   }
 
@@ -61,11 +80,10 @@ export class DesignerCustomElement {
     const draggable = elementRenderer(model.options);
     draggable.id = randomId;
 
-
     draggable.setAttribute('draggable.bind', 'dragOptions');
     draggable.setAttribute('resizable.bind', 'resize');
     draggable.setAttribute('data-element-type', model.type);
-    this.element.appendChild(draggable);
+    this._formWrapper.appendChild(draggable);
 
     this._enhance(draggable);
 

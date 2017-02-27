@@ -45,6 +45,30 @@ describe('the designer custom element', () => {
     realElement = null;
   });
 
+  using([
+    { template: '', html: '<form></form>' },
+    { template: '<form></form>', html: '<form></form>' },
+    { template: '<div></div>', html: '<form><div></div></form>' }
+  ], data => {
+    it('always has a form element', async done => {
+      context.template = data.template;
+      sut.inView(`<designer innerhtml.bind="template" formstyle.bind="formstyle"></designer>`)
+        .boundTo(context);
+
+      await sut.create(bootstrap);
+
+      setTimeout(() => {
+        const forms = sut.element.querySelectorAll('form');
+        const form = forms[0];
+
+        expect(forms.length).toEqual(1);
+        expect(form).toBeDefined();
+        expect(sut.element.innerHTML).toEqual(data.html);
+        done();
+      });
+    });
+  });
+
   it('throws when the render is not found for the form style', async done => {
     context.formstyle = 'aaa';
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
@@ -58,7 +82,7 @@ describe('the designer custom element', () => {
   });
 
   it('enhances existing children on attached', async done => {
-    context.html = '<div id="dummy"></div>'
+    context.html = '<form id="dummy"></form>'
     sut.inView(`<designer innerhtml.bind="html" formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
 
@@ -113,6 +137,7 @@ describe('the designer custom element', () => {
     expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
     expect(actual.getAttribute('resizable.bind')).toEqual('resize');
     expect(actual.getAttribute('data-element-type')).toEqual('date');
+    expect(sut.element.querySelector('form').children[0]).toBe(actual);
     done();
   });
 
