@@ -27,7 +27,7 @@ export class ElementApi {
    * original passed in
    */
   async save(element) {
-    const url = 'elements';
+    const url = element.id ? `elements/${element.id}` : 'elements';
     const method = element.id ? 'PUT' : 'POST';
 
     return await this._http.fetch(url, {

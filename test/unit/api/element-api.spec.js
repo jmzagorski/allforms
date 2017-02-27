@@ -23,10 +23,10 @@ describe('the element api', () => {
   });
 
   using([
-    { id: null, method: 'POST' },
-    { id: undefined, method: 'POST' },
-    { id: 0, method: 'POST' },
-    { id: 1, method: 'PUT' }
+    { id: null, method: 'POST', url: 'elements' },
+    { id: undefined, method: 'POST', url: 'elements' },
+    { id: 0, method: 'POST', url: 'elements' },
+    { id: 1, method: 'PUT', url: 'elements/1' }
   ], data => {
     it('saves the new element based on the id', async done => {
       const elem = { id: data.id, formName: 'test' }
@@ -41,7 +41,7 @@ describe('the element api', () => {
 
       const serverElem = await sut.save(elem);
 
-      expect(httpStub.url).toEqual('elements');
+      expect(httpStub.url).toEqual(data.url);
       expect(httpStub.blob.method).toEqual(data.method);
       expect(serverElem).not.toBe(elem);
       expect(serverElem).toBe(returnedElem);
