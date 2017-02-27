@@ -11,20 +11,20 @@ describe('the metadata view model', () => {
 
   it('instantiates the view model', () => {
     expect(sut.schema).toBeDefined();
-    expect(sut.data).toBeDefined();
+    expect(sut.model).toBeDefined();
   });
 
   it('activates the view model by setting up the schema', () => {
-    const model = { style: 'bootstrap', type: 'ab' };
+    const model = { formStyle: 'bootstrap', elementType: 'ab' };
     const schema = [{ key: 'a', default: 1 }];
     schemas.bootstrap.ab = schema;
 
     sut.activate(model);
 
     expect(sut.schema).toBe(schema);
-    expect(sut.data).toEqual({
-      style: 'bootstrap',
-      type: 'ab',
+    expect(sut.model).toEqual({
+      formStyle: 'bootstrap',
+      elementType: 'ab',
       a: 1
     });
   });

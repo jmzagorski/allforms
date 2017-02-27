@@ -4,26 +4,29 @@ export class Metadata {
 
   constructor() {
     this.schema = null;
-    this.data = null;
-    this._options = {};
+    this.model = null;
   }
 
+  /**
+   * @summary activates the view model by setting up the form schema from the
+   * passed in model
+   * @param {Object} model an object that has the element metadata
+   *
+   */
   activate(model) {
-    this.schema = schemas[model.style][model.type];
-
-    const defaults = this._setupDefaultsFor(model.type);
-    this.data = Object.assign(model, defaults, model);
+    this.model = model;
+    this.schema = schemas[model.formStyle][model.elementType];
+    const elemDefaults = this._setupDefaultsFor(model.elementType);
+    Object.assign(model, elemDefaults, model);
   }
 
-  _setupDefaultsFor(type) {
-    if (!this._options[type]) {
-      this._options[type] = {};
+  _setupDefaultsFor() {
+    const options = {};
 
-      for (let option of this.schema) {
-        this._options[type][option.key] = option.default;
-      }
+    for (let opt of this.schema) {
+      options[opt.key] = opt.default;
     }
 
-    return this._options[type];
+    return options;
   }
 }

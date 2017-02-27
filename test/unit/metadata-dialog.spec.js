@@ -26,13 +26,13 @@ describe('the metadata dialog view model', () => {
   });
 
   it('instantiates the view model', () => {
-    expect(sut.element).toBeDefined();
+    expect(sut.newModel).toBeDefined();
     expect(sut.views).toEqual([ 'metadata', 'formulas' ]);
     expect(sut.currentView).toEqual('metadata');
   });
 
-  using([ {}, null ], element => {
-    it('sets an element with the type and style', async done => {
+  using([ { aa: 1 }, null ], element => {
+    it('sets the new model from element, form and passed in model', async done => {
       const model = { id: 1, type: 'ab' };
       const state = {};
       storeSpy.getState.and.returnValue(state);
@@ -49,14 +49,11 @@ describe('the metadata dialog view model', () => {
       expect(formSelectorSpy).toHaveBeenCalledWith(state);
       expect(elemActionSpy.loadElement).toHaveBeenCalledWith(1);
       expect(elemSelectorSpy).toHaveBeenCalledWith(state);
-      expect(sut.element.type).toEqual('ab');
-      expect(sut.element.style).toEqual('xx');
+      expect(sut.newModel.elementType).toEqual('ab');
+      expect(sut.newModel.formStyle).toEqual('xx');
+      expect(sut.newModel.formId).toEqual('test');
 
-      if (element) {
-        expect(sut.element).toBe(element);
-      } else {
-        expect(sut.element.formId).toEqual('test');
-      }
+      if (element) expect(sut.aa).toBe(element.id);
 
       done();
     });
@@ -69,14 +66,15 @@ describe('the metadata dialog view model', () => {
   });
 
   it('submits the form data', async done => {
-    const element = {};
+    const element = { aa: 1 };
+    sut.newModel = { bb: 2 }
+
     elemSelectorSpy.and.returnValue(element);
-    await sut.activate({ id: 1 })
 
     await sut.submit();
 
-    expect(elemActionSpy.saveElement.calls.argsFor(0)[0]).toBe(element);
-    expect(dialogSpy.ok.calls.argsFor(0)[0]).toBe(element);
+    expect(elemActionSpy.saveElement.calls.argsFor(0)[0]).toBe(sut.newModel);
+    expect(dialogSpy.ok.calls.argsFor(0)[0]).toEqual({ aa: 1, bb: 2 });
     done();
   });
 

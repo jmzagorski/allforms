@@ -108,46 +108,49 @@ describe('the design view model', () => {
 
     expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
     expect(sut.style).toBe('b');
-    expect(sut.formId).toBe(1);
     done();
   });
 
   it('calls to create the element if dialog not cancelled', async done => {
-    const dialogResult = { wasCancelled: false, output: 1 };
+    const dialogResult = { wasCancelled: false, output: {} };
     sut.designer = { createElement: () => { } };
+    sut.designer.element = { innerHTML: 'html' };
     const designerSpy = spyOn(sut.designer, 'createElement');
     dialogSpy.open.and.returnValue(dialogResult);
+    designerSpy.and.callFake(() => {
+      expect(templateActionSpy.save.calls.count()).toEqual(0);
+    });
+    // call this so the private _formId is set
+    await sut.activate({ form: 'a' });
 
     await sut.renderElement({ builder: 'a' });
 
-    expect(designerSpy).toHaveBeenCalledWith({
-      type: 'a',
-      options: 1
+    expect(dialogSpy.open).toHaveBeenCalledWith({
+      viewModel: MetadataDialog,
+      model: { type: 'a' }
     });
+    expect(designerSpy.calls.argsFor(0)[0]).toBe(dialogResult.output);
+    expect(templateActionSpy.save.calls.count()).toEqual(1);
+    expect(templateActionSpy.save).toHaveBeenCalledWith({
+      id: 'abc',
+      html: 'html'
+    })
     done();
   });
 
   it('does not create the element if dialog is cancelled', async done => {
     const dialogResult = { wasCancelled: true, output: 1 };
+
     sut.designer = { createElement: () => { } };
     const designerSpy = spyOn(sut.designer, 'createElement');
+
     dialogSpy.open.and.returnValue(dialogResult);
 
     await sut.renderElement({ builder: 'a' });
 
     expect(designerSpy).not.toHaveBeenCalled();
+    expect(templateActionSpy.save).not.toHaveBeenCalled();
     done();
-  });
-
-  it('calls the dialog service open method to setup metadata', () => {
-    const model = {};
-    const event = { detail: { model } };
-
-    sut.setupMetadata(event);
-
-    expect(dialogSpy.open).toHaveBeenCalledWith({
-      viewModel: MetadataDialog, model
-    });
   });
 
   it('saves the template ojbject', async done => {

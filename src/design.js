@@ -40,28 +40,36 @@ export class Design {
     const form = getActiveForm(this._state);
 
     this.html = template.html || this.html;
-    this.formId = form.id;
     this.style = form.style;
+    this._formId = form.id;
   }
 
-  async renderElement(elementType) {
-    const model = { type: elementType.builder }
-    const result = await this.setupMetadata({ detail: { model } });
-    if (!result.wasCancelled) {
-      this.designer.createElement(Object.assign({}, model, { options: result.output }));
-    }
-  }
+  /**
+   * @summary collects the metadata to render the element
+   * @desc called either when creating a new element or when an existing element
+   * needs to be edited
+   * @param {Object} event custom event or element type builder function string
+   * @interface event { detail: { model: { id: Number, type: String} } } |
+   * { builder: String }
+   *
+   */
+  async renderElement(event) {
+    const model = event.detail ? event.detail.model : { type: event.builder }
 
-  async setupMetadata(event) {
-    return await this._dialogService.open({
+    const result = await this._dialogService.open({
       viewModel: MetadataDialog,
-      model: event.detail.model
+      model
     });
+
+    if (!result.wasCancelled) {
+      this.designer.createElement(result.output);
+      await this.saveTemplate();
+    }
   }
 
   async saveTemplate() {
     this._templateActions.save({
-      id: this.formId,
+      id: this._formId,
       html: this.designer.element.innerHTML
     });
   }
