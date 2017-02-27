@@ -114,6 +114,8 @@ div.au-stagger {
 
 .breadcrumb {
   background-color: transparent;
+  padding: 0 15px;
+  margin-bottom: 0;
 }
 
 /* Interact CSS */
