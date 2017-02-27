@@ -4,7 +4,6 @@ module.exports = function (req, res, next) {
 
   if (req.method === 'POST' && watching) {
     req.body.id = Math.floor((Math.random() * 1000) + 1);
-    req.body.name = req.body.id;
   }
 
   next();

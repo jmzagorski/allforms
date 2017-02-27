@@ -43,6 +43,10 @@ export const schema = {
             "unique": true,
             "minimum": 1
           },
+          "name": {
+            "type": "string",
+            "unique": true
+          },
           "formId": {
             "type": "string",
             "faker": "lorem.word",
@@ -53,7 +57,7 @@ export const schema = {
             "faker": "lorem.sentence"
           },
         },
-        "required": ["id", "formId"]
+        "required": [ "id", "formId" ]
       }
     },
     "element-types": {
