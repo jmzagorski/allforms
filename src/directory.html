@@ -8,16 +8,16 @@
       </div>
       <table class="table">
         <tbody>
-          <tr repeat.for="f of form.files">
+          <tr repeat.for="h of historyRoutes" class="${h.hasRouteClass}">
             <td>
-              <i class="fa fa-${f.icon} fa-fw" aria-hidden="true"></i>
-              <a href.bind="f.url">&nbsp; ${f.name}</a>
+              <i class="fa fa-${h.icon} fa-fw" aria-hidden="true"></i>
+              <a href.bind="h.url">&nbsp; ${h.name}</a>
             </td>
             <td class="text-muted">
-              ${f.lastComment}
+              ${h.comment}
             </td>
             <td class="text-muted">
-              ${f.lastEditInDays} days ago
+              ${h.revisedDays} days ago
             </td>
           </tr>
         </tbody>

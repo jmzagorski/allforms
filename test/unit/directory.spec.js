@@ -9,53 +9,49 @@ describe('the directory view model', () => {
   let routerSpy;
   let storeSpy;
   let formStub;
-  let getFormSpy;
+  let getHistorySpy;
   const params = { form: 'a' };
 
   beforeEach(() => {
     storeSpy = jasmine.setupSpy('store', Store.prototype);
     routerSpy = jasmine.setupSpy('router', Router.prototype);
-    getFormSpy = spyOn(selectors, 'getActiveForm');
+    getHistorySpy = spyOn(selectors, 'getRecentFormHistory');
 
     sut = new Directory(routerSpy, storeSpy);
-    formStub = {
-      id: 'abc',
-      files: [
-        { priority: 1 }, { priority: 2 }
-      ]
-    };
-
-    storeSpy.getState.and.returnValue({ forms: { list: [ formStub ] } });
-    getFormSpy.and.returnValue(formStub);
   });
 
-  it('gets the form', () => {
-    formStub.files = [];
-    storeSpy.getState.and.returnValue('a');
-
-    sut.activate();
-
-    expect(sut.form).toBe(formStub);
-    expect(getFormSpy).toHaveBeenCalledWith('a');
+  it('defines the history routes', () => {
+    expect(sut.historyRoutes).toEqual([]);
   });
 
-  it('throws when the route does not exist', () => {
-    routerSpy.routes = [ { name: 'a' } ];
-    formStub.files = [ { priority: 2, name: 'b' } ]; 
+  it('gets the form history', () => {
+    const state = {};
+    const history = [];
+    storeSpy.getState.and.returnValue(state);
+    getHistorySpy.and.returnValue(history);
 
-    const ex = () => sut.activate(params);
+    const actualHistory = sut.history;
 
-    expect(ex).toThrow(new Error('No route found for b'));
+    expect(getHistorySpy.calls.argsFor(0)[0]).toBe(state);
+    expect(actualHistory).toBe(history);
   });
 
-  it('generates a route for each file', () => {
+  it('generates a route for every history object', () => {
+    const history = [{ name: 'a', formId: 1 }, { name: 'b', formId: 2 }]
     routerSpy.routes = [ { name: 'a' }, { name: 'b' } ];
-    formStub.files = [ { priority: 2, name: 'b' }, { priority: 1, name: 'a' } ]; 
+
+    getHistorySpy.and.returnValue(history);
+    routerSpy.generate.and.returnValues('/a', '/b');
 
     sut.activate(params);
 
     expect(routerSpy.generate.calls.count()).toEqual(2);
-    expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 'abc' });
-    expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 'abc' });
+    expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 1 });
+    expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 2 });
+    expect(sut.historyRoutes).toEqual([{
+      name: 'a', formId: 1, url: '/a'
+    }, {
+      name: 'b', formId: 2, url: '/b'
+    }])
   });
 });

@@ -1,29 +1,29 @@
-import { getActiveForm } from './domain/index';
+import { getRecentFormHistory } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
 export class Directory {
-
   static inject() { return [ Router, Store ]; }
 
   constructor(router, store) {
-    this.form = null;
+    this.historyRoutes = [];
     this._router = router;
     this._store = store;
   }
 
-  activate(params) {
-    this.form = getActiveForm(this._store.getState());
-    this._createRoutes();
+  get history() {
+    return getRecentFormHistory(this._store.getState()); 
   }
 
-  _createRoutes() {
-    this.form.files.forEach(f => {
-      const route = this._router.routes.find(r => f.name === r.name);
+  activate(params) {
+    this.history.forEach(h => {
+      const route = this._router.routes.find(r => h.name === r.name);
 
-      if (!route) throw Error(`No route found for ${f.name}`);
-
-      f.url = this._router.generate(route.name, { form: this.form.id });
+      // TODO log warning
+      if (route) {
+        const url = this._router.generate(route.name, { form: h.formId });
+        this.historyRoutes.push(Object.assign({}, h, { url }));
+      }
     });
   }
 }

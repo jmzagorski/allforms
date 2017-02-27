@@ -16,7 +16,8 @@ import { getTemplate } from './template/template-selectors';
 import { getActiveMember } from './member/member-selectors';
 import {
   getActiveForm,
-  getFormList
+  getFormList,
+  getRecentFormHistory
 } from './form/form-selectors';
 import {
   getElements,
@@ -37,6 +38,7 @@ export {
   getTemplate,
   getActiveForm,
   getFormList,
+  getRecentFormHistory,
   getElements,
   getActiveElement,
   getElementTypes,
