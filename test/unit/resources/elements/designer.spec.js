@@ -1,6 +1,6 @@
 import '../../setup';
 import * as Interact from 'interact.js';
-import * as renderers from '../../../../src/renderers/bootstrap';
+import * as renderFactory from '../../../../src/renderers/factory';
 import * as utils from '../../../../src/utils';
 import { InteractStub, ElementStub } from '../../stubs';
 import { TemplatingEngine } from 'aurelia-framework';
@@ -35,7 +35,7 @@ describe('the designer custom element', () => {
 
     realElement = document.createElement('div');
     document.body.appendChild(realElement);
-    spyOn(renderers.date, 'create').and.returnValue(realElement);
+    spyOn(renderFactory, 'create').and.returnValue(realElement);
     setDefaultSpy = spyOn(utils, 'setDefaultVal');
   });
 
@@ -69,18 +69,6 @@ describe('the designer custom element', () => {
     });
   });
 
-  it('throws when the render is not found for the form style', async done => {
-    context.formstyle = 'aaa';
-    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-
-    await sut.create(bootstrap).catch(err => {
-      expect(err).toEqual(new Error('Formstyle not found for aaa'));
-      dispose = false;
-      done();
-    });
-  });
-
   it('enhances existing children on attached', async done => {
     context.html = '<form><div id="dummy"></div></form>'
     sut.inView(`<designer innerhtml.bind="html" formstyle.bind="formstyle"></designer>`)
@@ -101,17 +89,6 @@ describe('the designer custom element', () => {
     expect(call.resources).toBe(sut.viewModel._view.resources);
     expect(child.ondblclick).not.toEqual(null);
     expect(child.onchange).not.toEqual(null);
-    done();
-  });
-
-  it('throws when the element renderer is not found', async done => {
-    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-    await sut.create(bootstrap);
-
-    const ex = () => sut.viewModel.createElement({ elementType: 'a' });
-
-    expect(ex).toThrow(new Error('Renderer not found for a'));
     done();
   });
 

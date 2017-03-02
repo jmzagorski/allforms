@@ -1,7 +1,7 @@
 import { customElement, bindable, TemplatingEngine, inlineView } from 'aurelia-framework';
 import { setDefaultVal } from '../../utils';
 import { DOM } from 'aurelia-pal';
-import * as renderers from '../../renderers/index';
+import * as renderFactory from '../../renderers/factory';
 
 const DATA_ELEM_TYPE = 'data-element-type';
 
@@ -33,7 +33,6 @@ export class DesignerCustomElement {
     this._templateEngine = templateEngine;
     this._formWrapper = null;
     this._view = null;
-    this._renderer = null;
   }
 
   created(owningView, thisView) {
@@ -41,13 +40,6 @@ export class DesignerCustomElement {
   }
 
   bind(bindingContext, overrideContext) {
-    this._renderer = renderers[this.formstyle];
-
-    // TODO set a default style instead of throwing error
-    if (!this._renderer) {
-      throw new Error(`Formstyle not found for ${this.formstyle}`);
-    }
-
     // make sure there always is a form wrapper
     this._formWrapper = this.element.querySelector('form');
 
@@ -72,13 +64,7 @@ export class DesignerCustomElement {
   }
 
   createElement(model) { 
-    const elementRenderer = this._renderer[model.elementType];
-
-    if (!elementRenderer) {
-      throw new Error(`Renderer not found for ${model.elementType}`);
-    }
-
-    const draggable = elementRenderer.create(model);
+    const draggable = renderFactory.create(this.formStyle, model.elementType, model);
     draggable.id = model.id;
 
     draggable.setAttribute('draggable.bind', 'dragOptions');
