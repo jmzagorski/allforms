@@ -16,7 +16,7 @@ describe('the boostrap input renderer', () => {
     { method: 'text', type: 'text' } 
   ], data => {
     it('creates a bootstrap input type', () => {
-      const sut = renderers[data.method](options);
+      const sut = renderers[data.method].create(options);
 
       expect(sut.tagName).toEqual('DIV');
       expect(sut.className).toEqual('form-group');
@@ -35,29 +35,66 @@ describe('the boostrap input renderer', () => {
   });
 
   it('allows for multiple files', () => {
-    const sut = renderers.attachments(options);
+    const sut = renderers.attachments.create(options);
 
     expect(sut.getAttribute('multiple')).toBeTruthy();
   });
 
-  using([ 'number', 'date' ], method => {
-    it('sets the max and min attribute on the number and date', () => {
+  it('updates the label on an attachment', () => {
+    const $existing = renderers.attachments.create(options);
+    const newLabel = options.label + 'a';
+    options.label = newLabel;
+
+    renderers.attachments.update(options, $existing);;
+
+    expect($existing.textContent).toEqual(newLabel);
+  });
+
+  using([ 'number', 'date' ], type => {
+    it('creates the max and min attribute on the number and date', () => {
       options.min = 1;
       options.max = 3;
 
-      const sut = renderers[method](options);
+      const sut = renderers[type].create(options);
 
       expect(sut.children[1].getAttribute('min')).toEqual('1');
       expect(sut.children[1].getAttribute('max')).toEqual('3');
     });
   });
 
-  it('sets the pattern attribute on the text', () => {
+  using([ 'number', 'date' ], type => {
+    it('sets the max and min attribute on the number and date', () => {
+      options.min = 1;
+      options.max = 3;
+      const $existing = renderers[type].create(options);
+      options.min++;
+      options.max++;
+
+      renderers[type].update(options, $existing);
+
+      expect($existing.children[1].getAttribute('min')).toEqual('2');
+      expect($existing.children[1].getAttribute('max')).toEqual('4');
+    });
+  });
+
+  it('creates the pattern attribute on the text', () => {
     options.min = 1;
     options.max = 3;
 
-    const sut = renderers.text(options);
+    const sut = renderers.text.create(options);
 
     expect(sut.children[1].getAttribute('pattern')).toEqual('.{1, 3}');
+  });
+
+  it('updates the pattern attribute on the text', () => {
+    options.min = 1;
+    options.max = 3;
+    const $existing = renderers.text.create(options);
+    options.min++;
+    options.max++;
+
+    renderers.text.update(options, $existing, );
+
+    expect($existing.children[1].getAttribute('pattern')).toEqual('.{2, 4}');
   });
 });

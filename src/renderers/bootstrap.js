@@ -1,178 +1,248 @@
 import { DOM } from 'aurelia-pal';
-import { hasDuplicates, parseCsv, randomId } from '../utils';
+import { hasDuplicates, parseCsv } from '../utils';
 
-// TODO pass in name from options and use that to populate the names in the
-// formula type ahead. Store the name in the name attribute, then do i need to
-// store it in the element object?
-// TODO a lot of this is not bootstrap specific, abstract away from this module
-//export function create(type, options) {
-  //const elems = [];
-  //const name = _genRandomId();
-  
-  //for (let i = 0; i < options.qty; i++) {
-    //const elem = window[type](options);
-
-    //// set the same name so elements like radios are grouped togther
-    //elem.name = name;
-
-    //if (options.required) elem.required = true;
-
-    //elems.push(elem);
-  //}
-
-  //return elems;
-//}
-
-export function alert(options) {
-  const div = DOM.createElement('div');
-  div.className = `alert alert-${options.type}`;
-  div.innerHTML = options.text;
-  return div;
-}
-
-export function attachments(options) {
-  options.type = 'file';
-  const files = _createInput(options)
-  files.setAttribute('multiple', true);
-  return files;
-}
-
-export function checkbox(options) {
-  options.type = 'checkbox';
-  return _createOption(options);
-}
-
-export function date(options) {
-  options.type = 'date';
-  const elem = _createInput(options);
-  const input = elem.querySelector('input');
-  input.setAttribute('max', options.max);
-  input.setAttribute('min', options.min);
-
-  return elem;
-}
-
-export function header(options) {
-  const header = DOM.createElement(`h${options.size}`);
-  header.textContent = options.text;
-  return header;
-}
-
-export function iframe(options) {
-  const iframe = DOM.createElement('iframe');
-  iframe.src = options.href;
-  iframe.width = options.width;
-  iframe.height = options.height;
-  return iframe;
-}
-
-export function label(options) {
-  const span = DOM.createElement('span');
-
-  span.className = `label label-${options.type}`;
-  span.textContent = options.text;
-
-  return span;
-}
-
-export function link(options) {
-  const link = DOM.createElement('a');
-  link.href = options.href;
-  link.textContent = options.text;
-  link.onclick = e => e.preventDefault();
-  return link;
-}
-
-export function number(options) {
-  options.type = 'number';
-  const elem = _createInput(options);
-  const input = elem.querySelector('input');
-  input.setAttribute('max', options.max);
-  input.setAttribute('min', options.min);
-
-  return elem;
-}
-
-export function radio(options) {
-  options.type = 'radio';
-  return _createOption(options);
-}
-
-export function select(options) {
-  const formgroup = DOM.createElement('div');
-  const label = DOM.createElement('label');
-  const select = DOM.createElement('select');
-
-  formgroup.className = 'form-group'
-  label.textContent = options.label;
-  label.htmlfor = select.id = options.id;
-  select.className = 'form-control';
-
-  const fr = new FileReader();
-  fr.readAsText(options.optionSrc[0]);
-  fr.onload = () => {
-    const data = parseCsv(fr.result, '\n', ',');
-    for (let i = 0; i < data.length; i++) {
-      // +1 because of the default above
-      select.options[i] = new Option(data[i][1], data[i][0]);
-    }
-  };
-
-  formgroup.appendChild(label);
-  formgroup.appendChild(select);
-
-  return formgroup;
-}
-
-export function text(options) {
-  options.type = 'text';
-  const elem = _createInput(options);
-  const input = elem.querySelector('input');
-  input.setAttribute('pattern', `.{${options.min}, ${options.max}}`);
-
-  return elem;
-}
-
-export function tab(options) {
-  const wrapper = _createTabGroup(options.id, options.type);
-  const list = wrapper.children[0];
-  const contentWrapper = wrapper.children[1];
-  const headers = options.headers.split(',');
-
-  if (hasDuplicates(headers.map(h => h.trim()))) {
-    throw new Error(`Cannot have duplicate headers`);
+export const alert = {
+  create: options => {
+    const $alert = DOM.createElement('div');
+    alert.update(options, $alert);
+    return $alert;
+  },
+  update: (options, $element) => {
+    $element.className = `alert alert-${options.type}`;
+    $element.innerHTML = options.text;
   }
+}
 
-  for (var i = 0; i < headers.length; i++) {
-    const header = headers[i];
-    const hrefId = (options.id + header).replace(/ /g, '');
-    const item = DOM.createElement('li');
-    const a = DOM.createElement('a');
-    const content = DOM.createElement('div');
-    a.setAttribute('data-toggle', options.type);
-    a.href = `#${hrefId}`;
-    a.textContent = header;
-    content.id = hrefId;
+export const attachments = {
+  create: options => {
+    options.type = 'file';
+    const $attachments = _createInput(options)
+    $attachments.setAttribute('multiple', true);
+    return $attachments;
+  }, 
+  update: (options, $element) => {
+    _updateInput($element, options);
+  }
+}
 
-    if (i === 0) {
-      content.className = 'tab-pane fade in active';
-      item.className = 'active';
+export const checkbox = {
+  create: options => {
+    options.type = 'checkbox';
+    return _createOption(options);
+  },
+  update: (options, $element) => {
+    _updateOption($element, options);
+  }
+}
+
+export const date = {
+  create: options => {
+    options.type = 'date';
+    const $date = _createInput(options);
+    date.update(options, $date);
+    return $date;
+  },
+  update: (options, $element) => {
+    _updateInput($element, options, input => {
+      input.setAttribute('max', options.max);
+      input.setAttribute('min', options.min);
+    });
+  }
+}
+
+export const header = {
+  create: options => {
+    const tag = header.getTag(options);
+    const $header = DOM.createElement(tag);
+    header.update(options, $header);
+    return $header;
+  },
+  update: (options, $element) => {
+    if (options.size && $element.tagName !== header.getTag(options)) {
+      const updated = header.create(options);
+      updated.textContent = options.text;
+      return updated;
+    } else {
+      $element.textContent = options.text;
+    }
+  },
+  getTag: options => `H${options.size}`
+}
+
+export const iframe = {
+  create: options => {
+    const $iframe = DOM.createElement('iframe');
+    iframe.update(options, $iframe);
+    return $iframe;
+  },
+  update: (options, $element) => {
+    $element.src = options.href;
+    $element.width = options.width;
+    $element.height = options.height;
+  }
+}
+
+export const label = {
+  create: options => {
+    const $label = DOM.createElement('span');
+    label.update(options, $label);
+    return $label;
+  },
+  update: (options, $element) => {
+    $element.className = `label label-${options.type}`;
+    $element.textContent = options.text;
+  }
+}
+
+export const link = {
+  create: options => {
+    const $link = DOM.createElement('a');
+    $link.onclick = e => e.preventDefault();
+    link.update(options, $link);
+    return $link;
+  },
+  update: (options, $element) => {
+    $element.href = options.href;
+    $element.textContent = options.text;
+  }
+}
+
+export const number = {
+  create: options => {
+    options.type = 'number';
+    const $number = _createInput(options);
+    number.update(options, $number);
+    return $number;
+  },
+  update: (options, $element) => {
+    _updateInput($element, options, $input => {
+      $input.setAttribute('max', options.max);
+      $input.setAttribute('min', options.min);
+    });
+  }
+}
+
+export const radio = {
+  create: options => {
+    options.type = 'radio';
+    return _createOption(options);
+  },
+  update: (options, $element) => {
+    _updateOption($element, options);
+  }
+}
+
+export const select = {
+  create: options => {
+    const $formGroup = DOM.createElement('div');
+    const $label = DOM.createElement('label');
+    const $select = DOM.createElement('select');
+    $formGroup.className = 'form-group'
+    $label.htmlfor = $select.id = options.id;
+    $select.className = 'form-control';
+    $formGroup.appendChild($label);
+    $formGroup.appendChild($select);
+
+    select.update(options, $formGroup);
+
+    return $formGroup;
+  },
+  update: (options, $element) => {
+    const $label = $element.querySelector('label');
+    const $select = $element.querySelector('select');
+
+    $label.textContent = options.label;
+
+    if (options.optionSrc) {
+      const fr = new FileReader();
+      fr.readAsText(options.optionSrc[0]);
+      fr.onload = () => {
+        const data = parseCsv(fr.result, '\n', ',');
+        for (let i = 0; i < data.length; i++) {
+          // +1 because of the default above
+          $select.options[i] = new Option(data[i][1], data[i][0]);
+        }
+      };
+
+    }
+  }
+}
+
+export const text = {
+  create: options => {
+    options.type = 'text';
+    const $text = _createInput(options);
+    text.update(options, $text);
+    return $text;
+  },
+  update: (options, $element) => {
+    _updateInput($element, options, $input => {
+      $input.setAttribute('pattern', `.{${options.min}, ${options.max}}`);
+    });
+  }
+}
+
+export const tab = {
+  create: options => {
+    const headers = options.headers.split(',');
+
+    if (hasDuplicates(headers.map(h => h.trim()))) {
+      throw new Error(`Cannot have duplicate headers`);
     }
 
-    item.appendChild(a);
-    list.appendChild(item);
-    contentWrapper.appendChild(content);
+    const wrapper = _createTabGroup(options.id, options.type);
+    const list = wrapper.children[0];
+    const contentWrapper = wrapper.children[1];
 
-    a.onclick = function(e) {
-      _deactivateAllTabs(contentWrapper.children);
-      _deactivateAllTabs(list.children);
-      item.classList.add('active');
-      content.classList.add('in');
-      content.classList.add('active');
-    };
+    for (var i = 0; i < headers.length; i++) {
+      const header = _createHeader(headers[i], options, list, contentWrapper);
+
+      if (i === 0) {
+        header.content.className = 'tab-pane fade in active';
+        header.item.className = 'active';
+      }
+    }
+
+    return wrapper;
+  },
+  update: (options, $element) => {
+    const optHeaders = options.headers.split(',');
+
+    if (hasDuplicates(optHeaders.map(h => h.trim()))) {
+      throw new Error(`Cannot have duplicate headers`);
+    }
+
+    _updateTabGroup($element, options.type);
+
+    const domHeaders = $element.querySelectorAll('li');
+    const list = $element.children[0];
+    const contentWrapper = $element.children[1];
+
+    // remove headers that no longer exist in the options
+    for (let i = optHeaders.length; i < domHeaders.length; i++) {
+      domHeaders[0].parentNode.removeChild(domHeaders[i]);
+    }
+
+    for (let i = 0; i < optHeaders.length; i++) {
+      const $header = domHeaders[i];
+      const optHeader = optHeaders[i];
+
+        debugger;
+      if ($header) {
+        const hrefId = (options.id + optHeader).replace(/ /g, '');
+        const a = $header.querySelector('a');
+        // assuming the id does not change
+        const oldHrefId = `#${options.id + a.textContent.trim()}`;
+        const content = $header.parentNode.parentNode.querySelector(oldHrefId);
+        a.setAttribute('data-toggle', options.type);
+        a.href = `#${hrefId}`;
+        a.textContent = optHeader;
+        content.id = hrefId;
+      } else {
+        _createHeader(optHeader, options, list, contentWrapper);
+      }
+    }
   }
-
-  return wrapper;
 }
 
 // PRIVATE HELPER FUNCTIONS
@@ -191,6 +261,11 @@ function _createTabGroup(groupId, tabType) {
   return wrapper;
 }
 
+function _updateTabGroup($element, tabType) {
+  const list = $element.querySelector('ul');
+  list.className = `nav nav-${tabType}s`;
+}
+
 function _deactivateAllTabs(tabs) {
   for (let i = 0; i < tabs.length; i++) {
     tabs[i].classList.remove('active');
@@ -198,7 +273,32 @@ function _deactivateAllTabs(tabs) {
   }
 }
 
-export function _createOption(options) {
+function _createHeader(header, options, list, contentWrapper) {
+  const hrefId = (options.id + header).replace(/ /g, '');
+  const item = DOM.createElement('li');
+  const a = DOM.createElement('a');
+  const content = DOM.createElement('div');
+  a.setAttribute('data-toggle', options.type);
+  a.href = `#${hrefId}`;
+  a.textContent = header;
+  content.id = hrefId;
+
+  item.appendChild(a);
+  list.appendChild(item);
+  contentWrapper.appendChild(content);
+
+  a.onclick = function(e) {
+    _deactivateAllTabs(contentWrapper.children);
+    _deactivateAllTabs(list.children);
+    item.classList.add('active');
+    content.classList.add('in');
+    content.classList.add('active');
+  };
+
+  return { item, a, content };
+}
+
+function _createOption(options) {
   const label = DOM.createElement('label');
   const input = DOM.createElement('input');
 
@@ -209,7 +309,11 @@ export function _createOption(options) {
   return label;
 }
 
-export function _createInput(options) {
+function _updateOption($element, options) {
+  $element.textContent = options.label;
+}
+
+function _createInput(options) {
   const formgroup = DOM.createElement('div');
   const label = DOM.createElement('label');
   const input = DOM.createElement('input');
@@ -226,12 +330,13 @@ export function _createInput(options) {
   return formgroup;
 }
 
-function _genRandomId() {
-  let id;
-  do {
-    id = randomId();
-  } 
-  while(DOM.getElementsByName(id));
+function _updateInput($element, options, inputSetupCb) {
+  const label = $element.querySelector('label');
 
-  return id;
+  label.textContent = options.label;
+
+  if (inputSetupCb) {
+    const input = $element.querySelector('input');
+    inputSetupCb(input);
+  }
 }

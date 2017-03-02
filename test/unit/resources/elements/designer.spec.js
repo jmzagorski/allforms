@@ -35,7 +35,7 @@ describe('the designer custom element', () => {
 
     realElement = document.createElement('div');
     document.body.appendChild(realElement);
-    spyOn(renderers, 'date').and.returnValue(realElement);
+    spyOn(renderers.date, 'create').and.returnValue(realElement);
     setDefaultSpy = spyOn(utils, 'setDefaultVal');
   });
 

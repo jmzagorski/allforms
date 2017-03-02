@@ -78,7 +78,7 @@ export class DesignerCustomElement {
       throw new Error(`Renderer not found for ${model.elementType}`);
     }
 
-    const draggable = elementRenderer(model);
+    const draggable = elementRenderer.create(model);
     draggable.id = model.id;
 
     draggable.setAttribute('draggable.bind', 'dragOptions');
@@ -95,6 +95,15 @@ export class DesignerCustomElement {
     this.resize = newVal === 'resize';
   }
 
+  /**
+   * @summary dispatches an onedit event when an element's metadata should be
+   * edited
+   * @desc this methods does not perform the editing, but just sends out the
+   * event so listeneres can act upon the event. In this class the ondblclick is
+   * fired, which is a signal that the client wants to edit the metadata
+   * @param {Object} event the event object
+   *
+   */
   _onEditElement(elem) {
     const editing = new CustomEvent('onedit', {
       bubbles: true,
@@ -118,15 +127,4 @@ export class DesignerCustomElement {
       resources: this._view.resources
     });
   }
-}
-
-// TODO move to utils
-function _genRandomId() {
-  let id;
-  do {
-    id = randomId();
-  } 
-  while(DOM.getElementById(id));
-
-  return id;
 }

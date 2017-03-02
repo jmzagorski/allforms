@@ -7,10 +7,20 @@ describe('the boostrap label renderer', () => {
   it('creates a bootstrap label', () => {
     const options = { type: 'a', text: 'g' };
 
-    const sut = label(options);
+    const sut = label.create(options);
 
     expect(sut.tagName).toEqual('SPAN');
     expect(sut.className).toEqual('label label-a');
     expect(sut.textContent).toEqual('g');
+  });
+
+  it('updates a bootstrap label', () => {
+    const $existing = document.createElement('span');
+    const options = { type: 'a', text: 'g' };
+
+    label.update(options, $existing);
+
+    expect($existing.className).toEqual('label label-a');
+    expect($existing.textContent).toEqual('g');
   });
 });

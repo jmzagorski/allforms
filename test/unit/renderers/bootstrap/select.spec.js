@@ -12,7 +12,7 @@ describe('the select input renderer', () => {
 
     parseSpy.and.returnValue([['hi', 'bye']]);
 
-    const sut = select(options);
+    const sut = select.create(options);
 
     expect(sut.tagName).toEqual('DIV');
     expect(sut.className).toEqual('form-group');
@@ -33,6 +33,32 @@ describe('the select input renderer', () => {
       expect(select.options.length).toEqual(1);
       expect(select.options[0].text).toEqual('bye');
       expect(select.options[0].value).toEqual('hi');
+      done();
+    });
+  });
+
+  it('updates a bootstrap select list', done => {
+    const options = { label: 'a', optionSrc: [] };
+    const $existing = select.create(options);
+    const blob = new Blob([JSON.stringify('id:a')], {type : 'application/json'});
+    options.optionSrc = [ blob ];
+    const parseSpy = spyOn(utils, 'parseCsv').and.returnValue([['hi', 'bye']]);
+
+    parseSpy.and.returnValue([['hi', 'bye']]);
+
+    select.update(options, $existing);
+
+    const label = $existing.children[0];
+    const $select = $existing.children[1];
+
+    expect(label.textContent).toEqual(options.label);
+
+    // setTimeout so onload can fire for FileReader
+    setTimeout(() => {
+      expect(parseSpy).toHaveBeenCalledWith('"id:a"', '\n', ',');
+      expect($select.options.length).toEqual(1);
+      expect($select.options[0].text).toEqual('bye');
+      expect($select.options[0].value).toEqual('hi');
       done();
     });
   });
