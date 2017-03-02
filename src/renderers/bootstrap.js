@@ -227,7 +227,6 @@ export const tab = {
       const $header = domHeaders[i];
       const optHeader = optHeaders[i];
 
-        debugger;
       if ($header) {
         const hrefId = (options.id + optHeader).replace(/ /g, '');
         const a = $header.querySelector('a');
