@@ -30,6 +30,11 @@ export default function elementReducer(state = { list: [], active: null }, actio
           Object.assign({}, action.element)]
       });
 
+    case types.ELEMENT_NOT_FOUND:
+      return Object.assign({}, state, {
+        active: null
+      });
+
     default:
       return state;
   }

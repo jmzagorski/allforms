@@ -48,6 +48,17 @@ describe('the element reducer', () => {
     expect(newState.list).toContain(existing);
   });
 
+  it('removes the active element when element not found', () => {
+    const state = { active: 1 };
+    const action = {
+      type: 'ELEMENT_NOT_FOUND'
+    };
+
+    const newState = elements(state, action);
+
+    expect(newState.active).toEqual(null);
+  });
+
   it('returns the original state when no action type matches', () => {
     const state = [];
     const action = { type: '' };

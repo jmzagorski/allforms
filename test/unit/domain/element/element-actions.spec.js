@@ -42,14 +42,17 @@ describe('the element actions', () => {
     done();
   });
 
-  it('resolves the promise by doing nothing when id is undefined', async done => {
+  it('dispatches an element not found when there is no id', async done => {
     const selectSpy = spyOn(selectors, 'getElements');
 
     await sut.loadElement();
 
     expect(apiSpy.get).not.toHaveBeenCalled();
     expect(selectSpy).not.toHaveBeenCalled();
-    expect(storeSpy.dispatch).not.toHaveBeenCalled();
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(
+      { type: 'ELEMENT_NOT_FOUND', payload: {} }
+    );
     done();
   });
 

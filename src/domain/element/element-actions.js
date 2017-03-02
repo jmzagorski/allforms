@@ -5,6 +5,7 @@ import { getElements } from './element-selectors';
 export const LOAD_ELEMENT_SUCCESS = 'LOAD_ELEMENT_SUCCESS';
 export const ADD_ELEMENT_SUCCESS = 'ADD_ELEMENT_SUCCESS';
 export const EDIT_ELEMENT_SUCCESS = 'EDIT_ELEMENT_SUCCESS';
+export const ELEMENT_NOT_FOUND = 'ELEMENT_NOT_FOUND';
 
 function loadElementSuccess(element) {
   return { type: LOAD_ELEMENT_SUCCESS, element };
@@ -16,6 +17,10 @@ function addElementSuccess(element) {
 
 function editElementSuccess(element) {
   return { type: EDIT_ELEMENT_SUCCESS, element };
+}
+
+function elementNotFound() {
+  return { type: ELEMENT_NOT_FOUND, payload: {} };
 }
 
 export class ElementActions {
@@ -32,13 +37,18 @@ export class ElementActions {
    */
   async loadElement(id) {
     // this is to prevent pointless api calls
-    if (typeof id === 'undefined') return Promise.resolve();
+    if (typeof id === 'undefined') {
+      this._store.dispatch(elementNotFound());
 
-    let element = getElements(this._store.getState()).find(e => e.id === id);
+    } else {
+      let element = getElements(this._store.getState()).find(e => e.id === id);
 
-    if (!element) element = await this._api.get(id);
+      if (!element) element = await this._api.get(id);
 
-    this._store.dispatch(loadElementSuccess(element));
+      this._store.dispatch(loadElementSuccess(element));
+    }
+
+    return Promise.resolve();
   }
 
   /**
