@@ -15,6 +15,7 @@ describe('the designer custom element', () => {
   let dispose;
   let realElement;
   let setDefaultSpy;
+  let renderSpy;
 
   beforeEach(() => {
     // FIXME: i cannot figure out a way to mock the attributes so mock the
@@ -35,7 +36,8 @@ describe('the designer custom element', () => {
 
     realElement = document.createElement('div');
     document.body.appendChild(realElement);
-    spyOn(renderFactory, 'create').and.returnValue(realElement);
+    renderSpy = spyOn(renderFactory, 'create');
+    renderSpy.and.returnValue(realElement);
     setDefaultSpy = spyOn(utils, 'setDefaultVal');
   });
 
@@ -100,12 +102,32 @@ describe('the designer custom element', () => {
 
     const actual = sut.viewModel.createElement({ id: 1, elementType: 'date' });
 
-    expect(actual.id).toEqual('1');
     expect(actual.ondblclick).not.toEqual(null);
     expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
     expect(actual.getAttribute('resizable.bind')).toEqual('resize');
     expect(actual.getAttribute('data-element-type')).toEqual('date');
     expect(sut.element.querySelector('form').children[0]).toBe(actual);
+    done();
+  });
+
+  it('returns the existing dom element', async done => {
+    const $existing = {};
+    const $created = {};
+    const model = { id: 1, elementType: 'a' };
+
+    renderSpy.and.returnValue($created);
+    spyOn(DOM, 'getElementById').and.returnValue($existing);
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    const $actual = sut.viewModel.createElement(model);
+
+    expect(renderSpy.calls.count()).toEqual(1);
+    expect(renderSpy).toHaveBeenCalledWith(context.formstyle, 'a', model, $existing);
+    // check exact equality
+    expect(renderSpy.calls.argsFor(0)[3]).toBe($existing);
+    expect($actual).toBe($created);
     done();
   });
 

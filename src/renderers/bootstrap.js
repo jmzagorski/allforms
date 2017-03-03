@@ -163,7 +163,7 @@ export const select = {
     const $label = $element.querySelector('label');
     const $select = $element.querySelector('select');
 
-    $label.textContent = options.label;
+    $label.textContent = options.text;
 
     if (options.optionSrc) {
       const fr = new FileReader();
@@ -319,14 +319,14 @@ function _createOption(options) {
   const input = DOM.createElement('input');
 
   input.type = options.type;
-  label.innerHTML = input.outerHTML + options.label
+  label.innerHTML = input.outerHTML + options.text
   label.className = `${options.type}-inline`;
 
   return label;
 }
 
 function _updateOption($element, options) {
-  $element.textContent = options.label;
+  $element.textContent = options.text;
 }
 
 function _createInput(options) {
@@ -335,7 +335,7 @@ function _createInput(options) {
   const input = DOM.createElement('input');
 
   formgroup.className = 'form-group';
-  label.textContent = options.label;
+  label.textContent = options.text;
   label.htmlfor = input.id = options.id;
   input.type = options.type;
   input.className = 'form-control';
@@ -349,7 +349,7 @@ function _createInput(options) {
 function _updateInput($element, options, inputSetupCb) {
   const label = $element.querySelector('label');
 
-  label.textContent = options.label;
+  label.textContent = options.text;
 
   if (inputSetupCb) {
     const input = $element.querySelector('input');

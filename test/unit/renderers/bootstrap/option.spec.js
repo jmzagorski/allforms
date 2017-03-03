@@ -7,13 +7,13 @@ describe('the option renderer', () => {
 
   using([ 'radio', 'checkbox' ], type => {
     it('creates a bootstrap checkbox or radio', () => {
-      const options = { label: 'b' };
+      const options = { text: 'b' };
 
       const label = renderers[type].create(options);
       const input = label.children[0];
 
       expect(label.tagName).toEqual('LABEL');
-      expect(label.innerHTML).toEqual(input.outerHTML + options.label);
+      expect(label.innerHTML).toEqual(input.outerHTML + options.text);
       expect(label.className).toEqual(`${type}-inline`);
 
       expect(input.tagName).toEqual('INPUT');
@@ -23,7 +23,7 @@ describe('the option renderer', () => {
 
   using([ 'radio', 'checkbox' ], type => {
     it('updates a bootstrap checkbox or radio', () => {
-      const options = { label: 'b' };
+      const options = { text: 'b' };
       const $existing = document.createElement('label');
 
       const $updated = renderers[type].update(options, $existing);

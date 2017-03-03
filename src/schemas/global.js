@@ -1,8 +1,3 @@
-const labelSchema = {
-  key: 'label',
-  type: 'string'
-};
-
 const textSchema = {
   key: 'text',
   type: 'string'
@@ -34,7 +29,7 @@ const nameSchema = {
 // many elements use this schema
 const base = [ nameSchema, requiredSchema ];
 
-export const date = [ ...base, labelSchema, {
+export const date = [ ...base, textSchema, {
   key: 'format',
   type: 'string',
   default: 'mm/dd/yyyy'
@@ -46,21 +41,21 @@ export const date = [ ...base, labelSchema, {
   type: 'date'
 }];
 
-export const number = [ ...base, labelSchema, minSchema, maxSchema ];
-export const checkbox = [ ...base, labelSchema ];
-export const radio = [ ...base, labelSchema ];
-export const attachments = [ labelSchema ];
+export const number = [ ...base, textSchema, minSchema, maxSchema ];
+export const checkbox = [ ...base, textSchema ];
+export const radio = [ ...base, textSchema ];
+export const attachments = [ textSchema ];
 export const label = [ textSchema ];
 export const alert = [ nameSchema, textSchema ];
 
-export const select = [ ...base, labelSchema, {
+export const select = [ ...base, textSchema, {
   key: 'optionSrc',
   type: 'file',
   label: 'Options File'
 }];
 
 // min and max can be validated in HTML5 with pattern .{min, max}
-export const text = [ ...base, labelSchema, minSchema, maxSchema ];
+export const text = [ ...base, textSchema, minSchema, maxSchema ];
 
 export const link = [ textSchema, {
   key: 'href',

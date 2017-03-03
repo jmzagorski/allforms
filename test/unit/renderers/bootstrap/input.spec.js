@@ -6,7 +6,7 @@ describe('the boostrap input renderer', () => {
   let options;
 
   beforeEach(() => {
-    options = { label: 'a', id: "3", type: 'number' }
+    options = { text: 'a', id: "3", type: 'number' }
   })
 
   using([ 
@@ -23,7 +23,7 @@ describe('the boostrap input renderer', () => {
 
       const label = sut.children[0];
       expect(label.tagName).toEqual('LABEL');
-      expect(label.textContent).toEqual(options.label);
+      expect(label.textContent).toEqual(options.text);
       expect(label.htmlfor).toEqual(options.id);
 
       const input = sut.children[1];
@@ -42,8 +42,8 @@ describe('the boostrap input renderer', () => {
 
   it('updates the label on an attachment', () => {
     const $existing = renderers.attachments.create(options);
-    const newLabel = options.label + 'a';
-    options.label = newLabel;
+    const newLabel = options.text + 'a';
+    options.text = newLabel;
 
     const $updated = renderers.attachments.update(options, $existing);;
 
