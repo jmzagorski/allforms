@@ -64,17 +64,23 @@ export class DesignerCustomElement {
   }
 
   createElement(model) { 
-    const draggable = renderFactory.create(this.formStyle, model.elementType, model);
-    draggable.id = model.id;
+    const $existing = DOM.getElementById(model.id);
 
-    draggable.setAttribute('draggable.bind', 'dragOptions');
-    draggable.setAttribute('resizable.bind', 'resize');
-    draggable.setAttribute(DATA_ELEM_TYPE, model.elementType);
-    this._formWrapper.appendChild(draggable);
+    if ($existing) {
+      return renderFactory.create(this.formstyle, model.elementType, model, $existing);
+    }
 
-    this._enhance(draggable);
+    // TODO not sure if i will include elementType in the model
+    const $draggable = renderFactory.create(this.formstyle, model.elementType, model);
 
-    return draggable;
+    $draggable.setAttribute('draggable.bind', 'dragOptions');
+    $draggable.setAttribute('resizable.bind', 'resize');
+    $draggable.setAttribute(DATA_ELEM_TYPE, model.elementType);
+    this._formWrapper.appendChild($draggable);
+
+    this._enhance($draggable);
+
+    return $draggable;
   }
 
   interactChanged(newVal, oldVal) {
