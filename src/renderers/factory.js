@@ -1,22 +1,24 @@
 import * as renderers from './index'
 import getDefaults from './defaults'
 
-//const defaults = getDefaults();
-
 /**
  * @summary factory function to create supported elements
  * @param {String} style the style category all elements implement. Examples
  * would be bootstrap, semantic, Material design etc.
  * @param {String} type the type of element.
- * @param {Object} options An key/value object with a any number of values. The
- * factory looks for qty, name and required. If not options value is passed,
- * default values are used
+ * @param {Object} options An key/value object with a any number of values.
+ * If no options value is passed, default values are used. The factor does look
+ * for certain properties
+ * @param {Boolean} options.required sets the required attribute
+ * @param {Number} options.id sets the id attribute
+ * @param {String} options.name sets the name attribute
+ * @param {Element} element an optional element that will be the template for a
+ * new style
  * @example
  * // returns a bootstrap text input
  * create('bootstrap', 'input', { type: 'text' })
  */
-export function create(style, type, options = getDefaults(type)) {
-  const elems = [];
+export function create(style, type, options = getDefaults(type), $existing = null) {
   const rendererStyle = renderers[style];
 
   if (!rendererStyle) throw new Error(`Style ${style} is not supported`);
@@ -25,19 +27,12 @@ export function create(style, type, options = getDefaults(type)) {
 
   if (!styleType) throw new Error(`Style ${style} does not have a ${type} type`);
 
-  for (let i = 0; i < options.qty; i++) {
-    const elem = styleType.create(options);
+  const $created = $existing ? styleType.update(option, $existings) : styleType.create(options);
 
-    // set the same name so elements like radios are grouped togther
-    _setCommonProps(elem, options);
+  $created.name = options.name;
+  $created.id = options.id;
 
-    elems.push(elem);
-  }
+  if (options.required) $created.required = true;
 
-  return elems;
-}
-
-function _setCommonProps(element, options) {
-  element.name = options.name;
-  if (options.required) element.required = true;
+  return $created;
 }
