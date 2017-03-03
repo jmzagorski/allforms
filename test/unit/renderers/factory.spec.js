@@ -26,8 +26,10 @@ describe('the renderer factory', () => {
   });
 
   using([
-    { required: true, expect: true },
-    { required: false, expect: undefined }
+    { required: true, expect: true, element: undefined, method: 'create' },
+    { required: false, expect: undefined, element: undefined, method: 'create' },
+    { required: true, expect: true, element: {}, method: 'update' },
+    { required: false, expect: undefined, element: {}, method: 'update' }
   ], data => {
     it('creates the element and sets common attributes', () => {
       const expectElem = {};
@@ -38,14 +40,16 @@ describe('the renderer factory', () => {
       };
       renderers.test = {
         fake: {
-          create: jasmine.createSpy()
+          [data.method]: jasmine.createSpy()
         }
       };
 
-      renderers.test.fake.create.and.returnValue(expectElem);
+      renderers.test.fake[data.method].and.returnValue(expectElem);
 
-      const actualElem = factory.create('test', 'fake', options);
+      const actualElem = factory.create('test', 'fake', options, data.element);
 
+      expect(renderers.test.fake[data.method].calls.argsFor(0)[0]).toBe(options)
+      expect(renderers.test.fake[data.method].calls.argsFor(0)[1]).toBe(data.element)
       expect(actualElem).toBe(expectElem);
       expect(actualElem.name).toEqual('a');
       expect(actualElem.required).toEqual(data.expect);

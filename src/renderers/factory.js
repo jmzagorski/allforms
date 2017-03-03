@@ -27,7 +27,7 @@ export function create(style, type, options = getDefaults(type), $existing = nul
 
   if (!styleType) throw new Error(`Style ${style} does not have a ${type} type`);
 
-  const $created = $existing ? styleType.update(option, $existings) : styleType.create(options);
+  const $created = $existing ? styleType.update(options, $existing) : styleType.create(options);
 
   $created.name = options.name;
   $created.id = options.id;
