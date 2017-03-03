@@ -1,6 +1,8 @@
 import { DOM } from 'aurelia-pal';
 import { hasDuplicates, parseCsv } from '../utils';
 
+// TODO - but don't override class name
+
 export const alert = {
   create: options => {
     const $alert = DOM.createElement('div');
@@ -8,8 +10,11 @@ export const alert = {
     return $alert;
   },
   update: (options, $element) => {
-    $element.className = `alert alert-${options.type}`;
-    $element.innerHTML = options.text;
+    // replace it with an empty string and then add it so i dont need logic if
+    // it is there or not
+    const className = $element.className.replace(/\balert\b\s\balert-[a-z]+\b(\s|$)/, '');
+    $element.className = `${className} alert alert-${options.type}`.trim();
+    $element.textContent = options.text;
     return $element;
   }
 }
@@ -97,7 +102,8 @@ export const label = {
     return $label;
   },
   update: (options, $element) => {
-    $element.className = `label label-${options.type}`;
+    const className = $element.className.replace(/\blabel\b\s\blabel-[a-z]+\b(\s|$)/, '');
+    $element.className = `${className} label label-${options.type}`.trim();
     $element.textContent = options.text;
     return $element;
   }
