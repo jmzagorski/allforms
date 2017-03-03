@@ -19,12 +19,6 @@ const maxSchema = {
   type: 'number'
 };
 
-const qtySchema = {
-  key: 'Quantity',
-  type: 'number',
-  default: 1
-};
-
 const requiredSchema = {
   key: 'mandatory',
   type: 'bool',
@@ -38,7 +32,7 @@ const nameSchema = {
 }
 
 // many elements use this schema
-const base = [ nameSchema, qtySchema, requiredSchema ];
+const base = [ nameSchema, requiredSchema ];
 
 export const date = [ ...base, labelSchema, {
   key: 'format',
@@ -55,9 +49,9 @@ export const date = [ ...base, labelSchema, {
 export const number = [ ...base, labelSchema, minSchema, maxSchema ];
 export const checkbox = [ ...base, labelSchema ];
 export const radio = [ ...base, labelSchema ];
-export const attachments = [ qtySchema, labelSchema ];
-export const label = [ qtySchema, textSchema ];
-export const alert = [ nameSchema, qtySchema, textSchema ];
+export const attachments = [ labelSchema ];
+export const label = [ textSchema ];
+export const alert = [ nameSchema, textSchema ];
 
 export const select = [ ...base, labelSchema, {
   key: 'optionSrc',
@@ -68,7 +62,7 @@ export const select = [ ...base, labelSchema, {
 // min and max can be validated in HTML5 with pattern .{min, max}
 export const text = [ ...base, labelSchema, minSchema, maxSchema ];
 
-export const link = [ qtySchema, textSchema, {
+export const link = [ textSchema, {
   key: 'href',
   label: 'source',
   type: 'string'
@@ -88,7 +82,7 @@ export const iframe = [{
   default: 300
 }];
 
-export const header = [ qtySchema, textSchema, {
+export const header = [ textSchema, {
   key: 'size',
   type: 'select',
   default: 1,

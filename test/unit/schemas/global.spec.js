@@ -4,10 +4,6 @@ const common = [{
   key: 'name',
   type: 'string'
 }, {
-  key: 'Quantity',
-  type: 'number',
-  default: 1
-}, {
   key: 'mandatory',
   type: 'bool',
   default: false,
@@ -71,19 +67,19 @@ describe('the global (shared) schemas', () => {
   it('sets the attachments schema', () => {
     const attachments = schemas.attachments;
 
-    expect(attachments).toEqual([ common[1], label ]);
+    expect(attachments).toEqual([ label ]);
   });
 
   it('sets the label schema', () => {
     const label = schemas.label;
 
-    expect(label).toEqual([ common[1], text ]);
+    expect(label).toEqual([ text ]);
   });
 
   it('sets the alert schema', () => {
     const alert = schemas.alert;
 
-    expect(alert).toEqual([ common[0], common[1], text ]);
+    expect(alert).toEqual([ common[0], text ]);
   });
 
   it('sets the select schema', () => {
@@ -112,7 +108,7 @@ describe('the global (shared) schemas', () => {
   it('sets the link schema', () => {
     const link = schemas.link;
 
-    expect(link).toEqual([ common[1], text, {
+    expect(link).toEqual([ text, {
       key: 'href',
       label: 'source',
       type: 'string'
@@ -140,11 +136,7 @@ describe('the global (shared) schemas', () => {
   it('sets the header schema', () => {
     const header = schemas.header;
 
-    expect(header).toEqual([{
-      key: 'Quantity',
-      type: 'number',
-      default: 1
-    }, text, {
+    expect(header).toEqual([ text, {
       key: 'size',
       type: 'select',
       default: 1,
