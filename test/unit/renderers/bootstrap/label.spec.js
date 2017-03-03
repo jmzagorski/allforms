@@ -18,8 +18,9 @@ describe('the boostrap label renderer', () => {
     const $existing = document.createElement('span');
     const options = { type: 'a', text: 'g' };
 
-    label.update(options, $existing);
+    const $updated = label.update(options, $existing);
 
+    expect($updated).toBe($existing);
     expect($existing.className).toEqual('label label-a');
     expect($existing.textContent).toEqual('g');
   });

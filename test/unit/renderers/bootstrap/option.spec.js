@@ -26,8 +26,9 @@ describe('the option renderer', () => {
       const options = { label: 'b' };
       const $existing = document.createElement('label');
 
-      renderers[type].update(options, $existing);
+      const $updated = renderers[type].update(options, $existing);
 
+      expect($updated).toBe($existing);
       expect($existing.textContent).toEqual('b');
     });
   });

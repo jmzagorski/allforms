@@ -19,8 +19,9 @@ describe('the boostrap iframe renderer', () => {
     const $existing = document.createElement('iframe');
     const options = { href: 'hahababa', width: 100, height: 200 };
 
-    iframe.update(options, $existing);
+    const $updated = iframe.update(options, $existing);
 
+    expect($updated).toBe($existing);
     expect($existing.src).toContain('/hahababa');
     expect($existing.height).toEqual('200');
     expect($existing.width).toEqual('100');

@@ -18,8 +18,9 @@ describe('the boostrap alert renderer', () => {
     const options = { type: 'a', text: 'g' };
     const $existing = document.createElement('div');
 
-    alert.update(options, $existing);
+    const $updated = alert.update(options, $existing);
 
+    expect($updated).toBe($existing);
     expect($existing.className).toEqual('alert alert-a');
     expect($existing.textContent).toEqual('g');
   });

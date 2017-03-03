@@ -10,6 +10,7 @@ export const alert = {
   update: (options, $element) => {
     $element.className = `alert alert-${options.type}`;
     $element.innerHTML = options.text;
+    return $element;
   }
 }
 
@@ -22,6 +23,7 @@ export const attachments = {
   }, 
   update: (options, $element) => {
     _updateInput($element, options);
+    return $element;
   }
 }
 
@@ -32,6 +34,7 @@ export const checkbox = {
   },
   update: (options, $element) => {
     _updateOption($element, options);
+    return $element;
   }
 }
 
@@ -47,6 +50,8 @@ export const date = {
       input.setAttribute('max', options.max);
       input.setAttribute('min', options.min);
     });
+
+    return $element;
   }
 }
 
@@ -65,6 +70,8 @@ export const header = {
     } else {
       $element.textContent = options.text;
     }
+
+    return $element;
   },
   getTag: options => `H${options.size}`
 }
@@ -79,6 +86,7 @@ export const iframe = {
     $element.src = options.href;
     $element.width = options.width;
     $element.height = options.height;
+    return $element;
   }
 }
 
@@ -91,6 +99,7 @@ export const label = {
   update: (options, $element) => {
     $element.className = `label label-${options.type}`;
     $element.textContent = options.text;
+    return $element;
   }
 }
 
@@ -104,6 +113,7 @@ export const link = {
   update: (options, $element) => {
     $element.href = options.href;
     $element.textContent = options.text;
+    return $element;
   }
 }
 
@@ -119,6 +129,7 @@ export const number = {
       $input.setAttribute('max', options.max);
       $input.setAttribute('min', options.min);
     });
+    return $element;
   }
 }
 
@@ -129,6 +140,7 @@ export const radio = {
   },
   update: (options, $element) => {
     _updateOption($element, options);
+    return $element;
   }
 }
 
@@ -165,6 +177,8 @@ export const select = {
       };
 
     }
+
+    return $element;
   }
 }
 
@@ -179,6 +193,7 @@ export const text = {
     _updateInput($element, options, $input => {
       $input.setAttribute('pattern', `.{${options.min}, ${options.max}}`);
     });
+    return $element;
   }
 }
 
@@ -241,6 +256,8 @@ export const tab = {
         _createHeader(optHeader, options, list, contentWrapper);
       }
     }
+
+    return $element;
   }
 }
 

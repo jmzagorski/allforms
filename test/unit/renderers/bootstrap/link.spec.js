@@ -28,8 +28,9 @@ describe('the boostrap link renderer', () => {
     const $existing = document.createElement('a');
     const options = { href: 'hahababa', text: 'a' };
 
-    link.update(options, $existing);
+    const $updated = link.update(options, $existing);
 
+    expect($updated).toBe($existing);
     expect($existing.href).toContain('/hahababa');
     expect($existing.textContent).toContain('a');
   });

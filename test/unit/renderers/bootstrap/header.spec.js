@@ -17,8 +17,9 @@ describe('the boostrap header renderer', () => {
     const $existing = document.createElement('H4');
     const options = { text: 'a', size: 4 };
 
-    header.update(options, $existing);
+    const $updated = header.update(options, $existing);
 
+    expect($updated).toBe($existing);
     expect($existing.textContent).toEqual('a');
   });
 

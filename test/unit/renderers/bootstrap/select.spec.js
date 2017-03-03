@@ -38,7 +38,7 @@ describe('the select input renderer', () => {
   });
 
   it('updates a bootstrap select list', done => {
-    const options = { label: 'a', optionSrc: [] };
+    const options = { label: 'a', optionSrc: null };
     const $existing = select.create(options);
     const blob = new Blob([JSON.stringify('id:a')], {type : 'application/json'});
     options.optionSrc = [ blob ];
@@ -46,7 +46,7 @@ describe('the select input renderer', () => {
 
     parseSpy.and.returnValue([['hi', 'bye']]);
 
-    select.update(options, $existing);
+    const $updated = select.update(options, $existing);
 
     const label = $existing.children[0];
     const $select = $existing.children[1];
@@ -55,6 +55,7 @@ describe('the select input renderer', () => {
 
     // setTimeout so onload can fire for FileReader
     setTimeout(() => {
+      expect($updated).toBe($existing);
       expect(parseSpy).toHaveBeenCalledWith('"id:a"', '\n', ',');
       expect($select.options.length).toEqual(1);
       expect($select.options[0].text).toEqual('bye');

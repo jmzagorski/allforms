@@ -78,10 +78,12 @@ describe('the boostrap tab renderer', () => {
       options.headers = data.headers;
       options.type = 'tab';
 
-      tab.update(options, $existing);
+      const $updated = tab.update(options, $existing);
 
       const item = $existing.querySelectorAll('li');
       const contentWrapper = $existing.children[1];
+
+      expect($updated).toBe($existing);
       expect(item.length).toEqual(data.length);
 
       for (let i = 0; i < data.headerArry.length; i++) {

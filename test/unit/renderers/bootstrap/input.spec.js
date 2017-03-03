@@ -45,8 +45,9 @@ describe('the boostrap input renderer', () => {
     const newLabel = options.label + 'a';
     options.label = newLabel;
 
-    renderers.attachments.update(options, $existing);;
+    const $updated = renderers.attachments.update(options, $existing);;
 
+    expect($updated).toBe($existing);
     expect($existing.textContent).toEqual(newLabel);
   });
 
