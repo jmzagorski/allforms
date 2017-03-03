@@ -1,5 +1,6 @@
 import './setup';
 import * as schemas from '../../src/schemas/index';
+import * as defaultOpts from '../../src/renderers/defaults';
 import { Metadata } from '../../src/metadata';
 
 describe('the metadata view model', () => {
@@ -15,17 +16,21 @@ describe('the metadata view model', () => {
   });
 
   it('activates the view model by setting up the schema', () => {
-    const model = { formStyle: 'bootstrap', elementType: 'ab' };
-    const schema = [{ key: 'a', default: 1 }];
-    schemas.bootstrap.ab = schema;
+    const schema = { };
+    schemas.style = { type: schema };
+    const model = { formStyle: 'style', elementType: 'type' };
+    const defaultSpy = spyOn(defaultOpts, 'default');
+
+    defaultSpy.and.returnValue({ a: 1 })
 
     sut.activate(model);
 
     expect(sut.schema).toBe(schema);
+    expect(defaultSpy).toHaveBeenCalledWith('type');
     expect(sut.model).toEqual({
-      formStyle: 'bootstrap',
-      elementType: 'ab',
-      a: 1
+      a: 1,
+      formStyle: 'style',
+      elementType: 'type'
     });
   });
 });

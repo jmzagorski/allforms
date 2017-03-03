@@ -1,4 +1,5 @@
 import * as schemas from './schemas/index';
+import getDefaults from './renderers/defaults';
 
 export class Metadata {
 
@@ -14,19 +15,13 @@ export class Metadata {
    *
    */
   activate(model) {
-    this.model = model;
-    this.schema = schemas[model.formStyle][model.elementType];
-    const elemDefaults = this._setupDefaultsFor(model.elementType);
-    Object.assign(model, elemDefaults, model);
-  }
+    const elemDefaults = getDefaults(model.elementType);
 
-  _setupDefaultsFor() {
-    const options = {};
-
-    for (let opt of this.schema) {
-      options[opt.key] = opt.default;
+    for (let prop in elemDefaults) {
+      if (!model[prop]) model[prop] = elemDefaults[prop];
     }
 
-    return options;
+    this.schema = schemas[model.formStyle][model.elementType];
+    this.model = model;
   }
 }
