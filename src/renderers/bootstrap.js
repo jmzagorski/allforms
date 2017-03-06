@@ -219,8 +219,8 @@ export const tab = {
       const header = _createHeader(headers[i], options, list, contentWrapper);
 
       if (i === 0) {
-        header.content.className = 'tab-pane fade in active';
-        header.item.className = 'active';
+        header.content.classList.add('active');
+        header.item.classList.add('active');
       }
     }
 
@@ -274,6 +274,11 @@ function _createTabGroup(groupId, tabType) {
   const list = DOM.createElement('ul');
   const contentWrapper = DOM.createElement('div');
 
+  wrapper.style.height = '100%';
+  wrapper.style.width = '100%';
+  contentWrapper.style.height = '100%';
+  contentWrapper.style.width = '100%';
+  contentWrapper.style.border = '1px solid rgb(222, 226, 227)';
   wrapper.id = groupId;
   list.className = `nav nav-${tabType}s`;
   contentWrapper.className = 'tab-content';
@@ -300,22 +305,16 @@ function _createHeader(header, options, list, contentWrapper) {
   const item = DOM.createElement('li');
   const a = DOM.createElement('a');
   const content = DOM.createElement('div');
+  content.setAttribute('dropzone','');
   a.setAttribute('data-toggle', options.type);
   a.href = `#${hrefId}`;
   a.textContent = header;
   content.id = hrefId;
+  content.className = 'tab-pane';
 
   item.appendChild(a);
   list.appendChild(item);
   contentWrapper.appendChild(content);
-
-  a.onclick = function(e) {
-    _deactivateAllTabs(contentWrapper.children);
-    _deactivateAllTabs(list.children);
-    item.classList.add('active');
-    content.classList.add('in');
-    content.classList.add('active');
-  };
 
   return { item, a, content };
 }

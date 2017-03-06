@@ -4,12 +4,14 @@ import { tab } from '../../../../src/renderers/bootstrap';
 describe('the boostrap tab renderer', () => {
 
   it('creates a new bootstrap tab group', () => {
-    const options = { id: 'navtab', headers: 'te st', type: 'pill' };
+    const options = { id: 'navtab', headers: 'te st,one', type: 'pill' };
 
     const sut = tab.create(options);
 
     expect(sut.tagName).toEqual('DIV');
     expect(sut.id).toEqual(options.id);
+    expect(sut.style.height).toEqual('100%');
+    expect(sut.style.width).toEqual('100%');
 
     const nav = sut.children[0];
     expect(nav.tagName).toEqual('UL');
@@ -28,11 +30,18 @@ describe('the boostrap tab renderer', () => {
     const contentWrapper = sut.children[1];
     expect(contentWrapper.tagName).toEqual('DIV');
     expect(contentWrapper.className).toEqual('tab-content');
+    expect(contentWrapper.style.height).toEqual('100%');
+    expect(contentWrapper.style.width).toEqual('100%');
+    expect(contentWrapper.style.border).toEqual('1px solid rgb(222, 226, 227)');
 
-    const content = contentWrapper.children[0];
-    expect(content.tagName).toEqual('DIV');
-    expect(content.id).toContain('navtabtest');
-    expect(content.className).toEqual('tab-pane fade in active');
+    const firstContent = contentWrapper.children[0];
+    expect(firstContent.tagName).toEqual('DIV');
+    expect(firstContent.id).toContain('navtabtest');
+    expect(firstContent.className).toEqual('tab-pane active');
+    expect(firstContent.getAttribute('dropzone')).toEqual('');
+
+    const secondContent = contentWrapper.children[1];
+    expect(secondContent.className).toEqual('tab-pane');
   });
 
   using([
@@ -54,17 +63,8 @@ describe('the boostrap tab renderer', () => {
     const tabGroup = tab.create(options);
 
     expect(tabGroup.children[0].children[0].className).toEqual('active');
-    expect(tabGroup.children[0].children[1].className).not.toEqual('active');
-  });
-
-  it('activates the tab on click', () => {
-    const options = { headers: 'Main, Sub', id: 'navtab' };
-
-    var tabGroup = tab.create(options);
-    tabGroup.querySelectorAll('a')[0].click();
-
-    expect(tabGroup.children[0].children[0].className).toEqual('active');
-    expect(tabGroup.children[0].children[1].className).not.toEqual('active');
+    expect(tabGroup.children[0].children[1].className).not.toContain('active');
+    expect(tabGroup.children[0].children[1].className).not.toContain('in');
   });
 
   using ([
