@@ -32,10 +32,10 @@ describe('the renderer factory', () => {
     { required: false, expect: undefined, element: {}, method: 'update' }
   ], data => {
     it('creates the element and sets common attributes', () => {
-      const expectElem = {};
+      const expectElem = document.createElement('div');
       const options = {
         name: 'a',
-        required: data.required,
+        mandatory: data.required,
         id: 1
       };
       renderers.test = {
@@ -51,14 +51,60 @@ describe('the renderer factory', () => {
       expect(renderers.test.fake[data.method].calls.argsFor(0)[0]).toBe(options)
       expect(renderers.test.fake[data.method].calls.argsFor(0)[1]).toBe(data.element)
       expect(actualElem).toBe(expectElem);
-      expect(actualElem.name).toEqual('a');
-      expect(actualElem.required).toEqual(data.expect);
-      expect(actualElem.id).toEqual(1);
+    });
+  });
+
+  using([
+    { required: true, name: 'a', id: '1', element: document.createElement('input') },
+    { required: false, name: 'a', id: '1', element: document.createElement('select') }
+  ], expected => {
+    it('adds input attributes', () => {
+      const options = {
+        name: expected.name,
+        mandatory: expected.required,
+        id: expected.id,
+      };
+      renderers.test = {
+        fake: {
+          create: () => expected.element
+        }
+      };
+
+      const actualElem = factory.create('test', 'fake', options);
+
+      expect(actualElem.name).toEqual(expected.name);
+      expect(actualElem.required).toEqual(expected.required);
+      expect(actualElem.id).toEqual(expected.id);
+    });
+  });
+
+  using([
+    { element: document.createElement('span') },
+    { element: document.createElement('label') },
+    { element: document.createElement('div') }
+  ], data => {
+    it('does not add input attributes for all other elements', () => {
+      const options = {
+        name: 'a',
+        mandatory: true,
+        id: 1,
+      };
+      renderers.test = {
+        fake: {
+          create: () => data.element
+        }
+      };
+
+      const actualElem = factory.create('test', 'fake', options);
+
+      expect(actualElem.id).toEqual('');
+      expect(actualElem.name).not.toBeDefined();
+      expect(actualElem.required).not.toBeDefined();
     });
   });
 
   it('uses default options when none exists', () => {
-    const options = { quantity: 1 };
+    const options = { };
     renderers.test = {
       fake: {
         create: jasmine.createSpy()
@@ -66,7 +112,7 @@ describe('the renderer factory', () => {
     };
 
     defaultSpy.and.returnValue(options)
-    renderers.test.fake.create.and.returnValue({});
+    renderers.test.fake.create.and.returnValue(document.createElement('span'));
 
     const elements = factory.create('test', 'fake');
 

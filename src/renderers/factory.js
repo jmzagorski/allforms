@@ -3,13 +3,16 @@ import getDefaults from './defaults';
 
 /**
  * @summary factory function to create supported elements
+ * @desc this factory functions handle common logic across the specific
+ * stylistic functions including setting common properties and checking to make
+ * sure the factoruy function exists
  * @param {String} style the style category all elements implement. Examples
  * would be bootstrap, semantic, Material design etc.
  * @param {String} type the type of element.
  * @param {Object} options An key/value object with a any number of values.
  * If no options value is passed, default values are used. The factor does look
  * for certain properties
- * @param {Boolean} options.required sets the required attribute
+ * @param {Boolean} options.mandatory sets the required attribute
  * @param {Number} options.id sets the id attribute
  * @param {String} options.name sets the name attribute
  * @param {Element} element an optional element that will be the template for a
@@ -29,10 +32,15 @@ export function create(style, type, options = getDefaults(type), $existing = nul
 
   const $created = $existing ? styleType.update(options, $existing) : styleType.create(options);
 
-  $created.name = options.name;
-  $created.id = options.id;
+  const $input = $created.tagName === 'INPUT' || $created.tagName === 'SELECT' ?
+    $created : $created.querySelector('input') || $created.querySelector('select');
 
-  if (options.required) $created.required = true;
+  if ($input) {
+    $input.id = options.id;
+    $input.name = options.name;
+    $input.required = options.mandatory;
+  }
+
 
   return $created;
 }
