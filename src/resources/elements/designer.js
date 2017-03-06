@@ -64,7 +64,7 @@ export class DesignerCustomElement {
     }
   }
 
-  createElement(model) { 
+  createElement(model) {
     const $existing = DOM.getElementById(model.id);
 
     if ($existing) {
@@ -103,7 +103,7 @@ export class DesignerCustomElement {
       detail: {
         model: {
           id: elem.id,
-          type:  elem.getAttribute(DATA_ELEM_TYPE)
+          type: elem.getAttribute(DATA_ELEM_TYPE)
         }
       }
     });

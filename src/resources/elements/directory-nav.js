@@ -13,7 +13,7 @@ import { customElement, bindable } from 'aurelia-framework';
 </template>`)
 export class DirectoryNavCustomElement {
 
-  static inject(){ return [ EventAggregator ];}
+  static inject() { return [ EventAggregator ];}
 
   @bindable rootName;
 

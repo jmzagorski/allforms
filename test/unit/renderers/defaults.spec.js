@@ -15,7 +15,6 @@ describe('the renderer factory', () => {
     schemas.test = [{ default: 1, key: 'a' }];
 
     const result = sut('test');
-    console.log(result);
 
     expect(result).toBeDefined();
     expect(result.a).toEqual(1);

@@ -24,7 +24,7 @@ export class TemplateApi {
    * @summary edits an existing template
    * @param {Object} template the template object
    * @return {Promise<Object>} a promise for the template object from the server
-   * 
+   *
    */
   async edit(template) {
     return await this._http.fetch(`templates/${template.id}`, {
@@ -37,7 +37,7 @@ export class TemplateApi {
    * @summary adds a new template
    * @param {Object} template the template object
    * @return {Promise<Object>} a promise for the template object from the server
-   * 
+   *
    */
   async add(template) {
     return await this._http.fetch('templates', {

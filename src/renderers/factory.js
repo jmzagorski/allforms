@@ -1,5 +1,5 @@
-import * as renderers from './index'
-import getDefaults from './defaults'
+import * as renderers from './index';
+import getDefaults from './defaults';
 
 /**
  * @summary factory function to create supported elements

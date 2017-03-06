@@ -33,7 +33,7 @@ export async function configure(aurelia) {
     const type = Object.prototype.toString.call(macros[macro]);
     // only register classes
     if (type === '[object Function]') {
-      aurelia.container.registerSingleton('ExcelMacros', macros[macro])
+      aurelia.container.registerSingleton('ExcelMacros', macros[macro]);
     }
   }
 

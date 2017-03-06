@@ -1,7 +1,7 @@
 import * as Interact from 'interact.js';
 
 function resizeHandler(event) {
-  var target = event.target;
+  let target = event.target;
 
   // update the element's style
   target.style.width  = event.rect.width + 'px';
@@ -22,7 +22,7 @@ export class ResizableCustomAttribute {
     this._interactable = this._interact(this.element).resizable({
       enabled: this.value,
       edges: { left: true, right: true, bottom: true, top: true }
-    }).on('resizemove', resizeHandler)
+    }).on('resizemove', resizeHandler);
   }
 
   valueChanged(newVal, oldVal) {

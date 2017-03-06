@@ -3,5 +3,5 @@ export function getElements(state) {
 }
 
 export function getActiveElement(state) {
-  return state.elements.list.find(f => f.id == state.elements.active)
+  return state.elements.list.find(f => f.id === state.elements.active);
 }

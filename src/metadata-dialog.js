@@ -10,7 +10,7 @@ export class MetadataDialog {
   static inject() { return [ ElementActions, DialogController, Store ]; }
 
   constructor(elementActions, dialog, store) {
-    this.newModel= null;
+    this.newModel = null;
     this.views = [ 'metadata', 'formulas' ];
     this.currentView = this.views[0];
 
@@ -20,7 +20,7 @@ export class MetadataDialog {
   }
 
   get _state() {
-    return this._store.getState()
+    return this._store.getState();
   }
 
   get element() {
@@ -50,6 +50,7 @@ export class MetadataDialog {
 
   async submit() {
     await this._elementActions.saveElement(this.newModel);
+    // TODO Bug - file object gets moved as an empty object
     await this._dialog.ok(Object.assign(this.newModel, this.element));
   }
 

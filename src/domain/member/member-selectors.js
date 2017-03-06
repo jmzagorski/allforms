@@ -1,3 +1,3 @@
-export function getActiveMember (state) {
+export function getActiveMember(state) {
   return state.member;
 }

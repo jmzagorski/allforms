@@ -1,8 +1,8 @@
-// bootstrap schema overrides 
+// bootstrap schema overrides
 
 import * as globalSchemas from './global';
 
-export const label = [ 
+export const label = [
   ...globalSchemas.label, {
     key: 'type',
     type: 'select',
@@ -18,7 +18,7 @@ export const label = [
   }
 ];
 
-export const alert = [ 
+export const alert = [
   ...globalSchemas.alert, {
     key: 'type',
     type: 'select',

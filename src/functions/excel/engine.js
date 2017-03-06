@@ -21,11 +21,11 @@ import { MACROS } from './macros';
 export class ExcelEngine {
 
   constructor(parser, macros) {
-    this._parser = parser;  
+    this._parser = parser;
     this._macros = macros;
     //this._cache = cache;
     //
-    this._functions = SUPPORTED_FORMULAS.concat(MACROS)
+    this._functions = SUPPORTED_FORMULAS.concat(MACROS);
   }
 
   get functions() {
@@ -46,13 +46,11 @@ export class ExcelEngine {
     //}
 
     for (let arg of args) {
-
       if (isObject(arg)) {
         const value = this._getObjectArgVal(arg);
         const key = Object.keys(arg)[0];
         this._parser.setVariable(key, value);
       }
-
     }
 
     const cleanFormula = await this.expandMacros(formula, args);
@@ -66,19 +64,18 @@ export class ExcelEngine {
    */
   async expandMacros(formula, ...args) {
     let macroIndexes = [];
-    const expandedMacros = [];
 
     for (let macro of this._macros) {
       // to upper because that is excel convention
-      const indices = getIndicesOf(macro.constructor.name.toUpperCase(), formula); 
+      const indices = getIndicesOf(macro.constructor.name.toUpperCase(), formula);
 
       for (let index of indices) macroIndexes.push({ macro, index });
     }
 
-    macroIndexes = macroIndexes.sort((a,b) => a.index - b.index);
+    macroIndexes = macroIndexes.sort((a, b) => a.index - b.index);
 
     for (let mi of macroIndexes) {
-      const func = await mi.macro.transform(...args)
+      const func = await mi.macro.transform(...args);
       formula = this._replaceText(formula, mi.macro.constructor.name.toUpperCase(), func);
     }
 
@@ -91,8 +88,9 @@ export class ExcelEngine {
 
   _replaceText(formula, search, replace) {
     let match = null;
-    while((match = formula.match(`\\b${search}\\b`))) {
-      const end = getEndingCharPos(formula, match.index, '(')
+
+    while ((match = formula.match(`\\b${search}\\b`))) { // eslint-disable-line no-cond-assign
+      const end = getEndingCharPos(formula, match.index, '(');
       formula = replaceBetween(formula, match.index, end + 1, replace);
     }
 

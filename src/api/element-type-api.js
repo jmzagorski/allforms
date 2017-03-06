@@ -11,11 +11,11 @@ export class ElementTypeApi {
   }
 
   /**
-   * @desc A call to get all the element types 
+   * @desc A call to get all the element types
    * @return {Array<ElementType>} the array of element types
    */
   async getAll() {
-    return await this._http.fetch(`element-types`)
+    return await this._http.fetch('element-types')
       .then(response => response.json());
   }
 }

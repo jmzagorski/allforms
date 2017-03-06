@@ -11,7 +11,7 @@ export function buildLocationLinks(location, start) {
 
   for (let i = start; i < segs.length; i++) {
     segments.push({
-      url: encodeURI(segs.filter((item, idx) => idx <= i).map(i => i.replace(' ', '-')).join('/')),
+      url: encodeURI(segs.filter((item, idx) => idx <= i).map(s => s.replace(' ', '-')).join('/')),
       display: segs[i]
     });
   }
@@ -26,7 +26,6 @@ export function importFetch() {
 
 export function hasDuplicates(array) {
   for (let i = 0; i < array.length; i++) {
-
     if (array.indexOf(array[i]) !== i) return true;
   }
 
@@ -71,8 +70,7 @@ export function parseCsv(text, lineTerminator, cellTerminator) {
   for (let line of lines) {
     const values = [];
 
-    if (line !== "") {
-
+    if (line !== '') {
       const cells = line.split(cellTerminator);
 
       for (let cell of cells) values.push(cell);
@@ -82,7 +80,6 @@ export function parseCsv(text, lineTerminator, cellTerminator) {
   }
 
   return data;
-
 }
 
 export function getEndingCharPos(str, start, char) {
@@ -97,6 +94,8 @@ export function getEndingCharPos(str, start, char) {
         break;
       case ')':
         --braces;
+        break;
+      default:
         break;
     }
 
@@ -116,7 +115,7 @@ export function getIndicesOf(searchStr, str) {
   const regex = new RegExp(`\\b${searchStr}\\b`, 'g');
   let match = null;
 
-  while((match = regex.exec(str))) {
+  while ((match = regex.exec(str))) { // eslint-disable-line no-cond-assign
     indices.push(match.index);
   }
 

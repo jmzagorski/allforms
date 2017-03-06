@@ -24,7 +24,7 @@ const requiredSchema = {
 const nameSchema = {
   key: 'name',
   type: 'string'
-}
+};
 
 // many elements use this schema
 const base = [ nameSchema, requiredSchema ];

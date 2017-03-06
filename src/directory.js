@@ -12,7 +12,7 @@ export class Directory {
   }
 
   get history() {
-    return getRecentFormHistory(this._store.getState()); 
+    return getRecentFormHistory(this._store.getState());
   }
 
   activate(params) {

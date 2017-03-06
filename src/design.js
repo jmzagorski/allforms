@@ -16,7 +16,7 @@ export class Design {
     this.html = '';
     this.style = null;
     this.designer = {};
-    this.interactable = 'drag'
+    this.interactable = 'drag';
 
     this._store = store;
     this._templateActions = templateActions;
@@ -54,7 +54,7 @@ export class Design {
    *
    */
   async renderElement(event) {
-    const model = event.detail ? event.detail.model : { type: event.builder }
+    const model = event.detail ? event.detail.model : { type: event.builder };
 
     const result = await this._dialogService.open({
       viewModel: MetadataDialog,

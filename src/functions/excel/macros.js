@@ -19,7 +19,7 @@ export class Lookup {
   // TODO - use cache
   /**
    * @summary evaluates the lookup macro into a VLOOKUP
-   * @param {Object} lookupObj the object to lookup. It must be a single property 
+   * @param {Object} lookupObj the object to lookup. It must be a single property
    * { key: value} object where the key is the property to lookup and the value
    * is the value to lookup
    * @param {String} returnName the property name value to return
@@ -35,7 +35,8 @@ export class Lookup {
     const tableName = `${lookupKey}table`;
     const table = this._parser.getVariable(tableName) || [];
 
-    let index = 0, i = 0;
+    let index = 0;
+    let i = 0;
     for (let prop in obj) {
       if (prop === returnName) index = i;
       row.push(obj[prop]);

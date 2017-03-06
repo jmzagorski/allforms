@@ -21,9 +21,8 @@ function ondropdeactivate(event) {
 
 function ondrop(event) {
   // prevent parent from being dropped in child
-  debugger;
   if ($(event.relatedTarget).find(event.target).length) {
-    return
+    return;
   }
 
   // TODO - bug element moves after drop

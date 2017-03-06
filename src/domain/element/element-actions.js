@@ -39,7 +39,6 @@ export class ElementActions {
     // this is to prevent pointless api calls
     if (typeof id === 'undefined') {
       this._store.dispatch(elementNotFound());
-
     } else {
       let element = getElements(this._store.getState()).find(e => e.id === id);
 

@@ -17,20 +17,20 @@ export const alert = {
     $element.textContent = options.text;
     return $element;
   }
-}
+};
 
 export const attachments = {
   create: options => {
     options.type = 'file';
-    const $attachments = _createInput(options)
+    const $attachments = _createInput(options);
     $attachments.setAttribute('multiple', true);
     return $attachments;
-  }, 
+  },
   update: (options, $element) => {
     _updateInput($element, options);
     return $element;
   }
-}
+};
 
 export const checkbox = {
   create: options => {
@@ -41,7 +41,7 @@ export const checkbox = {
     _updateOption($element, options);
     return $element;
   }
-}
+};
 
 export const date = {
   create: options => {
@@ -58,7 +58,7 @@ export const date = {
 
     return $element;
   }
-}
+};
 
 export const header = {
   create: options => {
@@ -72,14 +72,13 @@ export const header = {
       const updated = header.create(options);
       updated.textContent = options.text;
       return updated;
-    } else {
-      $element.textContent = options.text;
     }
 
+    $element.textContent = options.text;
     return $element;
   },
   getTag: options => `H${options.size}`
-}
+};
 
 export const iframe = {
   create: options => {
@@ -93,7 +92,7 @@ export const iframe = {
     $element.height = options.height;
     return $element;
   }
-}
+};
 
 export const label = {
   create: options => {
@@ -107,7 +106,7 @@ export const label = {
     $element.textContent = options.text;
     return $element;
   }
-}
+};
 
 export const link = {
   create: options => {
@@ -121,7 +120,7 @@ export const link = {
     $element.textContent = options.text;
     return $element;
   }
-}
+};
 
 export const number = {
   create: options => {
@@ -137,7 +136,7 @@ export const number = {
     });
     return $element;
   }
-}
+};
 
 export const radio = {
   create: options => {
@@ -148,14 +147,14 @@ export const radio = {
     _updateOption($element, options);
     return $element;
   }
-}
+};
 
 export const select = {
   create: options => {
     const $formGroup = DOM.createElement('div');
     const $label = DOM.createElement('label');
     const $select = DOM.createElement('select');
-    $formGroup.className = 'form-group'
+    $formGroup.className = 'form-group';
     $label.htmlfor = $select.id = options.id;
     $select.className = 'form-control';
     $formGroup.appendChild($label);
@@ -181,12 +180,11 @@ export const select = {
           $select.options[i] = new Option(data[i][1], data[i][0]);
         }
       };
-
     }
 
     return $element;
   }
-}
+};
 
 export const text = {
   create: options => {
@@ -201,26 +199,26 @@ export const text = {
     });
     return $element;
   }
-}
+};
 
 export const tab = {
   create: options => {
     const headers = options.headers.split(',');
 
     if (hasDuplicates(headers.map(h => h.trim()))) {
-      throw new Error(`Cannot have duplicate headers`);
+      throw new Error('Cannot have duplicate headers');
     }
 
     const wrapper = _createTabGroup(options.id, options.type);
     const list = wrapper.children[0];
     const contentWrapper = wrapper.children[1];
 
-    for (var i = 0; i < headers.length; i++) {
-      const header = _createHeader(headers[i], options, list, contentWrapper);
+    for (let i = 0; i < headers.length; i++) {
+      const tabHeader = _createHeader(headers[i], options, list, contentWrapper);
 
       if (i === 0) {
-        header.content.classList.add('active');
-        header.item.classList.add('active');
+        tabHeader.content.classList.add('active');
+        tabHeader.item.classList.add('active');
       }
     }
 
@@ -230,7 +228,7 @@ export const tab = {
     const optHeaders = options.headers.split(',');
 
     if (hasDuplicates(optHeaders.map(h => h.trim()))) {
-      throw new Error(`Cannot have duplicate headers`);
+      throw new Error('Cannot have duplicate headers');
     }
 
     _updateTabGroup($element, options.type);
@@ -265,7 +263,7 @@ export const tab = {
 
     return $element;
   }
-}
+};
 
 // PRIVATE HELPER FUNCTIONS
 
@@ -293,22 +291,15 @@ function _updateTabGroup($element, tabType) {
   list.className = `nav nav-${tabType}s`;
 }
 
-function _deactivateAllTabs(tabs) {
-  for (let i = 0; i < tabs.length; i++) {
-    tabs[i].classList.remove('active');
-    tabs[i].classList.remove('in');
-  }
-}
-
-function _createHeader(header, options, list, contentWrapper) {
-  const hrefId = (options.id + header).replace(/ /g, '');
+function _createHeader(tabHeader, options, list, contentWrapper) {
+  const hrefId = (options.id + tabHeader).replace(/ /g, '');
   const item = DOM.createElement('li');
   const a = DOM.createElement('a');
   const content = DOM.createElement('div');
-  content.setAttribute('dropzone','');
+  content.setAttribute('dropzone', '');
   a.setAttribute('data-toggle', options.type);
   a.href = `#${hrefId}`;
-  a.textContent = header;
+  a.textContent = tabHeader;
   content.id = hrefId;
   content.className = 'tab-pane';
 
@@ -320,14 +311,14 @@ function _createHeader(header, options, list, contentWrapper) {
 }
 
 function _createOption(options) {
-  const label = DOM.createElement('label');
+  const optLabel = DOM.createElement('label');
   const input = DOM.createElement('input');
 
   input.type = options.type;
-  label.innerHTML = input.outerHTML + options.text
-  label.className = `${options.type}-inline`;
+  optLabel.innerHTML = input.outerHTML + options.text;
+  optLabel.className = `${options.type}-inline`;
 
-  return label;
+  return optLabel;
 }
 
 function _updateOption($element, options) {
@@ -336,25 +327,25 @@ function _updateOption($element, options) {
 
 function _createInput(options) {
   const formgroup = DOM.createElement('div');
-  const label = DOM.createElement('label');
+  const inputLabel = DOM.createElement('label');
   const input = DOM.createElement('input');
 
   formgroup.className = 'form-group';
-  label.textContent = options.text;
-  label.htmlfor = input.id = options.id;
+  inputLabel.textContent = options.text;
+  inputLabel.htmlfor = input.id = options.id;
   input.type = options.type;
   input.className = 'form-control';
 
-  formgroup.appendChild(label);
+  formgroup.appendChild(inputLabel);
   formgroup.appendChild(input);
 
   return formgroup;
 }
 
 function _updateInput($element, options, inputSetupCb) {
-  const label = $element.querySelector('label');
+  const inputLabel = $element.querySelector('label');
 
-  label.textContent = options.text;
+  inputLabel.textContent = options.text;
 
   if (inputSetupCb) {
     const input = $element.querySelector('input');

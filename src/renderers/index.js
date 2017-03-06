@@ -1,4 +1,4 @@
-import * as bootstrap from './bootstrap'
+import * as bootstrap from './bootstrap';
 
 /**
  * Create an object that groups the functions with the file being the key
@@ -8,4 +8,4 @@ import * as bootstrap from './bootstrap'
  */
 export {
   bootstrap
-}
+};

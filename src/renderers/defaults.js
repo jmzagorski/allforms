@@ -1,4 +1,4 @@
-import * as schemas from '../schemas/global'
+import * as schemas from '../schemas/global';
 
 /**
  * @summary creates the default values object for each element per their schemas
@@ -11,19 +11,15 @@ import * as schemas from '../schemas/global'
  *
  */
 export default function(name) {
-  const defaults = {}
+  const defaults = {};
 
-  //for (let name in schemas) {
-    const schema = schemas[name];
+  const schema = schemas[name];
 
-    if (!schema) throw new Error(`Cannot find element schema ${name}`)
-    //defaults[name] = {};
+  if (!schema) throw new Error(`Cannot find element schema ${name}`);
 
-    for(let opt of schema) {
-      //defaults[name] = opt.default;
-      defaults[opt.key] = opt.default;
-    }
-  //}
+  for (let opt of schema) {
+    defaults[opt.key] = opt.default;
+  }
 
   return defaults;
 }
