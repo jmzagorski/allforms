@@ -34,7 +34,9 @@ describe('the resizable custom attribute', () => {
 
       expect(sut.element.classList).toContain('resizable');
       expect(config).toBeDefined();
-      expect(config.preserveAspectRatio).toBeTruthy();
+      // if this is true then you can resize just horizontal or veritcal, both
+      // are changed at the same time
+      expect(config.preserveAspectRatio).not.toBeDefined();
       expect(config.enabled).toEqual(enabled === 'true');
       expect(config.edges).toEqual({ left: true, right: true, bottom: true, top: true });
       done();

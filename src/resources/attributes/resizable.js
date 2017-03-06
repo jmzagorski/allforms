@@ -20,7 +20,6 @@ export class ResizableCustomAttribute {
 
   bind() {
     this._interactable = this._interact(this.element).resizable({
-      preserveAspectRatio: true,
       enabled: this.value,
       edges: { left: true, right: true, bottom: true, top: true }
     }).on('resizemove', resizeHandler)
