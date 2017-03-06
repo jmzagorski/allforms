@@ -195,7 +195,8 @@ export const text = {
   },
   update: (options, $element) => {
     _updateInput($element, options, $input => {
-      $input.setAttribute('pattern', `.{${options.min}, ${options.max}}`);
+      $input.setAttribute('pattern', `.{${options.min},${options.max}}`);
+      $input.title = `${options.min} to ${options.max} characters`;
     });
     return $element;
   }
@@ -335,6 +336,7 @@ function _createInput(options) {
   inputLabel.htmlfor = input.id = options.id;
   input.type = options.type;
   input.className = 'form-control';
+
 
   formgroup.appendChild(inputLabel);
   formgroup.appendChild(input);

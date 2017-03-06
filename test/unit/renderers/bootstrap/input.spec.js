@@ -84,7 +84,8 @@ describe('the boostrap input renderer', () => {
 
     const sut = renderers.text.create(options);
 
-    expect(sut.children[1].getAttribute('pattern')).toEqual('.{1, 3}');
+    expect(sut.children[1].getAttribute('pattern')).toEqual('.{1,3}');
+    expect(sut.children[1].getAttribute('title')).toEqual('1 to 3 characters');
   });
 
   it('updates the pattern attribute on the text', () => {
@@ -96,6 +97,7 @@ describe('the boostrap input renderer', () => {
 
     renderers.text.update(options, $existing, );
 
-    expect($existing.children[1].getAttribute('pattern')).toEqual('.{2, 4}');
+    expect($existing.children[1].getAttribute('pattern')).toEqual('.{2,4}');
+    expect($existing.children[1].getAttribute('title')).toEqual('2 to 4 characters');
   });
 });
