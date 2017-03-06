@@ -1,6 +1,7 @@
 var jsonServer = require('json-server');
 var autoid = require('./autoid-generator');
 var nocontent = require('./nocontent-middleware');
+var delProps = require('./delete-props');
 var routes = require('./routes');
 var server = jsonServer.create();
 var router = jsonServer.router('./src/db.json');
@@ -14,6 +15,7 @@ server.use(nocontent);
 // You can use the one used by JSON Server
 server.use(jsonServer.bodyParser);
 server.use(autoid);
+server.use(delProps);
 
 server.use(jsonServer.rewriter(routes));
 
