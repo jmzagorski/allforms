@@ -123,23 +123,21 @@ div.au-stagger {
 .dropzone {
   height: 100%;
   width: 100%;
-  left: 0;
-  right: 0;
-  top: 80px;
-  bottom: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   border: dashed 4px transparent;
   border-radius: 4px;
-  margin: 10px auto 30px;
-  padding: 10px;
   transition: background-color 0.3s;
-  position: fixed;
-  z-index: -1000;
 }
 
 .drop-active {
   border-color: #aaa;
+}
+
+.drop-target {
+  background-color: #CBE9F2;
+  border-color: #fff;
+  border-style: solid;
 }
 
 .draggable {

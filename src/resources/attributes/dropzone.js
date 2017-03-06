@@ -1,4 +1,14 @@
+import $ from 'jquery';
 import * as Interact from 'interact.js';
+
+// TODO bug blue stays
+function ondragenter(event) {
+  event.target.classList.add('drop-target');
+}
+
+function ondragleave(event) {
+  event.target.classList.remove('drop-target');
+}
 
 function ondropactivate(event) {
   event.target.classList.add('drop-active');
@@ -6,6 +16,18 @@ function ondropactivate(event) {
 
 function ondropdeactivate(event) {
   event.target.classList.remove('drop-active');
+  event.target.classList.remove('drop-target');
+}
+
+function ondrop(event) {
+  // prevent parent from being dropped in child
+  debugger;
+  if ($(event.relatedTarget).find(event.target).length) {
+    return
+  }
+
+  // TODO - bug element moves after drop
+  event.target.appendChild(event.relatedTarget);
 }
 
 export class DropzoneCustomAttribute {
@@ -19,7 +41,10 @@ export class DropzoneCustomAttribute {
 
     this._interactable = interact(this.element).dropzone({
       ondropactivate,
-      ondropdeactivate
+      ondropdeactivate,
+      ondragenter,
+      ondragleave,
+      ondrop
     });
   }
 

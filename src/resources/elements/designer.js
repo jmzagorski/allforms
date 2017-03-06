@@ -10,6 +10,7 @@ const DATA_ELEM_TYPE = 'data-element-type';
 <template>
   <require from="../attributes/draggable"></require>
   <require from="../attributes/resizable"></require>
+  <require from="../attributes/dropzone"></require>
 </template>
 `)
 export class DesignerCustomElement {
