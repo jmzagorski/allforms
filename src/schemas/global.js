@@ -30,10 +30,6 @@ const nameSchema = {
 const base = [ nameSchema, requiredSchema ];
 
 export const date = [ ...base, textSchema, {
-  key: 'format',
-  type: 'string',
-  default: 'mm/dd/yyyy'
-}, {
   key: 'min',
   type: 'date'
 }, {

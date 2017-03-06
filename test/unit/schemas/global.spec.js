@@ -22,10 +22,6 @@ describe('the global (shared) schemas', () => {
     const date = schemas.date;
 
     expect(date).toEqual([...common, textSchema, {
-      key: 'format',
-      type: 'string',
-      default: 'mm/dd/yyyy'
-    }, {
       key: 'min',
       type: 'date'
     }, {
