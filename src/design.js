@@ -41,7 +41,7 @@ export class Design {
 
     this.html = template.html || this.html;
     this.style = form.style;
-    this._formId = form.id;
+    this.formId = form.id;
   }
 
   /**
@@ -69,7 +69,7 @@ export class Design {
 
   async saveTemplate() {
     this._templateActions.save({
-      id: this._formId,
+      id: this.formId,
       html: this.designer.element.innerHTML
     });
   }

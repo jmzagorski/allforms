@@ -48,13 +48,14 @@ describe('the designer custom element', () => {
   });
 
   using([
-    { template: '', html: '<form></form>' },
-    { template: '<form></form>', html: '<form></form>' },
-    { template: '<div></div>', html: '<form><div></div></form>' }
+    { template: '', html: '<form id="a"></form>' },
+    { template: '<form></form>', html: '<form id="a"></form>' },
+    { template: '<div></div>', html: '<form id="a"><div></div></form>' }
   ], data => {
     it('always has a form element', async done => {
       context.template = data.template;
-      sut.inView(`<designer innerhtml.bind="template" formstyle.bind="formstyle"></designer>`)
+      context.formid = 'a';
+      sut.inView(`<designer formid.bind="formid" innerhtml.bind="template" formstyle.bind="formstyle"></designer>`)
         .boundTo(context);
 
       await sut.create(bootstrap);
@@ -65,6 +66,7 @@ describe('the designer custom element', () => {
 
         expect(forms.length).toEqual(1);
         expect(form).toBeDefined();
+        expect(form.id).toEqual('a');
         expect(sut.element.innerHTML).toEqual(data.html);
         done();
       });

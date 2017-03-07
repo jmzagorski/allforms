@@ -107,7 +107,8 @@ describe('the design view model', () => {
     await sut.activate({ form: 'a' });
 
     expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-    expect(sut.style).toBe('b');
+    expect(sut.style).toEqual('b');
+    expect(sut.formId).toEqual(1)
     done();
   });
 
@@ -131,6 +132,7 @@ describe('the design view model', () => {
     });
     expect(designerSpy.calls.argsFor(0)[0]).toBe(dialogResult.output);
     expect(templateActionSpy.save.calls.count()).toEqual(1);
+    // id is abc because of the spying in the beforeEach
     expect(templateActionSpy.save).toHaveBeenCalledWith({
       id: 'abc',
       html: 'html'

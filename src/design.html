@@ -38,8 +38,8 @@
   </section>
 
   <designer formstyle.bind="style" view-model.ref="designer"
-    innerhtml.bind="html"
-    onedit.delegate="renderElement($event)" interact.bind="interactable">
+    innerhtml.bind="html" formid.bind="formId" interact.bind="interactable" 
+    onedit.delegate="renderElement($event)">
   </designer>
 
 </template>

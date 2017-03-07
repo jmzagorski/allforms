@@ -19,6 +19,7 @@ export class DesignerCustomElement {
 
   @bindable formstyle;
   @bindable interact;
+  @bindable formid
 
   constructor(element, templateEngine) {
     this.element = element;
@@ -55,6 +56,8 @@ export class DesignerCustomElement {
 
       this.element.appendChild(this._formWrapper);
     }
+
+    this._formWrapper.id = this.formid
   }
 
   attached() {
