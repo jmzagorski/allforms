@@ -21,7 +21,7 @@ import getDefaults from './defaults';
  * // returns a bootstrap text input
  * create('bootstrap', 'input', { type: 'text' })
  */
-export function create(style, type, options = getDefaults(type), $existing = null) {
+export function create(style, type, options = getDefaults(style, type), $existing = null) {
   const rendererStyle = renderers[style];
 
   if (!rendererStyle) throw new Error(`Style ${style} is not supported`);

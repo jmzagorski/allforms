@@ -26,7 +26,7 @@ describe('the metadata view model', () => {
     sut.activate(model);
 
     expect(sut.schema).toBe(schema);
-    expect(defaultSpy).toHaveBeenCalledWith('type');
+    expect(defaultSpy).toHaveBeenCalledWith('style', 'type');
     expect(sut.model).toEqual({
       a: 1,
       formStyle: 'style',

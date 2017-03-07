@@ -15,7 +15,7 @@ export class Metadata {
    *
    */
   activate(model) {
-    const elemDefaults = getDefaults(model.elementType);
+    const elemDefaults = getDefaults(model.formStyle, model.elementType);
 
     for (let prop in elemDefaults) {
       if (!model[prop]) model[prop] = elemDefaults[prop];

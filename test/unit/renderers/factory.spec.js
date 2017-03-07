@@ -31,7 +31,7 @@ describe('the renderer factory', () => {
     { required: true, expect: true, element: {}, method: 'update' },
     { required: false, expect: undefined, element: {}, method: 'update' }
   ], data => {
-    it('creates the element and sets common attributes', () => {
+    it('creates the element', () => {
       const expectElem = document.createElement('div');
       const options = {
         name: 'a',
@@ -55,26 +55,27 @@ describe('the renderer factory', () => {
   });
 
   using([
-    { required: true, name: 'a', id: '1', element: document.createElement('input') },
-    { required: false, name: 'a', id: '1', element: document.createElement('select') }
-  ], expected => {
-    it('adds input attributes', () => {
+    { required: true, element: document.createElement('input') },
+    { required: false, element: document.createElement('select') }
+  ], data => {
+    it('sets common attributes on the input element', () => {
+      const element = document.createElement('div').appendChild(data.element);
       const options = {
-        name: expected.name,
-        mandatory: expected.required,
-        id: expected.id,
+        name: 'a',
+        mandatory: data.required,
+        id: '1'
       };
       renderers.test = {
         fake: {
-          create: () => expected.element
+          create: () => element
         }
       };
 
       const actualElem = factory.create('test', 'fake', options);
 
-      expect(actualElem.name).toEqual(expected.name);
-      expect(actualElem.required).toEqual(expected.required);
-      expect(actualElem.id).toEqual(expected.id);
+      expect(element.name).toEqual('a');
+      expect(element.required).toEqual(data.required);
+      expect(actualElem.id).toEqual('1');
     });
   });
 
@@ -84,6 +85,7 @@ describe('the renderer factory', () => {
     { element: document.createElement('div') }
   ], data => {
     it('does not add input attributes for all other elements', () => {
+      const element = document.createElement('div').appendChild(data.element);
       const options = {
         name: 'a',
         mandatory: true,
@@ -91,14 +93,14 @@ describe('the renderer factory', () => {
       };
       renderers.test = {
         fake: {
-          create: () => data.element
+          create: () => element
         }
       };
 
       const actualElem = factory.create('test', 'fake', options);
 
-      expect(actualElem.id).toEqual('');
-      expect(actualElem.name).not.toBeDefined();
+      expect(actualElem.id).toEqual('1');
+      expect(actualElem.name).toEqual('a');
       expect(actualElem.required).not.toBeDefined();
     });
   });
@@ -116,7 +118,7 @@ describe('the renderer factory', () => {
 
     const elements = factory.create('test', 'fake');
 
-    expect(defaultSpy).toHaveBeenCalledWith('fake');
+    expect(defaultSpy).toHaveBeenCalledWith('test', 'fake');
     expect(renderers.test.fake.create.calls.argsFor(0)[0]).toBe(options);
   });
 });
