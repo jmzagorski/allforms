@@ -1,5 +1,6 @@
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { importFetch } from '../utils';
+import { DOM } from 'aurelia-pal';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
@@ -11,7 +12,16 @@ export class TemplateApi {
   }
 
   /**
-   * @desc A call to get the template for a particular form
+   * @summary find a local version of the template
+   * @param {String} formId the id of the form
+   * @return {Element} the template DOM Element
+   */
+  find(formId) {
+    return DOM.querySelectorAll(`form#${formId}`)[0];
+  }
+
+  /**
+   * @summary A call to get the template for a particular form
    * @param {String} formId the id of the form
    * @return {Promise<Object>} a promise for the template object from the server
    */

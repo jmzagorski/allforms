@@ -1,6 +1,7 @@
 import '../setup';
 import { HttpStub } from '../stubs';
 import { TemplateApi } from '../../../src/api/template-api';
+import { DOM } from 'aurelia-pal';
 import using from 'jasmine-data-provider';
 
 describe('the template api', () => {
@@ -10,6 +11,18 @@ describe('the template api', () => {
   beforeEach(() => {
     httpStub = new HttpStub();
     sut = new TemplateApi(httpStub);
+  });
+
+  it('returns the template from the dom', () => {
+    const expectTemplate = {};
+    const domSpy = spyOn(DOM, 'querySelectorAll');
+
+    domSpy.and.returnValue([expectTemplate]);
+
+    const actualTemplate = sut.find('a');
+
+    expect(actualTemplate).toBe(expectTemplate);
+    expect(domSpy).toHaveBeenCalledWith('form#a');
   });
 
   it('fetches the template by form id', async done => {
