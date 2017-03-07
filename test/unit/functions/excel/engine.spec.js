@@ -87,4 +87,18 @@ describe('the excel engine', () => {
     done();
   });
 
+  it('gets all the variables in the formula', () => {
+    const formula = 'IF(AB,SUM(AC,2),"Hi")';
+
+    const variables = sut.getVariables(formula);
+
+    expect(variables).toEqual(['AB', 'AC'])
+  });
+
+  it('calls to set the variable with the value', () => {
+    sut.setVariable('a', 1);
+
+    expect(parserSpy.setVariable).toHaveBeenCalledWith('a', 1);
+  });
+
 });

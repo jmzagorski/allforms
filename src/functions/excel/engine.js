@@ -82,6 +82,22 @@ export class ExcelEngine {
     return formula;
   }
 
+  getVariables(formula) {
+    const variables = [];
+    const variableRegex = /\b[A-Za-z]+\b(?!\(|")/g
+    let match = null;
+
+    while(match = variableRegex.exec(formula)) {
+      variables.push(match[0]);
+    }
+
+    return variables;
+  }
+
+  setVariable(name, value) {
+    this._parser.setVariable(name, value);
+  }
+
   _getObjectArgVal(obj) {
     return obj[Object.keys(obj)[0]];
   }
