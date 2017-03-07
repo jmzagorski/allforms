@@ -1,18 +1,21 @@
 import { template } from '../../../../src/domain/index';
+import using from 'jasmine-data-provider';
 
 describe('the template reducer', () => {
   var sut;
 
-  it('returns the action template on load success', () => {
-    const pTemplate = {};
-    const action = {
-      type: 'LOAD_TEMPLATE_SUCCESS',
-      template: pTemplate
-    };
+  using([ 'LOAD_TEMPLATE_SUCCESS', 'ADD_TEMPLATE_SUCCESS' ], type => {
+    it('returns the action template on load success', () => {
+      const pTemplate = {};
+      const action = {
+        type,
+        template: pTemplate
+      };
 
-    const state = template(null, action);
+      const state = template(null, action);
 
-    expect(state).toBe(pTemplate);
+      expect(state).toBe(pTemplate);
+    });
   });
 
   it('returns the original state when no action type matches', () => {
