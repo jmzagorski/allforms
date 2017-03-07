@@ -7,10 +7,21 @@
     </textarea>
   </div>
 
+  Variables
+  <div class="form-inline border">
+    <div class="form-group" repeat.for="v of variables">
+      <label for="${v.name}">${v.name}</label>
+      <input type="text" class="form-control" id="${v.name}"
+      value.bind="v.value">
+    </div>
+  </div>
 
   <div class="form-group">
-    <button class="btn btn-default" type="button" click.delegate="verify()">
-      Verify
+    <button class="btn btn-default" type="button" click.delegate="showVariables()">
+<i class="fa fa-calculator" aria-hidden="true"></i>
+    </button>
+    <button class="btn btn-success" type="button" click.delegate="verify()">
+      =
     </button>
   </div>
 

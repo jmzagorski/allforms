@@ -8,9 +8,25 @@ export class Formulas {
     this.funcNames = xl.functions;
     this.verified = false;
     this.verifyMessage = null;
+    this.variables = [];
+    this.element = null;
 
     this._xl = xl;
     this._templateApi = templateApi;
+  }
+
+  showVariables() {
+    if (!this.element || !this.element.formula) return;
+
+    this.variables = [];
+    const vars = this._xl.getVariables(this.element.formula);
+
+    for (let v of vars) {
+      this.variables.push({
+        name: v,
+        value: ''
+      });
+    };
   }
 
   async activate(model) {
@@ -23,6 +39,10 @@ export class Formulas {
   }
 
   async verify() {
+    for(let v of this.variables) {
+      this._xl.setVariable(v.name, v.value);
+    }
+
     const response = await this._xl.parse(this.element.formula);
 
     this.verified = !response.error;
