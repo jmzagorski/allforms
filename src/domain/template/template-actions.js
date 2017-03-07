@@ -36,6 +36,12 @@ export class TemplateActions {
     this._store.dispatch(loadTemplateSuccess(template));
   }
 
+  async getElements(formId) {
+    const template = await this._api.get(formId);
+
+    this._store.dispatch(loadTemplateSuccess(template));
+  }
+
   async save(template) {
     const localVersion = getTemplate(this._store.getState());
 
