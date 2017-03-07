@@ -15,6 +15,8 @@ export class TextcompleteCustomAttribute {
       search: (term, callback) => {
         callback(this.value.filter(word => word.indexOf(term) === 0 ? word : null));
       },
+      // used to complete the word on tab/enter or w/e the key is
+      replace: value => value,
       index: 1 // which capture group to use based on the match regex
     }], {
       noResultsMessage: 'Nothing found',

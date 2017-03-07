@@ -44,6 +44,7 @@ describe('the text complete custom attribute', () => {
       expect(cbSpy).toHaveBeenCalledWith(data.result);
       expect(options.opts.noResultsMessage).toEqual('Nothing found');
       expect(options.opts.appendTo).toBe(sut.element.parentNode);
+      expect(options.strategy[0].replace(1)).toEqual(1);
       done();
     });
   });
