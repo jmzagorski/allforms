@@ -36,8 +36,9 @@ export class ElementActions {
    * @param {Number} id the id of the element
    */
   async loadElement(id) {
-    // this is to prevent pointless api calls
-    if (typeof id === 'undefined') {
+    // this is to prevent pointless api calls, but allow a zero which will pass
+    // the first test
+    if (!id && id !== 0 ) {
       this._store.dispatch(elementNotFound());
     } else {
       let element = getElements(this._store.getState()).find(e => e.id === id);
