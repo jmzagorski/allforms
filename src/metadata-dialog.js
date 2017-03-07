@@ -50,7 +50,6 @@ export class MetadataDialog {
 
   async submit() {
     await this._elementActions.saveElement(this.newModel);
-    // TODO Bug - file object gets moved as an empty object
     await this._dialog.ok(Object.assign(this.newModel, this.element));
   }
 
