@@ -35,10 +35,13 @@ export function create(style, type, options = getDefaults(type), $existing = nul
   const $input = $created.tagName === 'INPUT' || $created.tagName === 'SELECT' ?
     $created : $created.querySelector('input') || $created.querySelector('select');
 
+  $created.id = options.id;
+
   if ($input) {
-    $input.id = options.id;
     $input.name = options.name;
     $input.required = options.mandatory;
+  } else {
+    $created.name = options.name;
   }
 
 
