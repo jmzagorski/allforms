@@ -151,7 +151,7 @@ div.au-stagger {
 Hide radio button (the round disc)
 we will use just the label to create pushbutton effect
  */
-input[type=radio] {
+input.radio-btn[type=radio]{
   display:none; 
 }
 
@@ -159,14 +159,14 @@ input[type=radio] {
 Change the look'n'feel of labels (which are adjacent to radiobuttons).
 Add some margin, padding to label
  */
-input[type=radio] + label {
+input.radio-btn[type=radio] + label {
   display:inline-block;
 }
 /*
 Change background color for label next to checked radio button
 to make it look like highlighted button
  */
-input[type=radio]:checked + label { 
+input.radio-btn[type=radio]:checked + label { 
   background-image: none;
   background-color:#d0d0d0;
 }
