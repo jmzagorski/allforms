@@ -1,11 +1,12 @@
 import InitialState from '../../../src/config/initial-state';
 import * as formActions from '../../../src/domain/form/form-actions';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../../src/config/store';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import {
   MemberActions,
   FormActions
 } from '../../../src/domain/index';
+import { setupSpy } from '../jasmine-helpers';
 import using from 'jasmine-data-provider';
 
 describe('the initial state configuration', () => {

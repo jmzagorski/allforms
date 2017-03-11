@@ -1,5 +1,5 @@
 import { MemberApi } from '../../api/member-api';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../config/store';
 
 export const LOAD_MEMBER_SUCCESS = 'LOAD_MEMBER_SUCCESS';
 

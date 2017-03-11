@@ -1,6 +1,6 @@
 import { MemberApi } from '../../../../src/api/member-api';
 import { MemberActions } from '../../../../src/domain/index';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../../../src/config/store';
 import { setupSpy } from '../../jasmine-helpers';
 
 describe('the member actions', () => {

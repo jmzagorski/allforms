@@ -1,5 +1,5 @@
 import { Router } from 'aurelia-router';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from './config/store';
 import { getFormList } from './domain/index';
 
 export class Forms {

@@ -2,7 +2,7 @@ import * as typeSelectors from '../../src/domain/element-type/element-type-selec
 import * as templateSelectors from '../../src/domain/template/template-selectors';
 import * as formSelectors from '../../src/domain/form/form-selectors';
 import { Design } from '../../src/design';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../src/config/store';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from '../../src/metadata-dialog';
 import {

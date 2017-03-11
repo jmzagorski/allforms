@@ -1,6 +1,6 @@
 import { Forms } from '../../src/forms';
 import { Router } from 'aurelia-router';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../src/config/store';
 import { setupSpy} from './jasmine-helpers';
 import * as selectors from '../../src/domain/form/form-selectors';
 

@@ -1,7 +1,7 @@
 import * as formSelectors from '../../src/domain/form/form-selectors';
 import * as elemSelectors from '../../src/domain/element/element-selectors';
 import { MetadataDialog } from '../../src/metadata-dialog';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../src/config/store';
 import { DialogController } from 'aurelia-dialog';
 import { ElementActions } from '../../src/domain/index';
 import { setupSpy} from './jasmine-helpers';

@@ -1,6 +1,6 @@
 import HttpConfig from '../../src/config/http-client';
 import { App } from '../../src/app';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../src/config/store';
 import { setupSpy } from './jasmine-helpers';
 import * as selectors from '../../src/domain/member/member-selectors';
 

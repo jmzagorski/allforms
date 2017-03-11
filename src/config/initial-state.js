@@ -1,5 +1,5 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from './store';
 import { activateFormSuccess } from '../domain/index';
 import {
   MemberActions,

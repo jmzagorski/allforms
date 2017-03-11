@@ -1,5 +1,5 @@
 import { ElementApi } from '../../api/element-api';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../config/store';
 import { getElements } from './element-selectors';
 
 export const LOAD_ELEMENT_SUCCESS = 'LOAD_ELEMENT_SUCCESS';

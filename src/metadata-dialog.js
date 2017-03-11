@@ -1,4 +1,4 @@
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from './config/store';
 import { DialogController } from 'aurelia-dialog';
 import {
   ElementActions,

@@ -1,5 +1,5 @@
 import { ElementTypeApi } from '../../api/element-type-api';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../config/store';
 
 export const LOAD_ELEMENT_TYPES_SUCCESS = 'LOAD_ELEMENT_TYPES_SUCCESS';
 

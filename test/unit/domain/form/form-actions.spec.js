@@ -1,5 +1,5 @@
 import { FormApi } from '../../../../src/api/form-api';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../../../src/config/store';
 import {
   FormActions,
   activateFormSuccess

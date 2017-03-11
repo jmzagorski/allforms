@@ -1,5 +1,5 @@
 import { ElementApi } from '../../../../src/api/element-api';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../../../src/config/store';
 import { ElementActions } from '../../../../src/domain/index';
 import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/element/element-selectors';
@@ -45,7 +45,6 @@ describe('the element actions', () => {
     expect(storeSpy.dispatch.calls.argsFor(0)[0].element).toBe(element);
     done();
   });
-
 
   using([undefined, '', null], id => {
     it('dispatches an element not found when there is no id', async done => {

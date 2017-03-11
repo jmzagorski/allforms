@@ -1,7 +1,7 @@
-import { createStore } from 'redux';
-import rootReducer from './root-reducer';
 import 'bootstrap'; // aurelia
 import 'babel-polyfill'; // await /async
+import { Store } from './config/store';
+import rootReducer from './root-reducer';
 import * as Interact from 'interact.js';
 import * as macros from './functions/excel/macros';
 
@@ -12,11 +12,7 @@ export async function configure(aurelia) {
     .plugin('aurelia-value-converters')
     .plugin('aurelia-dialog')
     .plugin('aurelia-view-manager')
-    .plugin('aurelia-validatejs')
-    .plugin('aurelia-form')
-    .plugin('aurelia-redux-plugin', {
-      store: createStore(rootReducer)
-    });
+    .plugin('aurelia-form');
 
   aurelia.container.registerInstance(Interact, Interact);
 
@@ -27,6 +23,8 @@ export async function configure(aurelia) {
       aurelia.container.registerSingleton('ExcelMacros', macros[macro]);
     }
   }
+
+  Store.init(aurelia.container, rootReducer);
 
   await aurelia.start();
   aurelia.setRoot('app');

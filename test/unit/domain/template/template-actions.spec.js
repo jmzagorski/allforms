@@ -1,6 +1,6 @@
 import { TemplateApi } from '../../../../src/api/template-api';
 import { TemplateActions } from '../../../../src/domain/index';
-import { Store } from 'aurelia-redux-plugin';
+import { Store } from '../../../../src/config/store';
 import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/template/template-selectors';
 import using from 'jasmine-data-provider';
