@@ -2,6 +2,7 @@ import * as LoggingInterceptor from 'aurelia-http-logger';
 import {HttpStub} from '../stubs';
 import HttpConfig from '../../../src/config/http-client';
 import * as env from '../../../src/env';
+import using from 'jasmine-data-provider';
 
 describe('http client configuration', () => {
   let sut;

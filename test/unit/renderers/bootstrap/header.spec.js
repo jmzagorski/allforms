@@ -1,4 +1,3 @@
-import '../../setup';
 import { header } from '../../../../src/renderers/bootstrap';
 
 describe('the boostrap header renderer', () => {

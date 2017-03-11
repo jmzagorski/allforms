@@ -1,20 +1,20 @@
 import { TemplateApi } from '../../../../src/api/template-api';
 import { TemplateActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
+import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/template/template-selectors';
+import using from 'jasmine-data-provider';
 
 describe('the template actions', () => {
   let sut;
   let storeSpy;
   let apiSpy;
-  let selectorSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    apiSpy = jasmine.setupSpy('api', TemplateApi.prototype);
-    sut = new TemplateActions(apiSpy, storeSpy);
+    storeSpy = setupSpy('store', Store.prototype);
+    apiSpy = setupSpy('api', TemplateApi.prototype);
 
-    selectorSpy = spyOn(selectors, 'getTemplate');
+    sut = new TemplateActions(apiSpy, storeSpy);
   });
 
   it('loads the template from the form id', async done => {
@@ -37,6 +37,7 @@ describe('the template actions', () => {
       const template = { id };
       const serverTemplate = { };
       const state = {};
+      const selectorSpy = spyOn(selectors, 'getTemplate');
 
       storeSpy.getState.and.returnValue(state);
       apiSpy.add.and.returnValue(serverTemplate);
@@ -59,6 +60,7 @@ describe('the template actions', () => {
     const template = { id: 'a' };
     const serverTemplate = { };
     const state = { };
+    const selectorSpy = spyOn(selectors, 'getTemplate');
 
     storeSpy.getState.and.returnValue(state);
     selectorSpy.and.returnValue(template);

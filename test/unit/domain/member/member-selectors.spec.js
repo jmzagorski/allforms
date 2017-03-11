@@ -1,4 +1,3 @@
-import '../../setup';
 import * as selectors from '../../../../src/domain/member/member-selectors';
 
 describe('the member selectors', () => {

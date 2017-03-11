@@ -1,7 +1,5 @@
 import { HttpClient } from 'aurelia-fetch-client';
-import { importFetch } from '../utils';
-
-const fetch = importFetch(); // eslint-disable-line no-unused-vars
+import 'fetch';
 
 export class ElementTypeApi {
   static inject() { return [ HttpClient ]; }

@@ -6,6 +6,7 @@ import {
   MemberActions,
   FormActions
 } from '../../../src/domain/index';
+import using from 'jasmine-data-provider';
 
 describe('the initial state configuration', () => {
   let sut;
@@ -15,10 +16,10 @@ describe('the initial state configuration', () => {
   let storeSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('storeSpy', Store.prototype);
-    eaSpy = jasmine.setupSpy('eventAggr', EventAggregator.prototype);
-    memberSpy = jasmine.setupSpy('member', MemberActions.prototype);
-    formSpy = jasmine.setupSpy('form', FormActions.prototype);
+    storeSpy = setupSpy('storeSpy', Store.prototype);
+    eaSpy = setupSpy('eventAggr', EventAggregator.prototype);
+    memberSpy = setupSpy('member', MemberActions.prototype);
+    formSpy = setupSpy('form', FormActions.prototype);
     sut = new InitialState(storeSpy, memberSpy, formSpy, eaSpy);
   });
 
@@ -40,13 +41,9 @@ describe('the initial state configuration', () => {
 
   using([ '/formname', '/formname/anything' ], fragment => {
     it('handles the route processing event', async done => {
-      const successReturnValue = 'a';
       const event = {
         instruction: { fragment  }
       };
-
-      const actionSpy = spyOn(formActions, 'activateFormSuccess');
-      actionSpy.and.returnValue(successReturnValue);
 
       eaSpy.subscribe.and.callFake((name, handler) => {
         handler(event);
@@ -55,9 +52,11 @@ describe('the initial state configuration', () => {
 
       await sut.configure();
 
-      expect(actionSpy).toHaveBeenCalledWith('formname');
       expect(storeSpy.dispatch.calls.count()).toEqual(1);
-      expect(storeSpy.dispatch).toHaveBeenCalledWith(successReturnValue);
+      expect(storeSpy.dispatch).toHaveBeenCalledWith({
+        type: 'ACTIVATE_FORM_SUCCESS',
+        id: 'formname'
+      });
       done();
     });
   });

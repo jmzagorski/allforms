@@ -1,4 +1,3 @@
-import '../setup';
 import sut from '../../../src/renderers/defaults';
 import * as schemas from '../../../src/schemas/index';
 

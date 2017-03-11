@@ -1,4 +1,3 @@
-import '../setup';
 import { HttpStub } from '../stubs';
 import { ElementTypeApi } from '../../../src/api/element-type-api';
 

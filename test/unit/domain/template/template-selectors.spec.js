@@ -1,4 +1,3 @@
-import '../../setup';
 import * as selectors from '../../../../src/domain/template/template-selectors';
 
 describe('the template selectors', () => {

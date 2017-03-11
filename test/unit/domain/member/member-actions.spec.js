@@ -1,6 +1,7 @@
 import { MemberApi } from '../../../../src/api/member-api';
 import { MemberActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
+import { setupSpy } from '../../jasmine-helpers';
 
 describe('the member actions', () => {
   var sut;
@@ -8,8 +9,8 @@ describe('the member actions', () => {
   var apiSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    apiSpy = jasmine.setupSpy('api', MemberApi.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    apiSpy = setupSpy('api', MemberApi.prototype);
     sut = new MemberActions(apiSpy, storeSpy);
   });
 

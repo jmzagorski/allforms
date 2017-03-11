@@ -1,7 +1,7 @@
-import '../setup';
 import * as factory from '../../../src/renderers/factory';
 import * as renderers from '../../../src/renderers/index';
 import * as defaultOpts from '../../../src/renderers/defaults';
+import using from 'jasmine-data-provider';
 
 describe('the renderer factory', () => {
   let sut;

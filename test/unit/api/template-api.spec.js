@@ -1,4 +1,3 @@
-import '../setup';
 import { HttpStub } from '../stubs';
 import { TemplateApi } from '../../../src/api/template-api';
 import { DOM } from 'aurelia-pal';

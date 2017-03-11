@@ -1,5 +1,5 @@
-import '../../setup';
 import { tab } from '../../../../src/renderers/bootstrap';
+import using from 'jasmine-data-provider';
 
 describe('the boostrap tab renderer', () => {
 

@@ -1,7 +1,7 @@
-import './setup';
 import { Store } from 'aurelia-redux-plugin';
 import { Directory } from '../../src/directory';
 import { Router } from 'aurelia-router';
+import { setupSpy } from './jasmine-helpers';
 import * as selectors from '../../src/domain/form/form-selectors';
 
 describe('the directory view model', () => {
@@ -13,8 +13,8 @@ describe('the directory view model', () => {
   const params = { form: 'a' };
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    routerSpy = jasmine.setupSpy('router', Router.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    routerSpy = setupSpy('router', Router.prototype);
     getHistorySpy = spyOn(selectors, 'getRecentFormHistory');
 
     sut = new Directory(routerSpy, storeSpy);

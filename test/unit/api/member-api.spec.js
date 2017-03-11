@@ -1,4 +1,3 @@
-import '../setup';
 import { HttpStub } from '../stubs';
 import { MemberApi } from '../../../src/api/member-api';
 

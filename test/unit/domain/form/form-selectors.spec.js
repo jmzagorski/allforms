@@ -1,4 +1,3 @@
-import '../../setup';
 import * as selectors from '../../../../src/domain/form/form-selectors';
 
 describe('the form selectors', () => {

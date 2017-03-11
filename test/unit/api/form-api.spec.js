@@ -1,6 +1,6 @@
-import '../setup';
 import { HttpStub } from '../stubs';
 import { FormApi } from '../../../src/api/form-api';
+import using from 'jasmine-data-provider';
 
 describe('the form api', () => {
   let sut;

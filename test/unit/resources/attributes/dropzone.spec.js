@@ -1,9 +1,8 @@
-import '../../setup';
 import $ from 'jquery';
-import * as  Interact from 'interact.js';
+import * as Interact from 'interact.js';
 import { InteractStub } from '../../stubs';
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper-webpack';
+import { bootstrap } from 'aurelia-bootstrapper';
 import using from 'jasmine-data-provider';
 
 describe('the dropzone custom attribute', () => {

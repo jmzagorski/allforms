@@ -1,4 +1,3 @@
-import '../../setup';
 import { elementTypes } from '../../../../src/domain/index';
 
 describe('the element types reducer', () => {

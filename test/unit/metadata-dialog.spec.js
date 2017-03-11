@@ -1,10 +1,11 @@
-import './setup';
 import * as formSelectors from '../../src/domain/form/form-selectors';
 import * as elemSelectors from '../../src/domain/element/element-selectors';
 import { MetadataDialog } from '../../src/metadata-dialog';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogController } from 'aurelia-dialog';
 import { ElementActions } from '../../src/domain/index';
+import { setupSpy} from './jasmine-helpers';
+import using from 'jasmine-data-provider';
 
 describe('the metadata dialog view model', () => {
   let sut;
@@ -15,9 +16,9 @@ describe('the metadata dialog view model', () => {
   let dialogSpy;
 
   beforeEach(() => {
-    elemActionSpy = jasmine.setupSpy('elemAction', ElementActions.prototype);
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    dialogSpy = jasmine.setupSpy('dialog', DialogController.prototype);
+    elemActionSpy = setupSpy('elemAction', ElementActions.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    dialogSpy = setupSpy('dialog', DialogController.prototype);
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     elemSelectorSpy = spyOn(elemSelectors, 'getActiveElement');
     sut = new MetadataDialog(elemActionSpy, dialogSpy, storeSpy);

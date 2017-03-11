@@ -1,4 +1,3 @@
-import './setup';
 import * as typeSelectors from '../../src/domain/element-type/element-type-selectors';
 import * as templateSelectors from '../../src/domain/template/template-selectors';
 import * as formSelectors from '../../src/domain/form/form-selectors';
@@ -10,6 +9,7 @@ import {
   TemplateActions,
   ElementTypeActions
 } from '../../src/domain/index';
+import { setupSpy } from './jasmine-helpers';
 import using from 'jasmine-data-provider';
 
 describe('the design view model', () => {
@@ -23,10 +23,10 @@ describe('the design view model', () => {
   let dialogSpy;
 
   beforeEach(() => {
-    templateActionSpy = jasmine.setupSpy('templateAction', TemplateActions.prototype);
-    elemTypeActionSpy = jasmine.setupSpy('elemTypeAction', ElementTypeActions.prototype);
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    dialogSpy = jasmine.setupSpy('dialog', DialogService.prototype);
+    templateActionSpy = setupSpy('templateAction', TemplateActions.prototype);
+    elemTypeActionSpy = setupSpy('elemTypeAction', ElementTypeActions.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    dialogSpy = setupSpy('dialog', DialogService.prototype);
     templateSelectorSpy = spyOn(templateSelectors, 'getTemplate');
     elemTypeSelectorSpy = spyOn(typeSelectors, 'getElementTypes');
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');

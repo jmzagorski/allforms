@@ -1,7 +1,7 @@
-import './setup';
 import { Formulas } from '../../src/formulas';
 import { ExcelEngine } from '../../src/functions/excel/engine';
 import { TemplateApi } from '../../src/api/template-api';
+import { setupSpy} from './jasmine-helpers';
 import using from 'jasmine-data-provider';
 
 describe('the formulas view model', () => {
@@ -10,8 +10,8 @@ describe('the formulas view model', () => {
   let templApiSpy;
 
   beforeEach(() => {
-    xlSpy = jasmine.setupSpy('xl', ExcelEngine.prototype);
-    templApiSpy = jasmine.setupSpy('templApi', TemplateApi.prototype);
+    xlSpy = setupSpy('xl', ExcelEngine.prototype);
+    templApiSpy = setupSpy('templApi', TemplateApi.prototype);
 
     xlSpy.functions = [ 1 ];
     sut = new Formulas(xlSpy, templApiSpy);

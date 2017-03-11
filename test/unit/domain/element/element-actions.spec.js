@@ -1,17 +1,18 @@
 import { ElementApi } from '../../../../src/api/element-api';
 import { Store } from 'aurelia-redux-plugin';
 import { ElementActions } from '../../../../src/domain/index';
+import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/element/element-selectors';
 import using from 'jasmine-data-provider';
 
 describe('the element actions', () => {
-  var sut;
-  var storeSpy;
-  var apiSpy;
+  let sut;
+  let storeSpy;
+  let apiSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    apiSpy = jasmine.setupSpy('api', ElementApi.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    apiSpy = setupSpy('api', ElementApi.prototype);
     sut = new ElementActions(apiSpy, storeSpy);
   });
 
@@ -56,32 +57,32 @@ describe('the element actions', () => {
       expect(selectSpy).not.toHaveBeenCalled();
       expect(storeSpy.dispatch.calls.count()).toEqual(1);
       expect(storeSpy.dispatch).toHaveBeenCalledWith(
-      { type: 'ELEMENT_NOT_FOUND', payload: {} }
-    );
+        { type: 'ELEMENT_NOT_FOUND', payload: {} }
+      );
       done();
     });
   });
 
   using([
-  { id: null, type: 'ADD_ELEMENT_SUCCESS'},
+    { id: null, type: 'ADD_ELEMENT_SUCCESS'},
     { id: undefined, type: 'ADD_ELEMENT_SUCCESS'},
     { id: 0, type: 'ADD_ELEMENT_SUCCESS'},
     { id: 1, type: 'EDIT_ELEMENT_SUCCESS'}
-], data => {
-  it('adds the element if the ID is not available', async done => {
-    const element = { id: data.id };
-    const serverElem = { };
+  ], data => {
+    it('adds the element if the ID is not available', async done => {
+      const element = { id: data.id };
+      const serverElem = { };
 
-    apiSpy.save.and.returnValue(serverElem);
+      apiSpy.save.and.returnValue(serverElem);
 
-    await sut.saveElement(element);
+      await sut.saveElement(element);
 
-    expect(apiSpy.save).toHaveBeenCalledWith(element);
-    expect(storeSpy.dispatch).toHaveBeenCalledWith({
-      type: data.type, element: serverElem
+      expect(apiSpy.save).toHaveBeenCalledWith(element);
+      expect(storeSpy.dispatch).toHaveBeenCalledWith({
+        type: data.type, element: serverElem
+      });
+      expect(storeSpy.dispatch.calls.argsFor(0)[0].element).toBe(serverElem);
+      done();
     });
-    expect(storeSpy.dispatch.calls.argsFor(0)[0].element).toBe(serverElem);
-    done();
   });
-});
 });

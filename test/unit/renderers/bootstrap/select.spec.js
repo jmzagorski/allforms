@@ -1,4 +1,3 @@
-import '../../setup';
 import { select } from '../../../../src/renderers/bootstrap';
 import * as utils from '../../../../src/utils';
 

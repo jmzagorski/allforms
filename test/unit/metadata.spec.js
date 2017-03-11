@@ -1,4 +1,3 @@
-import './setup';
 import * as schemas from '../../src/schemas/index';
 import * as defaultOpts from '../../src/renderers/defaults';
 import { Metadata } from '../../src/metadata';

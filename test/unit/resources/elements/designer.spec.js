@@ -1,11 +1,10 @@
-import '../../setup';
 import * as Interact from 'interact.js';
 import * as renderFactory from '../../../../src/renderers/factory';
 import * as utils from '../../../../src/utils';
 import { InteractStub, ElementStub } from '../../stubs';
 import { TemplatingEngine } from 'aurelia-framework';
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper-webpack';
+import { bootstrap } from 'aurelia-bootstrapper';
 import { DOM } from 'aurelia-pal';
 
 describe('the designer custom element', () => {

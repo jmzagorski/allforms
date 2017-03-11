@@ -1,6 +1,7 @@
 import { ElementTypeApi } from '../../../../src/api/element-type-api';
 import { ElementTypeActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
+import { setupSpy } from '../../jasmine-helpers';
 
 describe('the element type actions', () => {
   var sut;
@@ -8,8 +9,8 @@ describe('the element type actions', () => {
   var apiSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    apiSpy = jasmine.setupSpy('api', ElementTypeApi.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    apiSpy = setupSpy('api', ElementTypeApi.prototype);
     sut = new ElementTypeActions(apiSpy, storeSpy);
   });
 

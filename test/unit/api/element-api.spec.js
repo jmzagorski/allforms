@@ -1,4 +1,3 @@
-import '../setup';
 import using from 'jasmine-data-provider';
 import { HttpStub } from '../stubs';
 import { ElementApi } from '../../../src/api/element-api';

@@ -1,8 +1,8 @@
-import '../../setup';
 import { ExcelEngine } from '../../../../src/functions/excel/engine';
 import { Lookup, MACROS } from '../../../../src/functions/excel/macros';
+import { setupSpy } from '../../jasmine-helpers';
 import using from 'jasmine-data-provider';
-import * as parser from 'hot-formula-parser';
+import * as parser from 'handsontable/formula-parser';
 import * as utils from '../../../../src/utils';
 
 // use stub clases so i can grab the name, i dont like jasmine spy names
@@ -20,7 +20,7 @@ describe('the excel engine', () => {
   let replaceSpy;
 
   beforeEach(() => {
-    parserSpy = jasmine.setupSpy('parser', parser.Parser.prototype);
+    parserSpy = setupSpy('parser', parser.Parser.prototype);
     macroStub1 = new MacroStub1()
     macroStub2 = new MacroStub2()
     macroStub1.transform = jasmine.createSpy('transform1');

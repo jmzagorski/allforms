@@ -1,8 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { buildLocationLinks } from '../../utils';
 import { PLATFORM } from 'aurelia-pal';
-import { inlineView } from 'aurelia-templating';
-import { customElement, bindable } from 'aurelia-framework';
+import { customElement, bindable, inlineView } from 'aurelia-framework';
 
 @customElement('directory-nav')
 @inlineView(`

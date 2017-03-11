@@ -1,4 +1,3 @@
-import '../../setup';
 import { link } from '../../../../src/renderers/bootstrap';
 
 describe('the boostrap link renderer', () => {

@@ -1,7 +1,7 @@
-import '../../setup';
 import { HttpClient } from 'aurelia-fetch-client';
 import { Lookup } from '../../../../src/functions/excel/macros';
-import { Parser } from 'hot-formula-parser';
+import { setupSpy } from '../../jasmine-helpers';
+import { Parser } from 'handsontable/formula-parser';
 import using from 'jasmine-data-provider';
 
 describe('the excel lookup macro', () => {
@@ -10,8 +10,8 @@ describe('the excel lookup macro', () => {
   let parserSpy;
 
   beforeEach(() => {
-    httpSpy = jasmine.setupSpy('http', HttpClient.prototype);
-    parserSpy = jasmine.setupSpy('parser', Parser.prototype);
+    httpSpy = setupSpy('http', HttpClient.prototype);
+    parserSpy = setupSpy('parser', Parser.prototype);
     sut = new Lookup(httpSpy, parserSpy);
   });
 

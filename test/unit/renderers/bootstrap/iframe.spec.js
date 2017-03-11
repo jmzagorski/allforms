@@ -1,4 +1,3 @@
-import '../../setup';
 import { iframe } from '../../../../src/renderers/bootstrap';
 
 describe('the boostrap iframe renderer', () => {

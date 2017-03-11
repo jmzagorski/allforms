@@ -11,7 +11,6 @@ import * as schemas from '../schemas/index';
  *
  */
 export default function(style, name) {
-  debugger;
   const defaultStyle = schemas[style];
 
   if (!defaultStyle) return null;

@@ -1,4 +1,3 @@
-import '../../setup';
 import * as selectors from '../../../../src/domain/element-type/element-type-selectors';
 
 describe('the element type selectors', () => {

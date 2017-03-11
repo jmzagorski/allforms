@@ -1,7 +1,7 @@
-import './setup';
 import { Forms } from '../../src/forms';
 import { Router } from 'aurelia-router';
 import { Store } from 'aurelia-redux-plugin';
+import { setupSpy} from './jasmine-helpers';
 import * as selectors from '../../src/domain/form/form-selectors';
 
 describe('the forms view model', () => {
@@ -10,8 +10,8 @@ describe('the forms view model', () => {
   let routerSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    routerSpy = jasmine.setupSpy('router', Router.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    routerSpy = setupSpy('router', Router.prototype);
     sut = new Forms(routerSpy, storeSpy);
   });
 

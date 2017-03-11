@@ -16,7 +16,7 @@ describe('the member reducer', () => {
   });
 
   it('returns the original state when no action type matches', () => {
-    const state = [];
+    const state = {};
     const action = { type: '' };
 
     const newState = member(state, action);

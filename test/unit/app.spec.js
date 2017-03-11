@@ -1,7 +1,7 @@
-import './setup';
 import HttpConfig from '../../src/config/http-client';
 import { App } from '../../src/app';
 import { Store } from 'aurelia-redux-plugin';
+import { setupSpy } from './jasmine-helpers';
 import * as selectors from '../../src/domain/member/member-selectors';
 
 describe('the app view model', () => {
@@ -12,8 +12,8 @@ describe('the app view model', () => {
   let storeSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    httpConfSpy = jasmine.setupSpy('httpConf', HttpConfig.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    httpConfSpy = setupSpy('httpConf', HttpConfig.prototype);
     routerConfFxSpy = jasmine.createSpy('routerConf');
     initialStateFxSpy = jasmine.createSpy('initialState');
 

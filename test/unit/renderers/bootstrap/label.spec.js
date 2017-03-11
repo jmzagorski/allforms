@@ -1,5 +1,5 @@
-import '../../setup';
 import { label } from '../../../../src/renderers/bootstrap';
+import using from 'jasmine-data-provider';
 
 describe('the boostrap label renderer', () => {
   let sut;

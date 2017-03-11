@@ -4,6 +4,8 @@ import {
   FormActions,
   activateFormSuccess
 } from '../../../../src/domain/index';
+import { setupSpy } from '../../jasmine-helpers';
+import using from 'jasmine-data-provider';
 
 describe('the form actions', () => {
   var sut;
@@ -11,8 +13,8 @@ describe('the form actions', () => {
   var apiSpy;
 
   beforeEach(() => {
-    storeSpy = jasmine.setupSpy('store', Store.prototype);
-    apiSpy = jasmine.setupSpy('api', FormApi.prototype);
+    storeSpy = setupSpy('store', Store.prototype);
+    apiSpy = setupSpy('api', FormApi.prototype);
     sut = new FormActions(apiSpy, storeSpy);
   });
 

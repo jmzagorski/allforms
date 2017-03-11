@@ -1,4 +1,3 @@
-import '../../setup';
 import * as renderers from '../../../../src/renderers/bootstrap';
 import using from 'jasmine-data-provider';
 
