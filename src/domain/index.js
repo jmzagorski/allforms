@@ -1,48 +1,15 @@
-import { MemberActions } from './member/member-actions';
-import { ElementActions } from './element/element-actions';
-import { ElementTypeActions } from './element-type/element-type-actions';
-import { TemplateActions } from './template/template-actions';
-import {
-  FormActions,
-  activateFormSuccess
-} from './form/form-actions';
-import member from './member/member-reducer';
-import template from './template/template-reducer';
-import forms from './form/form-reducer';
-import elements from './element/element-reducer';
-import elementTypes from './element-type/element-type-reducer';
-import { getElementTypes } from './element-type/element-type-selectors';
-import { getTemplate } from './template/template-selectors';
-import { getActiveMember } from './member/member-selectors';
-import {
-  getActiveForm,
-  getFormList,
-  getRecentFormHistory
-} from './form/form-selectors';
-import {
-  getElements,
-  getActiveElement
-} from './element/element-selectors';
-
-export {
-  MemberActions,
-  FormActions,
-  ElementActions,
-  ElementTypeActions,
-  TemplateActions,
-  member,
-  template,
-  forms,
-  elements,
-  elementTypes,
-  getTemplate,
-  getActiveForm,
-  getFormList,
-  getRecentFormHistory,
-  getElements,
-  getActiveElement,
-  getElementTypes,
-  getActiveMember,
-  activateFormSuccess
-};
-
+export * from './member/member-actions';
+export * from './element/element-actions';
+export * from './element-type/element-type-actions';
+export * from './template/template-actions';
+export * from './form/form-actions';
+export * from './member/member-reducer';
+export * from './template/template-reducer';
+export * from './form/form-reducer';
+export * from './element/element-reducer';
+export * from './element-type/element-type-reducer';
+export * from './element-type/element-type-selectors';
+export * from './template/template-selectors';
+export * from './member/member-selectors';
+export * from './form/form-selectors';
+export * from './element/element-selectors';

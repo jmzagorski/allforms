@@ -1,5 +1,4 @@
 import InitialState from '../../../src/config/initial-state';
-import * as formActions from '../../../src/domain/form/form-actions';
 import { Store } from '../../../src/config/store';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import {

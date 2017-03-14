@@ -1,10 +1,6 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from './store';
-import { activateFormSuccess } from '../domain/index';
-import {
-  MemberActions,
-  FormActions
-} from '../domain/index';
+import { MemberActions, FormActions, activateFormSuccess } from '../domain/index';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app

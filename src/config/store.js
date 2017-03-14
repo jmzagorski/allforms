@@ -13,7 +13,7 @@ export class Store {
 
   subscribe() { }
 
-  replaceReducere() { }
+  replaceReducers() { }
 
   observable() { }
 }
