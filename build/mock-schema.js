@@ -62,8 +62,8 @@ export const schema = {
     },
     "element-types": {
       "type": "array",
-      "minItems": 13,
-      "maxItems": 13,
+      "minItems": 14,
+      "maxItems": 14,
       "uniqueItems": true,
       "items": {
         "enum": [
@@ -129,8 +129,13 @@ export const schema = {
           },
           {
             "name": 13,
-            "builder": "alert",
-            "caption": "Alert"
+            "builder": "formula",
+            "caption": "Formula"
+          },
+          {
+            "name": 14,
+            "builder": "textarea",
+            "caption": "Text-Resize"
           }
         ]
       }
