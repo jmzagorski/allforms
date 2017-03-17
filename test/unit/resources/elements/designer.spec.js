@@ -93,7 +93,7 @@ describe('the designer custom element', () => {
     realElement = document.createElement('div');
     const model = {
       id: 1,
-      elementType: 'date',
+      type: 'date',
       create: () => realElement
     };
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
@@ -117,7 +117,7 @@ describe('the designer custom element', () => {
     it('returns the existing dom element', async done => {
       const model = {
         id: 1,
-        elementType: 'a'
+        type: 'a'
       };
       const $existing = {};
       const $created = {};
@@ -146,7 +146,7 @@ describe('the designer custom element', () => {
   it('enhances the element with the template engine', async done => {
     realElement = document.createElement('div');
     const model = {
-      elementType: 'date',
+      type: 'date',
       create: () => realElement
     };
     let enhanced = null;
@@ -177,7 +177,7 @@ describe('the designer custom element', () => {
   it('dispatches an edit event on element double click', async done => {
     realElement = document.createElement('div');
     const model = {
-      elementType: 'date',
+      type: 'date',
       create: () => realElement,
       id: 1
     };
@@ -203,7 +203,7 @@ describe('the designer custom element', () => {
   it('sets the default value on change', async done => {
     realElement = document.createElement('div');
     const model = {
-      elementType: 'date',
+      type: 'date',
       create: () => realElement
     };
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)

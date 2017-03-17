@@ -78,7 +78,7 @@ export class DesignerCustomElement {
 
     $draggable.setAttribute('draggable.bind', 'dragOptions');
     $draggable.setAttribute('resizable.bind', 'resize');
-    $draggable.setAttribute(DATA_ELEM_TYPE, model.elementType);
+    $draggable.setAttribute(DATA_ELEM_TYPE, model.type);
     this._formWrapper.appendChild($draggable);
 
     this._enhance($draggable);
