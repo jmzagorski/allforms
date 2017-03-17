@@ -11,7 +11,7 @@ describe('the element api', () => {
     sut = new ElementApi(httpStub);
   });
 
-  it('fetches the elements by id for the form name', async done => {
+  it('fetches the elements by id', async done => {
     httpStub.itemStub = [];
 
     const actualElems = await sut.get(1);
