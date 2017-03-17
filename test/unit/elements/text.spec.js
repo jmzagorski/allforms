@@ -17,15 +17,21 @@ describe('the text element', () => {
     expect(sut.schema).toContain('range.html');
   });
 
-  it('creates the pattern attribute on the text', () => {
-    const sut = text.bootstrap();
-    sut.min = 1;
-    sut.max = 3;
+  [ { max: 3, pattern: '.{1,3}', title: '3' },
+    { max: null, pattern: '.{1,}', title: 'infinite' },
+    { max: '', pattern: '.{1,}', title: 'infinite' },
+    { max: undefined, pattern: '.{1,}', title: 'infinite' }
+  ].forEach(data => {
+    it('creates the pattern attribute on the text', () => {
+      const sut = text.bootstrap();
+      sut.min = 1;
+      sut.max = data.max;
 
-    const $elem = sut.create();
+      const $elem = sut.create();
 
-    expect($elem.children[1].getAttribute('pattern')).toEqual('.{1,3}');
-    expect($elem.children[1].getAttribute('title')).toEqual('1 to 3 characters');
+      expect($elem.children[1].getAttribute('pattern')).toEqual(data.pattern);
+      expect($elem.children[1].getAttribute('title')).toEqual(`1 to ${data.title} characters`);
+    });
   });
 
   it('updates the pattern attribute on the text', () => {

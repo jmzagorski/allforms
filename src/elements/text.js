@@ -22,8 +22,8 @@ export const bootstrap = stampit()
 
     this.create = function create($element) {
       const $formGroup = $element ? updateInput($element, this) : createInput(Object.assign({}, this, { type }));
-      $formGroup.$input.setAttribute('pattern', `.{${this.min},${this.max}}`);
-      $formGroup.$input.title = `${this.min} to ${this.max} characters`;
+      $formGroup.$input.setAttribute('pattern', `.{${this.min},${this.max || ''}}`);
+      $formGroup.$input.title = `${this.min} to ${this.max || 'infinite'} characters`;
       return $formGroup.$element;
     }
   })
