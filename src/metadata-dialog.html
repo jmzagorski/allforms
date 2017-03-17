@@ -1,27 +1,18 @@
 <template>
-
+<form submit.delegate="submit()">
   <ai-dialog>
     <ai-dialog-body>
 
-      <ul class="nav nav-pills">
-        <li role="presentation" repeat.for="view of views" >
-          <a href="#" class="text-center" click.delegate="switchView(view)">
-            ${view}
-          </a>
-        </li>
-      </ul>
-      <div class="tab-content">
-        <compose view-model.bind="currentView" model.bind="newModel"></compose>
-      </div>
+      <compose repeat.for="schema of schemas"
+        view.bind="schema" model.bind="newElement">
 
-    </ai-dialog-body>
-    <ai-dialog-footer>
-      <button type="button" class="btn btn-primary" click.delegate="submit()">
-        <i class="fa fa-floppy-o" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-danger" click.delegate="cancel()">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </button>
-    </ai-dialog-footer>
-  </ai-dialog>
+      </ai-dialog-body>
+      <ai-dialog-footer>
+        <input type="submit" class="btn btn-primary">
+        <button type="button" class="btn btn-danger" click.delegate="cancel()">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </ai-dialog-footer>
+    </ai-dialog>
+  </form>
 </template>

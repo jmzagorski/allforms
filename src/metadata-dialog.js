@@ -1,4 +1,5 @@
-import { Store } from './config/store';
+import creator from './elements/factory';
+import { Store } from 'aurelia-redux-plugin';
 import { DialogController } from 'aurelia-dialog';
 import {
   ElementActions,
@@ -10,22 +11,23 @@ export class MetadataDialog {
   static inject() { return [ ElementActions, DialogController, Store ]; }
 
   constructor(elementActions, dialog, store) {
-    this.newModel = null;
-    this.views = [ 'metadata', 'formulas' ];
-    this.currentView = this.views[0];
+    this.model = {};
+    this.newElement = null;
+    this.schemas = [];
 
     this._dialog = dialog;
     this._store = store;
     this._elementActions = elementActions;
   }
 
+  get element() {
+    return getActiveElement(this._state);
+  }
+
   get _state() {
     return this._store.getState();
   }
 
-  get element() {
-    return getActiveElement(this._state);
-  }
   /**
    * @summary activates the dialog
    * @desc activates the dialog by loading or creating an element object
@@ -34,23 +36,17 @@ export class MetadataDialog {
    */
   async activate(model) {
     const form = getActiveForm(this._state);
+    this.newElement = creator(form.style, model.type);
+
+    this.newElement.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
+
     await this._elementActions.loadElement(model.id);
-
-    this.newModel = Object.assign({},
-      { formStyle: form.style },
-      { elementType: model.type },
-      this.element,
-      { formId: form.id }
-    );
-  }
-
-  switchView(view) {
-    this.currentView = view;
+    Object.assign(this.model, this.newElement, model, this.element);
   }
 
   async submit() {
-    await this._elementActions.saveElement(this.newModel);
-    await this._dialog.ok(Object.assign(this.newModel, this.element));
+    await this._elementActions.saveElement(this.model);
+    await this._dialog.ok(Object.assign(this.newElement, this.model, this.element));
   }
 
   cancel = async () => await this._dialog.cancel();

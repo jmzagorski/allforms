@@ -1,7 +1,6 @@
 import { customElement, bindable, TemplatingEngine, inlineView } from 'aurelia-framework';
 import { setDefaultVal } from '../../utils';
 import { DOM } from 'aurelia-pal';
-import * as renderFactory from '../../renderers/factory';
 
 const DATA_ELEM_TYPE = 'data-element-type';
 
@@ -71,11 +70,11 @@ export class DesignerCustomElement {
     const $existing = DOM.getElementById(model.id);
 
     if ($existing) {
-      return renderFactory.create(this.formstyle, model.elementType, model, $existing);
+      return model.mutate ? model.mutate($existing) : model.create($existing);
     }
 
-    // TODO not sure if i will include elementType in the model
-    const $draggable = renderFactory.create(this.formstyle, model.elementType, model);
+    const $draggable = model.create();
+    $draggable.id = model.id;
 
     $draggable.setAttribute('draggable.bind', 'dragOptions');
     $draggable.setAttribute('resizable.bind', 'resize');

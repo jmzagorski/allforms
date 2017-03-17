@@ -1,10 +1,10 @@
+import '../../setup';
 import * as Interact from 'interact.js';
-import * as renderFactory from '../../../../src/renderers/factory';
 import * as utils from '../../../../src/utils';
 import { InteractStub, ElementStub } from '../../stubs';
 import { TemplatingEngine } from 'aurelia-framework';
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper';
+import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import { DOM } from 'aurelia-pal';
 
 describe('the designer custom element', () => {
@@ -14,7 +14,6 @@ describe('the designer custom element', () => {
   let dispose;
   let realElement;
   let setDefaultSpy;
-  let renderSpy;
 
   beforeEach(() => {
     // FIXME: i cannot figure out a way to mock the attributes so mock the
@@ -33,17 +32,12 @@ describe('the designer custom element', () => {
     context = { formstyle: 'bootstrap' };
     dispose = true;
 
-    realElement = document.createElement('div');
-    document.body.appendChild(realElement);
-    renderSpy = spyOn(renderFactory, 'create');
-    renderSpy.and.returnValue(realElement);
     setDefaultSpy = spyOn(utils, 'setDefaultVal');
   });
 
   afterEach(() => {
     if (dispose) sut.dispose();
-    realElement.parentNode.removeChild(realElement);
-    realElement = null;
+    if (realElement) realElement.parentNode.removeChild(realElement);
   });
 
   using([
@@ -96,13 +90,21 @@ describe('the designer custom element', () => {
   });
 
   it('sets the interact element properties', async done => {
+    realElement = document.createElement('div');
+    const model = {
+      id: 1,
+      elementType: 'date',
+      create: () => realElement
+    };
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
     await sut.create(bootstrap);
 
-    const actual = sut.viewModel.createElement({ id: 1, elementType: 'date' });
+    const actual = sut.viewModel.createElement(model);
 
+    expect(actual).toBe(realElement)
+    expect(actual.id).toEqual('1');
     expect(actual.ondblclick).not.toEqual(null);
     expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
     expect(actual.getAttribute('resizable.bind')).toEqual('resize');
@@ -111,28 +113,42 @@ describe('the designer custom element', () => {
     done();
   });
 
-  it('returns the existing dom element', async done => {
-    const $existing = {};
-    const $created = {};
-    const model = { id: 1, elementType: 'a' };
+  [ 'create', 'mutate' ].forEach(method => {
+    it('returns the existing dom element', async done => {
+      const model = {
+        id: 1,
+        elementType: 'a'
+      };
+      const $existing = {};
+      const $created = {};
+      const mutateSpy = jasmine.createSpy('mutate');
 
-    renderSpy.and.returnValue($created);
-    spyOn(DOM, 'getElementById').and.returnValue($existing);
-    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
-      .boundTo(context);
-    await sut.create(bootstrap);
+      realElement = document.createElement('div');
+      realElement.id = model.id;
+      document.body.appendChild(realElement);
 
-    const $actual = sut.viewModel.createElement(model);
+      model[method] = mutateSpy
+      mutateSpy.and.returnValue(realElement);
 
-    expect(renderSpy.calls.count()).toEqual(1);
-    expect(renderSpy).toHaveBeenCalledWith(context.formstyle, 'a', model, $existing);
-    // check exact equality
-    expect(renderSpy.calls.argsFor(0)[3]).toBe($existing);
-    expect($actual).toBe($created);
-    done();
+      sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+        .boundTo(context);
+
+      await sut.create(bootstrap);
+
+      const $actual = sut.viewModel.createElement(model);
+
+      expect(mutateSpy.calls.argsFor(0)[0]).toBe(realElement);
+      expect($actual).toBe(realElement);
+      done();
+    });
   });
 
   it('enhances the element with the template engine', async done => {
+    realElement = document.createElement('div');
+    const model = {
+      elementType: 'date',
+      create: () => realElement
+    };
     let enhanced = null;
     const resources = {};
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
@@ -149,7 +165,7 @@ describe('the designer custom element', () => {
       enhanced = obj;
     });
 
-    const actual = sut.viewModel.createElement({ elementType: 'date' });
+    const actual = sut.viewModel.createElement(model);
 
     expect(enhanced).not.toEqual(null);
     expect(enhanced.element).toEqual(actual);
@@ -159,13 +175,19 @@ describe('the designer custom element', () => {
   });
 
   it('dispatches an edit event on element double click', async done => {
+    realElement = document.createElement('div');
+    const model = {
+      elementType: 'date',
+      create: () => realElement,
+      id: 1
+    };
     let event = null;
     context.editListener = e => event = e;
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
     sut.inView(`<designer onedit.delegate="editListener($event)" formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
     await sut.create(bootstrap);
-    const actual = sut.viewModel.createElement({ id: 1, elementType: 'date' });
+    const actual = sut.viewModel.createElement(model);
 
     actual.ondblclick();
 
@@ -179,10 +201,15 @@ describe('the designer custom element', () => {
   });
 
   it('sets the default value on change', async done => {
+    realElement = document.createElement('div');
+    const model = {
+      elementType: 'date',
+      create: () => realElement
+    };
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
     await sut.create(bootstrap);
-    const actual = sut.viewModel.createElement({ elementType: 'date' });
+    const actual = sut.viewModel.createElement(model);
 
     actual.onchange({ target: actual });
 
