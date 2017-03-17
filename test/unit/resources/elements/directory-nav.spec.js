@@ -5,6 +5,7 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 import * as utils from '../../../../src/utils';
 import {PLATFORM} from 'aurelia-pal';
 import using from 'jasmine-data-provider';
+import { setupSpy } from '../../jasmine-helpers';
 
 describe('the directory nav custom element', () => {
   let sut;
@@ -13,7 +14,7 @@ describe('the directory nav custom element', () => {
   let subscriptionMock;
 
   beforeEach(() => {
-    eaSpy = jasmine.setupSpy('ea', EventAggregator.prototype);
+    eaSpy = setupSpy('ea', EventAggregator.prototype);
     buildFxSpy = spyOn(utils, 'buildLocationLinks');
     subscriptionMock = {
       dispose: () => {}

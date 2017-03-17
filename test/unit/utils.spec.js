@@ -76,16 +76,13 @@ describe('the utility functions', () => {
     const el = document.createElement('select');
     el.options[0] = opt1;
     el.options[1] = opt2;
-    el.selectedIndex = 0;
-
-    // set opt2 as selected
-    opt2.setAttribute('selected', true)
+    el.selectedIndex = 1;
 
     utils.setDefaultVal(el);
 
-    expect(el.defaultValue).toEqual('2');
-    expect(opt1.getAttribute('selected')).toBeTruthy();
-    expect(opt2.getAttribute('selected')).toEqual(null);
+    expect(el.defaultValue).toEqual('4');
+    expect(opt2.getAttribute('selected')).toBeTruthy();
+    expect(opt1.getAttribute('selected')).toEqual(null);
   });
 
   it('parses a basic csv string', () => {
