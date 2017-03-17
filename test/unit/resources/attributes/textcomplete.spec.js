@@ -1,5 +1,5 @@
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper';
+import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import using from 'jasmine-data-provider';
 import $ from 'jquery';
 import 'jquery-textcomplete/dist/jquery.textcomplete.js';

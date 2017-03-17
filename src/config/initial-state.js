@@ -1,6 +1,10 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Store } from './store';
-import { MemberActions, FormActions, activateFormSuccess } from '../domain/index';
+import { Store } from 'aurelia-redux-plugin';
+import {
+  MemberActions,
+  FormActions,
+  activateFormSuccess
+} from '../domain/index';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app

@@ -1,7 +1,7 @@
 import * as  Interact from 'interact.js';
 import { InteractStub } from '../../stubs';
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper';
+import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import using from 'jasmine-data-provider';
 
 describe('the resizable custom attribute', () => {

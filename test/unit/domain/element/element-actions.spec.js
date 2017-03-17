@@ -1,5 +1,5 @@
 import { ElementApi } from '../../../../src/api/element-api';
-import { Store } from '../../../../src/config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { ElementActions } from '../../../../src/domain/index';
 import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/element/element-selectors';

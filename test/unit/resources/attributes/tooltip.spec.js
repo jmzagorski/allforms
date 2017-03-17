@@ -1,5 +1,5 @@
 import { StageComponent } from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper';
+import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import using from 'jasmine-data-provider';
 
 describe('the tool tip custom attribute', () => {

@@ -1,4 +1,4 @@
-import { Store } from './config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from './metadata-dialog';
 import {

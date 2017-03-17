@@ -1,5 +1,6 @@
+import '../../setup';
 import {StageComponent} from 'aurelia-testing';
-import { bootstrap } from 'aurelia-bootstrapper';
+import {bootstrap} from 'aurelia-bootstrapper-webpack';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import * as utils from '../../../../src/utils';
 import {PLATFORM} from 'aurelia-pal';

@@ -1,5 +1,5 @@
 import InitialState from '../../../src/config/initial-state';
-import { Store } from '../../../src/config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import {
   MemberActions,

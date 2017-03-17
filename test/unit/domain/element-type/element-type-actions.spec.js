@@ -1,6 +1,6 @@
 import { ElementTypeApi } from '../../../../src/api/element-type-api';
 import { ElementTypeActions } from '../../../../src/domain/index';
-import { Store } from '../../../../src/config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { setupSpy } from '../../jasmine-helpers';
 
 describe('the element type actions', () => {

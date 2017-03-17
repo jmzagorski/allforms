@@ -1,5 +1,7 @@
 import { HttpClient, json } from 'aurelia-fetch-client';
-import 'fetch';
+import { importFetch } from '../utils';
+
+const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
 export class ElementApi {
   static inject() { return [ HttpClient ]; }
@@ -21,7 +23,7 @@ export class ElementApi {
   /**
    * @desc A call to save the element
    * @param {Element} element the element object
-   * @return {Element} the new element returned from the api cal, not the
+   * @return {Element} the new element returned from the api call, not the
    * original passed in
    */
   async save(element) {

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import 'bootstrap/js/bootstrap.min.js';
+import 'bootstrap/dist/js/bootstrap.min.js';
 
 export class TooltipCustomAttribute {
 

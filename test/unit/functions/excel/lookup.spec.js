@@ -1,7 +1,7 @@
 import { HttpClient } from 'aurelia-fetch-client';
 import { Lookup } from '../../../../src/functions/excel/macros';
 import { setupSpy } from '../../jasmine-helpers';
-import { Parser } from 'handsontable/formula-parser';
+import { Parser } from 'hot-formula-parser';
 import using from 'jasmine-data-provider';
 
 describe('the excel lookup macro', () => {

@@ -1,6 +1,5 @@
 {
   "rules": {
-    "no-var": 0,
     "no-console": 0
   }
 }

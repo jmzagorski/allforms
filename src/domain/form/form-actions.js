@@ -1,5 +1,5 @@
 import { FormApi } from '../../api/form-api';
-import { Store } from '../../config/store';
+import { Store } from 'aurelia-redux-plugin';
 
 export const LOAD_FORMS_SUCCESS = 'LOAD_FORMS_SUCCESS';
 export const ADD_FORM_SUCCESS = 'ADD_FORM_SUCCESS';

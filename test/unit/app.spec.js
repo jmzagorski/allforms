@@ -1,8 +1,8 @@
 import HttpConfig from '../../src/config/http-client';
 import { App } from '../../src/app';
-import { Store } from '../../src/config/store';
-import { setupSpy } from './jasmine-helpers';
+import { Store } from 'aurelia-redux-plugin';
 import * as selectors from '../../src/domain/member/member-selectors';
+import { setupSpy } from './jasmine-helpers';
 
 describe('the app view model', () => {
   let sut;

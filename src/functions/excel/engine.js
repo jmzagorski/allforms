@@ -1,7 +1,7 @@
 import {
   Parser,
   SUPPORTED_FORMULAS
-} from 'handsontable/formula-parser';
+} from 'hot-formula-parser';
 
 import {
   isObject,

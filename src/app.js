@@ -1,7 +1,7 @@
 import RouterConfig from './config/router';
 import HttpConfig from './config/http-client';
 import InitialState from './config/initial-state';
-import { Store } from './config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { getActiveMember } from './domain/index';
 
 export class App {

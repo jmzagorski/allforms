@@ -2,7 +2,7 @@ import { ExcelEngine } from '../../../../src/functions/excel/engine';
 import { Lookup, MACROS } from '../../../../src/functions/excel/macros';
 import { setupSpy } from '../../jasmine-helpers';
 import using from 'jasmine-data-provider';
-import * as parser from 'handsontable/formula-parser';
+import * as parser from 'hot-formula-parser';
 import * as utils from '../../../../src/utils';
 
 // use stub clases so i can grab the name, i dont like jasmine spy names

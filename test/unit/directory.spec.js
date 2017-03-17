@@ -1,4 +1,4 @@
-import { Store } from '../../src/config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { Directory } from '../../src/directory';
 import { Router } from 'aurelia-router';
 import { setupSpy } from './jasmine-helpers';

@@ -1,5 +1,5 @@
 import { getRecentFormHistory } from './domain/index';
-import { Store } from './config/store';
+import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
 export class Directory {

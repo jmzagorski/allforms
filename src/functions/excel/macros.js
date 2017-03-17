@@ -1,6 +1,6 @@
 import { HttpClient } from 'aurelia-fetch-client';
 import { NewInstance, inject } from 'aurelia-framework';
-import { Parser } from 'handsontable/formula-parser';
+import { Parser } from 'hot-formula-parser';
 
 export const MACROS = [
   'LOOKUP'
