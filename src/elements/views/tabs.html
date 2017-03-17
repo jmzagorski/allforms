@@ -1,0 +1,12 @@
+<template bindable="model">
+
+  <div class="form-group">
+
+    <label for="form-schema-tabs">Tabs</label>
+
+    <input type="text" class="form-control" id="form-schema-tabs" required
+    value.bind="model.headers" pattern="^([a-zA-Z])+(,\s?[a-zA-Z0-9]+)*$">
+
+  </div>
+
+</template>

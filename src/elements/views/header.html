@@ -1,0 +1,13 @@
+<template bindable="model">
+
+  <div class="form-group">
+
+    <label for="form-schema-header">Header Size</label>
+
+    <select id="form-schema-header" class="form-control" value.bind="model.size">
+      <option repeat.for="size of model.sizes" model.bind="size">${size}</option>
+    </select>
+
+  </div>
+
+</template>

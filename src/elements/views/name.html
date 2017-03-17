@@ -1,0 +1,12 @@
+<template bindable="model">
+
+  <div class="form-group">
+
+    <label for="form-schema-name">Name</label>
+
+    <input title="Unique No Spaces Name" type="text" class="form-control"
+      id="form-schema-name" required value.bind="model.name" pattern="\S*">
+
+  </div>
+
+</template>

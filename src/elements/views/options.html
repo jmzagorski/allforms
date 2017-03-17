@@ -1,0 +1,13 @@
+<template bindable="model">
+
+  <div class="form-group">
+
+    <label for="form-schema-options">Options</label>
+    <span class="text-muted">comma separated values</span>
+
+    <input type="text" class="form-control" id="form-schema-options" required
+    value.bind="model.options" pattern="^.+(,\s?[a-zA-Z0-9]+)*$">
+
+  </div>
+
+</template>

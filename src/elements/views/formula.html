@@ -1,0 +1,13 @@
+<template bindable="model">
+  <require from="../../resources/elements/formula"></require>
+
+  <div class="form-group">
+
+    <label for="form-schema-formula">Formula</label>
+
+    <formula calculated.delegate="model.getCalculation($event)">
+    </formula>
+
+  </div>
+
+</template>
