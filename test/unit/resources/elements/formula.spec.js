@@ -36,26 +36,39 @@ describe('the formula custom element', () => {
     expect(sut.viewModel.verifyMessage).toEqual(null);
     expect(sut.viewModel.variables).toEqual([]);
     expect(sut.viewModel.formula).toBeDefined();
+    expect(sut.viewModel.result).toBeDefined();
+    expect(sut.viewModel.formid).toBeDefined();
     done();
   });
 
   it('finds the elements on an existing form', async done => {
-    sut.inView('<form><input name="shouldnotfind"></form><form><input name="test"><formula></formula></form>');
+    const context = {
+      formid: 1
+    };
+    const $form = document.createElement('form');
+    const $input = document.createElement('input');
+    $input.name = 'a';
+    $form.id = context.formid;
+    $form.appendChild($input)
+
+    sut.inView('<formula></formula>').boundTo(context);
+    spyOn(DOM, 'getElementById').and.returnValue($form);
 
     await sut.create(bootstrap);
 
-    expect(sut.viewModel.funcNames).toContain('test');
-    expect(sut.viewModel.funcNames).not.toContain('shouldnotfind');
+    expect(sut.viewModel.funcNames).toContain('a');
     done();
   })
 
   it('adds the input listener to the area to find the variables', async done => {
-    const notExpect = { name: 'c', value: ''}; // test clearing the variables
-    sut.inView('<formula></formula>');
+    const context = {
+      variables: [ { name: 'c', value: ''} ] // test clearing the variables
+    }
+    sut.inView('<formula variables.bind="variables"></formula>')
+      .boundTo(context);
     xlSpy.getVariables.and.returnValue(['a', 'b']);
 
     await sut.create(bootstrap);
-    sut.viewModel.variables = [ notExpect ];
 
     const $textarea = sut.element.querySelector('textarea');
     $textarea.dispatchEvent(new Event('input'));
@@ -63,26 +76,25 @@ describe('the formula custom element', () => {
     setTimeout(() => {
       expect(sut.viewModel.variables).toContain({ name: 'a', value: ''});
       expect(sut.viewModel.variables).toContain({ name: 'b', value: ''});
-      expect(sut.viewModel.variables).not.toContain(notExpect);
+      expect(sut.viewModel.variables).not.toContain(context.variables);
       done();
     })
   });
 
-  [ { error: null, alertName: 'alert-success', message: 'd' },
-    { error: undefined, alertName: 'alert-success', message: 'd' },
-    { error: 'xlerr', alertName: 'alert-danger', message: 'xlerr' }
+  [ { error: null, alertName: 'alert-success', message: 'd', result: 'd' },
+    { error: undefined, alertName: 'alert-success', message: 'd', result: 'd' },
+    { error: 'xlerr', alertName: 'alert-danger', message: 'xlerr', result: null }
   ].forEach(data => {
     it('verifies the formula', async done => {
       const var1 = { name: 'a', value: 1 };
       const var2 = { name: 'b', value: 2 };
-      let variables = [];
-      let value = null;
-      const getResult = e => {
-        value = e.detail.result;
-        variables = e.detail.variables;
+      const context = {
+        variables: [ var1, var2 ],
+        result: null,
+        formula: null
       };
-      sut.inView('<formula calculated.delegate="getResult($event)"></formula>')
-        .boundTo({ getResult });
+      sut.inView('<formula formula.two-way="formula" result.two-way="result" variables.two-way="variables"></formula>')
+        .boundTo(context);
 
       xlSpy.parse.and.returnValue({ result: data.message, error: data.error })
 
@@ -104,10 +116,11 @@ describe('the formula custom element', () => {
           expect(xlSpy.setVariable.calls.argsFor(0)).toEqual(['a', 1]);
           expect(xlSpy.setVariable.calls.argsFor(1)).toEqual(['b', 2]);
           expect(xlSpy.parse).toHaveBeenCalledWith('c');
-          expect($span.className).toContain(data.alertName)
-          expect($span.textContent).toEqual(data.message)
-          expect(value).toEqual(data.message)
-          expect(variables).toEqual([ var1, var2 ])
+          expect($span.className).toContain(data.alertName);
+          expect($span.textContent).toEqual(data.message);
+          expect(context.result).toEqual(data.result);
+          expect(context.formula).toEqual('c');
+          expect(context.variables).toEqual([ var1, var2 ]);
           done();
         })
       })

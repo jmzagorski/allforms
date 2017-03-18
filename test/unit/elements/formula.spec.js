@@ -7,14 +7,16 @@ describe('the formula element', () => {
 
     expect(sut.text).toBeDefined();
     expect(sut.name).toBeDefined();
-    expect(sut.type).toBeDefined();
-    expect(sut.variables).toBeDefined();
-    expect(sut.types).toEqual(['', 'info', 'success', 'danger', 'warning']);
-    expect(sut.calculation).toBeDefined();
+    expect(sut.context).toBeDefined();
+    expect(sut.relations).toEqual([]);
+    expect(sut.contexts).toEqual(['', 'info', 'success', 'danger', 'warning']);
+    expect(sut.value).toBeDefined();
+    expect(sut.formula).toBeDefined();
+    expect(sut.formId).toBeDefined();
     expect(sut.schema).toBeDefined();
     expect(sut.schema).toContain('text.html');
     expect(sut.schema).toContain('name.html');
-    expect(sut.schema).toContain('types.html');
+    expect(sut.schema).toContain('contexts.html');
     expect(sut.schema).toContain('formula.html');
   });
 
@@ -25,9 +27,9 @@ describe('the formula element', () => {
       const sut = formula.bootstrap();
       sut.text = 'a';
       sut.name = 'b';
-      sut.type = data.type
-      sut.variables = 'c d';
-      sut.calculation = 5;
+      sut.context = data.type
+      sut.relations = [ { name: 'c' }, { name: 'd' } ]
+      sut.value = 5;
 
       const $elem = sut.create();
 
@@ -38,7 +40,7 @@ describe('the formula element', () => {
       const $output = $elem.children[0];
       expect($output.tagName).toEqual('OUTPUT');
       expect($output.name).toEqual('b');
-      expect($output.htmlfor).toEqual('c d');
+      expect($output.getAttribute('for')).toEqual('c d');
     });
   });
 
@@ -49,15 +51,15 @@ describe('the formula element', () => {
       const sut = formula.bootstrap();
       sut.text = 'a';
       sut.name = 'b';
-      sut.type = 'success';
-      sut.variables = 'c d';
-      sut.calculation = 5;
+      sut.context = 'success';
+      sut.relations = { name: 'c' };
+      sut.value = 5;
       const $elem = sut.create();
-      sut.type = data.type;
+      sut.context = data.type;
       sut.text = 'c';
       sut.name = 'd';
-      sut.variables = 'e f';
-      sut.calculation = 7;
+      sut.relations = [];
+      sut.value = 7;
 
       const $updated = sut.create($elem);
 
@@ -67,7 +69,7 @@ describe('the formula element', () => {
 
       const $output = $updated.children[0];
       expect($output.name).toEqual('d');
-      expect($output.htmlfor).toEqual('e f');
+      expect($output.getAttribute('for')).toEqual('');
     });
   });
 });

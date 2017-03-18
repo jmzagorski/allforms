@@ -6,20 +6,22 @@ const defaults = stampit()
   .props({
     name: '',
     text: '',
-    type: '',
-    variables: '' ,
-    types: [],
-    calculation: null
+    context: '',
+    relations: [],
+    contexts: [],
+    value: null,
+    formula: '',
+    formId: ''
   });
 
 const metadata = stampit()
   .props({
-    schema: [ map.text, map.name, map.types, map.formula ]
+    schema: [ map.text, map.name, map.contexts, map.formula ]
   });
 
 export const bootstrap = stampit()
   .init(function() {
-    this.types = [ '', 'info', 'success', 'danger', 'warning' ]; 
+    this.contexts = [ '', 'info', 'success', 'danger', 'warning' ]; 
   })
   .methods({
     create($element) {
@@ -30,21 +32,22 @@ export const bootstrap = stampit()
       // remove the alert class first
       $wrapper.className = $wrapper.className.replace(/\balert\b\s\balert-[a-z]+\b(\s|$)/, '');
 
-      if (this.type) {
-        $wrapper.className += `alert alert-${this.type}`.trim();
+      if (this.context) {
+        $wrapper.className += `alert alert-${this.context}`.trim();
       }
 
       $output.name = this.name;
-      $output.textContent = this.calculation;
-      $output.htmlfor = this.variables;
+      $output.textContent = this.value;
+
+      if (this.relations.length) {
+        $output.setAttribute('for', this.relations.map(r => r.name).join(' '));
+      } else {
+        $output.setAttribute('for', '');
+      }
 
       $wrapper.appendChild($output);
 
       return $wrapper;
-    },
-    getCalculation(e) {
-      this.calculation = e.detail.result;
-      this.variables = e.detail.variables.join(' ');
     }
   })
   .compose(defaults, metadata);

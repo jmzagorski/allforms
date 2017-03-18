@@ -5,7 +5,10 @@
 
     <label for="form-schema-formula">Formula</label>
 
-    <formula calculated.delegate="model.getCalculation($event)">
+    <formula result.two-way="model.value"
+      formid.bind="model.formId"
+      variables.two-way="model.relations"
+      formula.two-way="model.formula">
     </formula>
 
   </div>

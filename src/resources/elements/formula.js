@@ -1,23 +1,27 @@
 import { customElement, bindable } from 'aurelia-framework';
 import { ExcelEngine } from '../../../src/functions/excel/engine';
+import { DOM } from 'aurelia-pal';
 
 @customElement('formula')
 export class FormulaCustomElement {
+  @bindable variables = [];
+  @bindable result;
+  @bindable formula;
+  @bindable formid;
+
   static inject() { return [ ExcelEngine, Element ]; }
 
   constructor(xl, element) {
     this.funcNames = xl.functions;
     this.verified = false;
     this.verifyMessage = null;
-    this.formula = null;
     this.element = element;
-    this.variables = [];
 
     this._xl = xl;
   }
 
   attached() {
-    const $form = this.element.closest('form');
+    const $form = DOM.getElementById(this.formid);
     const $textarea = this.element.querySelector('textarea');
 
     $textarea.addEventListener('input', () => this.showVariables());
@@ -51,15 +55,6 @@ export class FormulaCustomElement {
     this.verified = !response.error;
     this.verifyMessage = response.error || response.result;
 
-    if (!response.error) this.value = response.result;
-
-    const event = new CustomEvent('calculated', {
-      bubbles: true,
-      detail: {
-        result:  response.result,
-        variables: this.variables
-      }
-    });
-    this.element.dispatchEvent(event)
+    if (!response.error) this.result = response.result;
   }
 }
