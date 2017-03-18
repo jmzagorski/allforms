@@ -29,7 +29,6 @@ describe('the metadata dialog view model', () => {
   });
 
   it('instantiates the view model', () => {
-    expect(sut.newElement).toBeDefined();
     expect(sut.model).toBeDefined();
     expect(sut.schemas).toEqual([]);
   });
@@ -56,6 +55,7 @@ describe('the metadata dialog view model', () => {
     expect(elemSelectorSpy).toHaveBeenCalledWith(state);
     expect(sut.model).toEqual({
       schema: [],
+      formId: 'test',
       id: 1,
       type: 'ab',
       element: 2
@@ -75,14 +75,13 @@ describe('the metadata dialog view model', () => {
   it('submits the form data', async done => {
     const element = { a: 1 };
     sut.model = { b: 2 }
-    sut.newElement = { c: 3}
 
     elemSelectorSpy.and.returnValue(element);
 
     await sut.submit();
 
     expect(elemActionSpy.saveElement.calls.argsFor(0)[0]).toBe(sut.model);
-    expect(dialogSpy.ok.calls.argsFor(0)[0]).toEqual({ a: 1, b: 2, c: 3});
+    expect(dialogSpy.ok.calls.argsFor(0)[0]).toEqual({ a: 1, b: 2 });
     done();
   });
 

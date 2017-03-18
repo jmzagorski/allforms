@@ -12,7 +12,6 @@ export class MetadataDialog {
 
   constructor(elementActions, dialog, store) {
     this.model = {};
-    this.newElement = null;
     this.schemas = [];
 
     this._dialog = dialog;
@@ -36,17 +35,20 @@ export class MetadataDialog {
    */
   async activate(model) {
     const form = getActiveForm(this._state);
-    this.newElement = creator(form.style, model.type);
+    this.model = creator(form.style, model.type);
 
-    this.newElement.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
+    // always need this, it is the relationship to the form
+    this.model.formId = form.id;
+
+    this.model.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
 
     await this._elementActions.loadElement(model.id);
-    Object.assign(this.model, this.newElement, model, this.element);
+    Object.assign(this.model, model, this.element);
   }
 
   async submit() {
     await this._elementActions.saveElement(this.model);
-    await this._dialog.ok(Object.assign(this.newElement, this.model, this.element));
+    await this._dialog.ok(Object.assign(this.model, this.element));
   }
 
   cancel = async () => await this._dialog.cancel();

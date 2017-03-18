@@ -3,8 +3,8 @@
   <ai-dialog>
     <ai-dialog-body>
 
-      <compose repeat.for="schema of schemas"
-        view.bind="schema" model.bind="newElement">
+      <!--inheritly bind the model to the children-->
+      <compose repeat.for="schema of schemas" view.bind="schema" >
 
       </ai-dialog-body>
       <ai-dialog-footer>
