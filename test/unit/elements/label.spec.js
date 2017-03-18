@@ -6,15 +6,16 @@ describe('the label element entity', () => {
     const sut = label.bootstrap();
 
     expect(sut.text).toBeDefined();
-    expect(sut.type).toBeDefined();
+    expect(sut.context).toBeDefined();
+    expect(sut.contexts).toEqual(['primary', 'info', 'success', 'danger', 'warning']);
     expect(sut.schema).toBeDefined();
     expect(sut.schema).toContain('text.html');
-    expect(sut.schema).toContain('types.html');
+    expect(sut.schema).toContain('contexts.html');
   });
 
   it('creates a bootstrap label element', () => {
     const sut = label.bootstrap();
-    sut.type = 'a';
+    sut.context = 'a';
     sut.text = 'g';
 
     const $elem = sut.create();
@@ -33,7 +34,7 @@ describe('the label element entity', () => {
       const $existing = document.createElement('span');
       const sut = label.bootstrap();
       $existing.className = data.className;
-      sut.type = data.type;
+      sut.context = data.type;
       sut.text = 'g';
 
       const $updated = sut.create($existing);

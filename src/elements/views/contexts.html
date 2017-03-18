@@ -1,0 +1,15 @@
+<template bindable="model">
+
+  <div class="form-group">
+
+    <label for="form-schema-context">Context</label>
+
+    <select value.bind="model.context" class="form-control"
+      id="form-schema-context">
+      <option repeat.for="context of model.contexts"
+        model.bind="context">${context}</option>
+    </select>
+
+  </div>
+
+</template>

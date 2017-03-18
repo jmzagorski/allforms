@@ -5,24 +5,24 @@ import map from './viewMap';
 const defaults = stampit()
   .props({
     text: '',
-    type: '',
-    types: []
+    context: '',
+    contexts: []
   });
 
 const metadata = stampit()
   .props({
-    schema: [ map.text, map.types ]
+    schema: [ map.text, map.contexts ]
   });
 
 export const bootstrap = stampit()
   .init(function() {
-    this.types = [ 'primary', 'info', 'success', 'danger', 'warning' ];
+    this.contexts = [ 'primary', 'info', 'success', 'danger', 'warning' ];
   })
   .methods({
     create($element) {
       const $label = $element || DOM.createElement('span');
       const className = $label.className.replace(/\blabel\b\s\blabel-[a-z]+\b(\s|$)/, '');
-      $label.className = `${className} label label-${this.type}`.trim();
+      $label.className = `${className} label label-${this.context}`.trim();
       $label.textContent = this.text;
       $label.style.fontSize = '1em';
       return $label;

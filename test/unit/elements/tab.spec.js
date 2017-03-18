@@ -7,10 +7,11 @@ describe('the tab element', () => {
 
     expect(sut.id).toBeDefined();
     expect(sut.headers).toBeDefined();
-    expect(sut.type).toBeDefined();
+    expect(sut.context).toBeDefined();
+    expect(sut.contexts).toEqual(['tab', 'pill']);
     expect(sut.schema).toBeDefined();
     expect(sut.schema).toContain('tabs.html');
-    expect(sut.schema).toContain('types.html');
+    expect(sut.schema).toContain('contexts.html');
   });
 
   [ { headers: 'same,same', method: 'create' },
@@ -30,7 +31,7 @@ describe('the tab element', () => {
     const sut = tab.bootstrap();
     sut.id = 'navtab';
     sut.headers = 'test,one';
-    sut.type = 'pill';
+    sut.context = 'pill';
 
     const $elem = sut.create();
 
@@ -88,7 +89,7 @@ describe('the tab element', () => {
       const sut = tab.bootstrap();
       sut.id = data.id
       sut.headers = 'fi rst';
-      sut.type = 'tab';
+      sut.context = 'tab';
 
       const $elem = sut.create();
 
@@ -106,7 +107,7 @@ describe('the tab element', () => {
     const sut = tab.bootstrap();
     sut.id = '1';
     sut.headers = '11deetwo';
-    sut.type = 'tab';
+    sut.context = 'tab';
 
     const $elem = sut.create();
 
@@ -136,11 +137,11 @@ describe('the tab element', () => {
 
     sut.id = 'navtab';
     sut.headers = 'one, two';
-    sut.type = 'pill';
+    sut.context = 'pill';
 
     const $existing = sut.create();
     sut.headers = 'three,four';
-    sut.type = 'tab';
+    sut.context = 'tab';
 
     $existing.children[1].children[0].innerHTML = content1;
     $existing.children[1].children[1].innerHTML = content2;
@@ -179,7 +180,7 @@ describe('the tab element', () => {
 
     sut.id = 'navtab';
     sut.headers = 'one, two';
-    sut.type = 'pill';
+    sut.context = 'pill';
 
     const $existing = sut.create();
     sut.headers = 'one';
@@ -195,7 +196,7 @@ describe('the tab element', () => {
 
     sut.id = 'navtab';
     sut.headers = 'one';
-    sut.type = 'pill';
+    sut.context = 'pill';
 
     const $existing = sut.create();
     sut.headers = 'one,two';

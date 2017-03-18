@@ -18,7 +18,7 @@ const viewMap = {
   tabs: toViewPath('tabs'),
   text: toViewPath('text'),
   textarea: toViewPath('textarea'),
-  types: toViewPath('types')
+  contexts: toViewPath('contexts')
 }
 
 export default viewMap;

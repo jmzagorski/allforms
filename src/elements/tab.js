@@ -7,17 +7,18 @@ const defaults = stampit()
   .props({
     headers: '',
     id: null,
-    type: ''
+    context: '',
+    contexts: []
   });
 
 const metadata = stampit()
   .props({
-    schema: [ map.tabs, map.types ]
+    schema: [ map.tabs, map.contexts ]
   });
 
 export const bootstrap = stampit()
   .init(function() {
-    this.types = [ 'tab', 'pill' ];
+    this.contexts = [ 'tab', 'pill' ];
   })
   .methods({
     create() {
@@ -37,10 +38,10 @@ export const bootstrap = stampit()
       contentWrapper.style.border = '1px solid rgb(222, 226, 227)';
       contentWrapper.className = 'tab-content';
 
-      list.className = `nav nav-${this.type}s`;
+      list.className = `nav nav-${this.context}s`;
 
       for (let i = 0; i < headers.length; i++) {
-        const $tabHeader = _createBootstrapHeader(headers[i], this.id, this.type, list);
+        const $tabHeader = _createBootstrapHeader(headers[i], this.id, this.context, list);
         contentWrapper.appendChild($tabHeader.content);
         list.appendChild($tabHeader.item);
 
@@ -59,7 +60,7 @@ export const bootstrap = stampit()
       const domHeaders = $element.querySelectorAll('li');
       const contentWrapper = $element.children[1];
 
-      list.className = `nav nav-${this.type}s`;
+      list.className = `nav nav-${this.context}s`;
 
       // remove headers that no longer exist in the options
       for (let i = headers.length; i < domHeaders.length; i++) {
@@ -69,7 +70,7 @@ export const bootstrap = stampit()
       for (let i = 0; i < headers.length; i++) {
         let $liHeader = domHeaders[i]; // mutable!
         const optHeader = headers[i];
-        const newHeader = _createBootstrapHeader(optHeader, $element.id, this.type);
+        const newHeader = _createBootstrapHeader(optHeader, $element.id, this.context);
 
         // short circut
         if ($liHeader && $liHeader.textContent === optHeader) continue
@@ -96,7 +97,7 @@ export const bootstrap = stampit()
   })
   .compose(defaults, metadata);
 
-function _createBootstrapHeader(tabHeader, id, type) {
+function _createBootstrapHeader(tabHeader, id, context) {
   // make sure the id does not start with a number since this is not valid
   tabHeader = tabHeader.replace(/^[0-9]+(?=.*)/, '');
   const hrefId = (tabHeader + id).replace(/ /g, '');
@@ -104,7 +105,7 @@ function _createBootstrapHeader(tabHeader, id, type) {
   const a = DOM.createElement('a');
   const content = DOM.createElement('div');
 
-  a.setAttribute('data-toggle', type);
+  a.setAttribute('data-toggle', context);
   a.href = `#${hrefId}`;
   a.textContent = tabHeader;
 
