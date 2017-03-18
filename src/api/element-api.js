@@ -3,6 +3,9 @@ import { importFetch } from '../utils';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
+/**
+ * @implements {IElementApi}
+ */
 export class ElementApi {
   static inject() { return [ HttpClient ]; }
 
@@ -10,22 +13,11 @@ export class ElementApi {
     this._http = http;
   }
 
-  /**
-   * @desc A call to get one element by id
-   * @param {Number} id the id of the element
-   * @return {Element} the element
-   */
   async get(id) {
     return await this._http.fetch(`elements/${id}`)
       .then(response => response.json());
   }
 
-  /**
-   * @desc A call to save the element
-   * @param {Element} element the element object
-   * @return {Element} the new element returned from the api call, not the
-   * original passed in
-   */
   async save(element) {
     const url = element.id ? `elements/${element.id}` : 'elements';
     const method = element.id ? 'PUT' : 'POST';

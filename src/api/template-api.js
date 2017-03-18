@@ -3,6 +3,9 @@ import { importFetch } from '../utils';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
+/**
+ * @implements {ITemplateApi}
+ */
 export class TemplateApi {
   static inject() { return [ HttpClient ]; }
 
@@ -10,22 +13,11 @@ export class TemplateApi {
     this._http = http;
   }
 
-  /**
-   * @summary A call to get the template for a particular form
-   * @param {String} formId the id of the form
-   * @return {Promise<Object>} a promise for the template object from the server
-   */
   async get(formId) {
     return await this._http.fetch(`templates/${formId}`)
       .then(response => response.json());
   }
 
-  /**
-   * @summary edits an existing template
-   * @param {Object} template the template object
-   * @return {Promise<Object>} a promise for the template object from the server
-   *
-   */
   async edit(template) {
     return await this._http.fetch(`templates/${template.id}`, {
       method: 'PUT',
@@ -33,12 +25,6 @@ export class TemplateApi {
     }).then(response => response.json());
   }
 
-  /**
-   * @summary adds a new template
-   * @param {Object} template the template object
-   * @return {Promise<Object>} a promise for the template object from the server
-   *
-   */
   async add(template) {
     return await this._http.fetch('templates', {
       method: 'POST',
