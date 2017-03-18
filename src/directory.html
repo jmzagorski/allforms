@@ -2,9 +2,14 @@
   <section class="au-animate col-md-offset-2 col-md-8" >
     <div class="panel panel-default">
       <div class="panel-heading">
-        <button class="btn btn-xs btn-default" data-ng-click="addNew()">
-          New<i class="fa fa-fw fa-plus"></i>
-        </button>
+        <div class="btn-toolbar">
+          <button title="New" class="btn btn-xs btn-default" data-ng-click="addNew()">
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+          </button>
+          <button title="Copy" class="btn btn-xs btn-default" data-ng-click="addNew()">
+            <i class="fa fa-files-o" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
       <table class="table">
         <tbody>
