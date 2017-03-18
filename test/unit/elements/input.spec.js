@@ -18,6 +18,8 @@ describe('the input elements', () => {
     it('creates a bootstrap input type', () => {
       const sut = all[data.method].bootstrap();
       sut.text = 'a';
+      sut.name = 'b';
+      sut.required = true;
 
       const $elem = sut.create();
 
@@ -31,6 +33,8 @@ describe('the input elements', () => {
       const input = $elem.children[1];
       expect(input.tagName).toEqual('INPUT');
       expect(input.type).toEqual(data.type);
+      expect(input.name).toEqual('b');
+      expect(input.required).toBeTruthy();
       expect(input.className).toEqual('form-control');
     });
   });
@@ -43,8 +47,10 @@ describe('the input elements', () => {
     it('updates the bootstrap input', () => {
       const sut = all[data.method].bootstrap();
       sut.text = 'a'
+      sut.name = 'b'
       const $existing = sut.create();
-      sut.text = 'b'
+      sut.text = 'c'
+      sut.name = 'd' // IMP cant change name right now;
       sut.required = true; 
 
       const $updated = sut.create($existing);
@@ -53,8 +59,9 @@ describe('the input elements', () => {
 
       const $label = $updated.querySelector('label')
       const $input = $updated.querySelector('input')
-      expect($label.textContent).toEqual('b');
+      expect($label.textContent).toEqual('c');
       expect($input.required).toBeTruthy();
+      expect($input.name).toEqual('b');
     });
   });
 

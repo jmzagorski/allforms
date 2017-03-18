@@ -9,6 +9,7 @@ export function createInput(options) {
   $inputLabel.textContent = options.text;
   $input.type = options.type;
   $input.name = options.name;
+  $input.required = options.required;
   $input.className = 'form-control';
 
   $formgroup.appendChild($inputLabel);
