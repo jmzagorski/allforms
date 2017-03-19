@@ -1,5 +1,27 @@
 /* eslint-disable */
 
+export interface IAction {
+  /**
+   * @property {string} type the unique type of action
+   */
+  type: string;
+
+  /**
+   * @property {Object} [payload] an optional object containing the action data
+   */
+  payload: Object;
+
+  /**
+   * @property {Boolean} [error] indicator if the action is an error
+   */
+  error: boolean;
+
+  /**
+   * @property {Object} [metadata] any data not associated with the payload
+   */
+  metadata: Object;
+}
+
 /**
  * @summary The type describing the IElement
  *
