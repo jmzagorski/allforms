@@ -1,38 +1,53 @@
-import * as types from './element-actions';
+import * as actions from './actions';
 
 /**
- * @desc Listens and responds to element action types by creating or returning
- * the origina state
- *
+ * @desc Listens and responds to element actions by creating or returning
+ * the state
  */
 export default function elementReducer(state = { list: [], active: null }, action) {
   switch (action.type) {
-    case types.LOAD_ELEMENT_SUCCESS:
+    // when creating an element the active element is not an element yet until
+    // it runs ELEMENT_ADDED
+    case actions.CREATING_ELEMENT:
+        return Object.assign({}, state, {
+          active: null
+        });
+
+    case actions.RECEIVED_ELEMENT:
       const list = state ? state.list : [];
 
-      return Object.assign({}, state, {
-        active: action.element.id
-      }, {
-        list: [ ...list, action.element ]
+      // if an error occurs on receiving make sure there is nothing in the
+      // active property
+      if (action.error) {
+        return Object.assign({}, state, {
+          active: null
+        });
+      }
+
+      // make the received element active and add it to the list without
+      // duplicating it (hence the filter)
+      return Object.assign({}, state, { active: action.payload.id  }, {
+        list: [
+          ...list.filter(l => l.id !== action.payload.id),
+          action.payload
+        ]
       });
 
-    case types.ADD_ELEMENT_SUCCESS:
-      return Object.assign({}, state, {
-        active: action.element.id
-      }, {
-        list: [ ...state.list, Object.assign({}, action.element) ]
+    // make the newly added element active and add it to the list
+    case actions.ELEMENT_ADDED:
+      if (action.error) return state;
+
+      return Object.assign({}, state, { active: action.payload.id }, {
+        list: [ ...state.list, Object.assign({}, action.payload) ]
       });
 
-    case types.EDIT_ELEMENT_SUCCESS:
+    case actions.ELEMENT_EDITED:
+      if (action.error) return state;
+
       return Object.assign({}, state, {
         list: [
-          ...state.list.filter(elem => elem.id !== action.element.id),
-          Object.assign({}, action.element)]
-      });
-
-    case types.ELEMENT_NOT_FOUND:
-      return Object.assign({}, state, {
-        active: null
+          ...state.list.filter(elem => elem.id !== action.payload.id),
+          Object.assign({}, action.payload)]
       });
 
     default:

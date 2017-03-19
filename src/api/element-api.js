@@ -13,16 +13,16 @@ export class ElementApi {
     this._http = http;
   }
 
-  async get(id) {
-    return await this._http.fetch(`elements/${id}`)
+  get(id) {
+    return this._http.fetch(`elements/${id}`)
       .then(response => response.json());
   }
 
-  async save(element) {
+  save(element) {
     const url = element.id ? `elements/${element.id}` : 'elements';
     const method = element.id ? 'PUT' : 'POST';
 
-    return await this._http.fetch(url, {
+    return this._http.fetch(url, {
       method: method,
       body: json(element)
     }).then(response => response.json());

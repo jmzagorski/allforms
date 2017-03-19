@@ -1,4 +1,5 @@
 import { default as elemTypeSaga } from './sagas/element-type';
+import { default as elemSaga } from './sagas/element';
 import * as apis from './api/index'
 
 export default function setupRootSaga(http) {
@@ -13,7 +14,8 @@ export default function setupRootSaga(http) {
 
   return function*() {
     yield [
-      elemTypeSaga(elementTypeApi)
+      elemTypeSaga(elementTypeApi),
+      elemSaga(elementApi),
     ];
   }
 }

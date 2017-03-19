@@ -2,21 +2,25 @@ import creator from './elements/factory';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogController } from 'aurelia-dialog';
 import {
-  ElementActions,
   getActiveForm,
-  getActiveElement
+  creatingElement,
+  getActiveElement,
+  createElement,
+  requestElement,
+  editElement
 } from './domain/index';
 
 export class MetadataDialog {
-  static inject() { return [ ElementActions, DialogController, Store ]; }
+  static inject() { return [ DialogController, Store ]; }
 
-  constructor(elementActions, dialog, store) {
+  constructor(dialog, store) {
     this.model = {};
     this.schemas = [];
+    this.isNew = false;
 
+    this._unsubscribe = null;
     this._dialog = dialog;
-    this._store = store;
-    this._elementActions = elementActions;
+    this._store = store; 
   }
 
   get element() {
@@ -30,26 +34,47 @@ export class MetadataDialog {
   /**
    * @summary activates the dialog
    * @desc activates the dialog by loading or creating an element object
-   * @param {Object} model an object who has a type property and optional id
+   * @param {Object} element the IElement object
    * @return {Promise<void>} a promise to activate the view
    */
-  async activate(model) {
+  activate(element) {
     const form = getActiveForm(this._state);
-    this.model = creator(form.style, model.type);
-
+    this.model = creator(form.style, element.type);
     // always need this, it is the relationship to the form
     this.model.formId = form.id;
-
     this.model.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
 
-    await this._elementActions.loadElement(model.id);
-    Object.assign(this.model, model, this.element);
+    if (!element.id) {
+      this.isNew = true;
+      Object.assign(this.model, element);
+      this._store.dispatch(creatingElement(this.model));
+    } else {
+      this._store.dispatch(requestElement(element.id));
+      Object.assign(this.model, element, this.element);
+    }
   }
 
-  async submit() {
-    await this._elementActions.saveElement(this.model);
-    await this._dialog.ok(Object.assign(this.model, this.element));
+  submit() {
+    const actionCreator = this.isNew ? createElement : editElement;
+
+    // wait for the store to update to automatically signal ok
+    this._unsubscribe = this._store.subscribe(async () => await this._ok());
+
+    this._store.dispatch(actionCreator(this.model));
   }
 
-  cancel = async () => await this._dialog.cancel();
+  async cancel() {
+    await this._dialog.cancel();
+  }
+
+  deactivate() {
+    if (this._unsubscribe) this._unsubscribe();
+  }
+
+  // the element needs an id before proceeding!
+  async _ok() {
+    if (this.element && this.element.id) {
+      await this._dialog.ok(Object.assign(this.model, this.element));
+    }
+  }
 }
