@@ -1,4 +1,4 @@
-import * as typeSelectors from '../../src/domain/element-type/element-type-selectors';
+import * as typeSelectors from '../../src/domain/element-type/selectors';
 import * as templateSelectors from '../../src/domain/template/template-selectors';
 import * as formSelectors from '../../src/domain/form/form-selectors';
 import { Design } from '../../src/design';
