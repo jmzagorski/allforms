@@ -34,7 +34,6 @@ interface IFormApi {
    */
   getAll(): Promise<IForm>;
 
-
   /**
    * @summary A call to save a new or existing form
    * @param {IForm} form the IForm object to save
@@ -57,7 +56,7 @@ interface ITemplateApi {
    * @param {string} formId the id of the ITemplate
    * @return {Promise<ITemplate>} a promise for the template object
    */
-  get(formId: string): Promise<ITemplate>
+  get(formId: string): Promise<ITemplate>;
 
   /**
    * @summary add a new ITemplate object
