@@ -13,8 +13,8 @@ export class ElementTypeApi {
     this._http = http;
   }
 
-  async getAll() {
-    return await this._http.fetch('element-types')
+  getAll() {
+    return this._http.fetch('element-types')
       .then(response => response.json());
   }
 }

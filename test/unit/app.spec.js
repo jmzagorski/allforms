@@ -1,25 +1,21 @@
-import HttpConfig from '../../src/config/http-client';
 import { App } from '../../src/app';
 import { Store } from 'aurelia-redux-plugin';
-import * as selectors from '../../src/domain/member/member-selectors';
 import { setupSpy } from './jasmine-helpers';
+import * as selectors from '../../src/domain/member/member-selectors';
 
 describe('the app view model', () => {
   let sut;
-  let httpConfSpy;
   let routerConfFxSpy;
   let initialStateFxSpy;
   let storeSpy;
 
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
-    httpConfSpy = setupSpy('httpConf', HttpConfig.prototype);
     routerConfFxSpy = jasmine.createSpy('routerConf');
     initialStateFxSpy = jasmine.createSpy('initialState');
 
     sut = new App(
       { configure: routerConfFxSpy },
-      httpConfSpy,
       { configure: initialStateFxSpy },
       storeSpy
     );
@@ -27,13 +23,6 @@ describe('the app view model', () => {
     storeSpy.getState.and.returnValue({
       member: { loginName: 'joe' }
     });
-  });
-
-  it('configures the http client', async done => {
-    await sut.activate();
-
-    expect(httpConfSpy.configure.calls.count()).toEqual(1);
-    done();
   });
 
   it('configures the router client', async done => {

@@ -1,18 +1,19 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from './metadata-dialog';
+import { select } from 'redux-saga/effects';
 import {
   TemplateActions,
-  ElementTypeActions,
   getTemplate,
   getActiveForm,
-  getElementTypes
+  getElementTypes,
+  requestElementTypes
 } from './domain/index';
 
 export class Design {
-  static inject() { return [ Store, ElementTypeActions, DialogService, TemplateActions ]; }
+  static inject() { return [ Store, DialogService, TemplateActions ]; }
 
-  constructor(store, elementTypeActions, dialogService, templateActions) {
+  constructor(store, dialogService, templateActions) {
     this.html = '';
     this.style = null;
     this.designer = {};
@@ -20,7 +21,6 @@ export class Design {
 
     this._store = store;
     this._templateActions = templateActions;
-    this._elementTypeActions = elementTypeActions;
     this._dialogService = dialogService;
   }
 
@@ -33,7 +33,8 @@ export class Design {
   }
 
   async activate(params) {
-    await this._elementTypeActions.loadAll();
+    this._store.dispatch(requestElementTypes())
+
     await this._templateActions.loadTemplateFor(params.form);
 
     const template = getTemplate(this._state);

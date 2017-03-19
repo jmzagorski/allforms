@@ -6,8 +6,8 @@ import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from '../../src/metadata-dialog';
 import {
+  requestElementTypes,
   TemplateActions,
-  ElementTypeActions
 } from '../../src/domain/index';
 import { setupSpy } from './jasmine-helpers';
 import using from 'jasmine-data-provider';
@@ -15,7 +15,6 @@ import using from 'jasmine-data-provider';
 describe('the design view model', () => {
   let sut;
   let templateActionSpy;
-  let elemTypeActionSpy;
   let templateSelectorSpy;
   let elemTypeSelectorSpy;
   let formSelectorSpy;
@@ -24,13 +23,12 @@ describe('the design view model', () => {
 
   beforeEach(() => {
     templateActionSpy = setupSpy('templateAction', TemplateActions.prototype);
-    elemTypeActionSpy = setupSpy('elemTypeAction', ElementTypeActions.prototype);
     storeSpy = setupSpy('store', Store.prototype);
     dialogSpy = setupSpy('dialog', DialogService.prototype);
     templateSelectorSpy = spyOn(templateSelectors, 'getTemplate');
     elemTypeSelectorSpy = spyOn(typeSelectors, 'getElementTypes');
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
-    sut = new Design(storeSpy, elemTypeActionSpy, dialogSpy, templateActionSpy);
+    sut = new Design(storeSpy, dialogSpy, templateActionSpy);
 
     formSelectorSpy.and.returnValue({ style: '', id: 'abc' });
     templateSelectorSpy.and.returnValue({ html: '' });
@@ -56,14 +54,9 @@ describe('the design view model', () => {
   });
 
   it('loads the element types during activate', async done => {
-    // make sure the loading is before the state calling
-    elemTypeActionSpy.loadAll.and.callFake(() => {
-      expect(storeSpy.getState.calls.count()).toEqual(0);
-    });
-
     await sut.activate({ form: 'a' });
 
-    expect(elemTypeActionSpy.loadAll).toHaveBeenCalled();
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestElementTypes());
     done();
   });
 
