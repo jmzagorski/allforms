@@ -47,9 +47,9 @@ export default class {
         moduleId: './lookups',
         nav: false
       }, {
-        route: '/:form/users',
-        name: 'users',
-        moduleId: './users',
+        route: '/:form/contributors',
+        name: 'contributors',
+        moduleId: './contributors',
         nav: false
       }, {
         route: '/:form/history',

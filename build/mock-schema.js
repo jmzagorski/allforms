@@ -51,11 +51,7 @@ export const schema = {
             "type": "string",
             "faker": "lorem.word",
             "unique": true
-          },
-          "formula": {
-            "type": "string",
-            "faker": "lorem.sentence"
-          },
+          }
         },
         "required": [ "id", "formId" ]
       }
@@ -68,72 +64,72 @@ export const schema = {
       "items": {
         "enum": [
           {
-            "name": 1,
+            "id": 1,
             "builder": "label",
             "caption": "Label"
           },
           {
-            "name": 2,
+            "id": 2,
             "builder": "text",
             "caption": "Text"
           },
           {
-            "name": 3,
+            "id": 3,
             "builder": "number",
             "caption": "Number"
           },
           {
-            "name": 4,
+            "id": 4,
             "builder": "date",
             "caption": "Date"
           },
           {
-            "name": 5,
+            "id": 5,
             "builder": "checkbox",
             "caption": "Yes/No"
           },
           {
-            "name": 6,
+            "id": 6,
             "builder": "radio",
             "caption": "Options"
           },
           {
-            "name": 7,
+            "id": 7,
             "builder": "select",
             "caption": "List"
           },
           {
-            "name": 8,
+            "id": 8,
             "builder": "link",
             "caption": "Link"
           },
           {
-            "name": 9,
+            "id": 9,
             "builder": "iframe",
             "caption": "Sub-form"
           },
           {
-            "name": 10,
+            "id": 10,
             "builder": "attachments",
             "caption": "Attachment"
           },
           {
-            "name": 11,
+            "id": 11,
             "builder": "tab",
             "caption": "Tabs"
           },
           {
-            "name": 12,
+            "id": 12,
             "builder": "header",
             "caption": "Header"
           },
           {
-            "name": 13,
+            "id": 13,
             "builder": "formula",
             "caption": "Formula"
           },
           {
-            "name": 14,
+            "id": 14,
             "builder": "textarea",
             "caption": "Text-Resize"
           }
@@ -165,10 +161,6 @@ export const schema = {
             "enum": [
               "bootstrap"
             ]
-          },
-          "snapshot": {
-            "type": "string",
-            "faker": "date.past"
           },
           "lastComment": {
             "type": "string",
@@ -222,7 +214,7 @@ export const schema = {
                   "priority": 6
                 },
                 {
-                  "name": "users",
+                  "name": "contributors",
                   "lastComment": "removed an unauth user now",
                   "lastEditInDays": 60,
                   "icon": "file-text-o",

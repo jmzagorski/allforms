@@ -38,7 +38,7 @@ describe('the router configuration', () => {
     });
   });
 
-  using(['view', 'design', 'lookups', 'users', 'history', 'snapshots', 'settings'], route => {
+  using(['view', 'design', 'lookups', 'contributors', 'history', 'snapshots', 'settings'], route => {
     it('should have a sub route off the from dir', () => {
       expect(sut.router.routes).toContain({
         route: '/:form/' + route,
