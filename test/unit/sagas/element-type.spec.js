@@ -6,20 +6,21 @@ describe('the element type saga', () => {
 
   it('watches the other functions', () => {
     const api = {};
-  
+
     const iterator = saga.default(api);
-    const expected = takeLatest('REQUEST_ELEMENT_TYPES', saga.getAllElementTypes, api);
 
-    const actual = iterator.next().value;
-
-    expect(actual).toEqual(expected)
-  })
+    expect(iterator.next().value).toEqual(
+      takeLatest('REQUEST_ELEMENT_TYPES', saga.getAllElementTypes, api)
+    );
+    expect(iterator.next()).toEqual({
+      done: true, value: undefined
+    });
+  });
 
   it('gets the element types', () => {
     const api = { getAll: () => { } };
-    const action= {};
 
-    const iterator = saga.getAllElementTypes(api, action);
+    const iterator = saga.getAllElementTypes(api, {});
 
     expect(iterator.next().value).toEqual(
       call([api, api.getAll])
@@ -31,5 +32,21 @@ describe('the element type saga', () => {
       done: true,
       value: undefined
     });
-  })
+  });
+
+  it('sends an error in the catch of getting the element types', () => {
+    const api = { getAll: () => { } };
+    const err = new Error();
+
+    const iterator = saga.getAllElementTypes(api, {});
+    iterator.next();
+    
+    expect(iterator.throw(err).value).toEqual(
+      put(receivedElementTypes(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
 });
