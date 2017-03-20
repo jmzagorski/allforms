@@ -1,4 +1,4 @@
-import * as selectors from '../../../../src/domain/template/template-selectors';
+import * as selectors from '../../../../src/domain/template/selectors';
 
 describe('the template selectors', () => {
 

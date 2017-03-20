@@ -5,7 +5,7 @@ describe('the template reducer', () => {
   var sut;
 
   using([ 'LOAD_TEMPLATE_SUCCESS', 'ADD_TEMPLATE_SUCCESS' ], type => {
-    it('returns the action template on load success', () => {
+    it('returns the action template on load and add success', () => {
       const pTemplate = {};
       const action = {
         type,

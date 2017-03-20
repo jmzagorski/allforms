@@ -2,7 +2,7 @@ import { TemplateApi } from '../../../../src/api/template-api';
 import { TemplateActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { setupSpy } from '../../jasmine-helpers';
-import * as selectors from '../../../../src/domain/template/template-selectors';
+import * as selectors from '../../../../src/domain/template/selectors';
 import using from 'jasmine-data-provider';
 
 describe('the template actions', () => {

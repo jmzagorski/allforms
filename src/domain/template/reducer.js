@@ -1,7 +1,7 @@
 import {
   LOAD_TEMPLATE_SUCCESS,
   ADD_TEMPLATE_SUCCESS
-} from './template-actions';
+} from './actions';
 
 export default function templateReducer(state = { }, action) {
   switch (action.type) {

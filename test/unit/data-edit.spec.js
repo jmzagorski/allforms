@@ -5,7 +5,7 @@ import {
   TemplateActions,
   getTemplate
 } from '../../src/domain/index';
-import * as selectors from '../../src/domain/template/template-selectors';
+import * as selectors from '../../src/domain/template/selectors';
 
 describe('edit data view model', () => {
   let storeSpy;

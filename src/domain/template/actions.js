@@ -1,6 +1,6 @@
 import { TemplateApi } from '../../api/template-api';
 import { Store } from 'aurelia-redux-plugin';
-import { getTemplate } from './template-selectors';
+import { getTemplate } from './selectors';
 
 export const LOAD_TEMPLATE_SUCCESS = 'LOAD_TEMPLATE_SUCCESS';
 export const ADD_TEMPLATE_SUCCESS = 'ADD_TEMPLATE_SUCCESS';

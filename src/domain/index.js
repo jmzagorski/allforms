@@ -1,5 +1,3 @@
-import template from './template/template-reducer';
-
 export * from './element-type/actions';
 export * from './element-type/selectors';
 export { default as elementTypes } from './element-type/reducer';
@@ -19,9 +17,6 @@ export * from './member/actions';
 export * from './member/selectors';
 export { default as member } from './member/reducer';
 
-export * from './template/template-actions';
-export * from './template/template-selectors';
-
-export {
-  template
-}
+export * from './template/actions';
+export * from './template/selectors';
+export { default as template } from './template/reducer';
