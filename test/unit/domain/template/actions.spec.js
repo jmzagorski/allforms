@@ -1,8 +1,8 @@
 import { TemplateApi } from '../../../../src/api/template-api';
-import { TemplateActions } from '../../../../src/domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { setupSpy } from '../../jasmine-helpers';
 import * as selectors from '../../../../src/domain/template/selectors';
+import * as actions from '../../../../src/domain/template/actions';
 import using from 'jasmine-data-provider';
 
 describe('the template actions', () => {
@@ -14,7 +14,7 @@ describe('the template actions', () => {
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     apiSpy = setupSpy('api', TemplateApi.prototype);
-    sut = new TemplateActions(apiSpy, storeSpy);
+    sut = new actions.TemplateActions(apiSpy, storeSpy);
 
     selectorSpy = spyOn(selectors, 'getTemplate');
   });
@@ -76,5 +76,61 @@ describe('the template actions', () => {
     });
     expect(storeSpy.dispatch.calls.argsFor(0)[0].template).toBe(serverTemplate);
     done();
+  });
+
+  it('creates the action to request a template', () => {
+    const expected = {
+      type: 'REQUEST_TEMPLATE',
+      payload: { id: 1 }
+    };
+
+    const actual = actions.requestTemplate(1);
+
+    expect(actual).toEqual(expected);
+  });
+
+  [ true, false ].forEach(error => {
+    it('creates the action for a received template', () => {
+      const payload = { id: 1 };
+      const expected = {
+        type: 'RECEIVED_TEMPLATE',
+        payload,
+        error
+      };
+
+      const actual = actions.receivedTemplate(payload, error);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  [ true, false ].forEach(error => {
+    it('creates the action for a created template', () => {
+      const payload = { id: 1 };
+      const expected = {
+        type: 'TEMPLATE_CREATED',
+        payload,
+        error
+      };
+
+      const actual = actions.templateCreated(payload, error);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  [ true, false ].forEach(error => {
+    it('creates the action for an edited template', () => {
+      const payload = { id: 1 };
+      const expected = {
+        type: 'TEMPLATE_EDITED',
+        payload,
+        error
+      };
+
+      const actual = actions.templateEdited(payload, error);
+
+      expect(actual).toEqual(expected);
+    });
   });
 });
