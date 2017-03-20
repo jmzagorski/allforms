@@ -1,5 +1,5 @@
 import { HttpStub } from '../stubs';
-import { MemberApi } from '../../../src/api/member-api';
+import { MemberApi } from '../../../src/api/index';
 
 describe('the member api', () => {
   let sut;

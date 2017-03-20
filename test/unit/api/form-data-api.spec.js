@@ -1,5 +1,5 @@
 import { HttpStub } from '../stubs';
-import { FormDataApi } from '../../../src/api/form-data';
+import { FormDataApi } from '../../../src/api/index';
 
 describe('the form data api', () => {
   let sut;

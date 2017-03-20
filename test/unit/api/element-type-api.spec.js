@@ -1,5 +1,5 @@
 import { HttpStub } from '../stubs';
-import { ElementTypeApi } from '../../../src/api/element-type';
+import { ElementTypeApi } from '../../../src/api/index';
 
 describe('the element type api', () => {
   let sut;

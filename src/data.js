@@ -1,5 +1,5 @@
 import { Router } from 'aurelia-router';
-import { FormDataApi } from './api/form-data';
+import { FormDataApi } from './api/index';
 import { getFormData } from './domain/index';
 
 /**

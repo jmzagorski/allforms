@@ -1,5 +1,5 @@
 import { Router } from 'aurelia-router';
-import { FormDataApi } from '../../src/api/form-data';
+import { FormDataApi } from '../../src/api/index';
 import { getFormData } from '../../src//domain/index';
 import { setupSpy } from './jasmine-helpers';
 import { Data} from '../../src/data';

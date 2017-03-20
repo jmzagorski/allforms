@@ -1,5 +1,5 @@
 import { HttpStub } from '../stubs';
-import { TemplateApi } from '../../../src/api/template-api';
+import { TemplateApi } from '../../../src/api/index';
 import using from 'jasmine-data-provider';
 
 describe('the template api', () => {

@@ -1,6 +1,6 @@
 import using from 'jasmine-data-provider';
 import { HttpStub } from '../stubs';
-import { ElementApi } from '../../../src/api/element-api';
+import { ElementApi } from '../../../src/api/index';
 
 describe('the element api', () => {
   let sut;
