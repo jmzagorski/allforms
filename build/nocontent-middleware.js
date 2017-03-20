@@ -6,12 +6,23 @@
  */
 module.exports = function (req, res, next) {
   // not sure why baseUrl is empty
-  var watching = req.path.lastIndexOf('/api/templates', 0) === 0;
+  var isWatching = watching(req.path, '/api/templates') ||
+    watching('/api/form-settings');
 
-  if (watching && !res.locals.data) {
-    // if you set the data property than json-server will not throw a 404
+  var nocontent = !res.locals.data;
+
+  if (isWatching && nocontent) {
+    // if you dont set the data property then json-server will not throw a 404
     res.locals.data = {};
   }
 
+  if (req.path.match(/\/api\/forms\/[a-z]+\/form-data/i) && nocontent) {
+    res.locals.data = [];
+  }
+
   next();
+}
+
+function watching(path, api) {
+  return path.lastIndexOf(api, 0) === 0;
 }

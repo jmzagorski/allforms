@@ -17,9 +17,24 @@ export default class {
       c.title = 'AllForms';
 
       c.map([{
-        route: ['', '/:form/allforms'],
+        route: ['', '/allforms'],
         name: 'allforms',
         moduleId: './forms',
+        nav: false
+      }, {
+        route: '/:form/data',
+        name: 'data',
+        moduleId: './data',
+        nav: false
+      }, {
+        route: '/:form/data/:formDataId',
+        name: 'formData',
+        moduleId: './data-edit',
+        nav: false
+      }, {
+        route: '/:form/data/new',
+        name: 'newData',
+        moduleId: './data-new',
         nav: false
       }, {
         route: '/:form',

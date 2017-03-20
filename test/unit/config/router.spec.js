@@ -22,7 +22,7 @@ describe('the router configuration', () => {
 
   it('should have a forms route', () => {
     expect(sut.router.routes).toContain({
-      route: ['', '/:form/allforms'],
+      route: ['', '/allforms'],
       name: 'allforms',
       moduleId: './forms',
       nav: false
@@ -38,7 +38,25 @@ describe('the router configuration', () => {
     });
   });
 
-  using(['view', 'design', 'lookups', 'contributors', 'history', 'snapshots', 'settings'], route => {
+  it('should have a data edit route', () => {
+    expect(sut.router.routes).toContain({
+      route: '/:form/data/:formDataId',
+      name: 'formData',
+      moduleId: './data-edit',
+      nav: false
+    });
+  });
+
+  it('should have a data new route', () => {
+    expect(sut.router.routes).toContain({
+      route: '/:form/data/new',
+      name: 'newData',
+      moduleId: './data-new',
+      nav: false
+    });
+  });
+
+  using(['view', 'design', 'data', 'lookups', 'contributors', 'history', 'snapshots', 'settings'], route => {
     it('should have a sub route off the from dir', () => {
       expect(sut.router.routes).toContain({
         route: '/:form/' + route,

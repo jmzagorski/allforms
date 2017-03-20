@@ -1,0 +1,33 @@
+<template>
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <a title="New" href.bind="routeToNew" class="btn btn-xs btn-default">
+          <i class="fa fa-asterisk" aria-hidden="true"></i>
+        </a>
+      </div>
+      <table>
+        <tbody>
+          <tr repeat.for="d of dataList">
+            <td>
+              <button title="Capture Data" class="btn btn-xs btn-default"
+                click.delegate="capture(d.id)">
+                <i class="fa fa-camera-retro" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td><a href="${d.url}">${d.name}</a></td>
+            <td>${d.lastEdit | dateFormat}</td>
+            <td>${d.memberName}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-muted" show.bind="!dataList.length">
+      <span class="glyphicon glyphicon-arrow-up"></span>
+      Click the <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+      located at the top of the panel to create your first data form!
+    </div>
+
+  </section>
+</template>
