@@ -7,8 +7,11 @@ export * from './element-type/selectors';
 export { default as elementTypes } from './element-type/reducer';
 
 export * from './element/actions';
-export * from './element/element-selectors';
-export { default as elements } from './element/element-reducer';
+export * from './element/selectors';
+export { default as elements } from './element/reducer';
+
+export * from './form-data/actions';
+export { default as formData } from './form-data/reducer';
 
 export * from './member/member-actions';
 export * from './template/template-actions';
