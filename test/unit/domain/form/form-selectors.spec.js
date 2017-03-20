@@ -1,4 +1,4 @@
-import * as selectors from '../../../../src/domain/form/form-selectors';
+import * as selectors from '../../../../src/domain/form/selectors';
 
 describe('the form selectors', () => {
   let state;

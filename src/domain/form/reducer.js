@@ -1,7 +1,7 @@
 import {
   LOAD_FORMS_SUCCESS,
   ACTIVATE_FORM_SUCCESS
-} from './form-actions';
+} from './actions';
 
 export default function formReducer(state = {}, action) {
   switch (action.type) {
