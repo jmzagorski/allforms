@@ -42,6 +42,30 @@ interface IFormApi {
   save(form: IForm): Promise<IForm>;
 }
 
+interface IFormDataApi {
+  
+  /**
+   * @summary gets an array of IFormDataSummary
+   * @param {string} formId the id master (parent) form template
+   * @return {Promise<IFormData>} a promise for the IFormDataSummary array
+   */
+  get(formId: string): Promise<IFormDataSummary>;
+
+  /**
+   * @summary gets the IFormData object by id
+   * @param {number} id the id of the IFormData object
+   * @return {Promise<IFormData>} a promise for the IFormData object
+   */
+  get(formDataId: number): Promise<IFormDataObject>;
+
+  /**
+   * @summary saves a new or existing IFormData object
+   * @param {IFormData} formData the IFormData object
+   * @return {Promise<IFormData>} a promise for the new IFormData object
+   */
+  save(formData: IFormData): Promise<IFormData>;
+}
+
 interface IMemberApi {
   /**
    * @summary A call to get the current member
