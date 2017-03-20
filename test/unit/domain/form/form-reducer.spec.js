@@ -2,8 +2,6 @@ import { forms } from '../../../../src/domain/index';
 import using from 'jasmine-data-provider';
 
 describe('the form reducer', () => {
-  var sut;
-
   using([
     { state: null, list: [], returnState: { list: [] } },
     { state: { b: 'a' }, list: [], returnState: { b: 'a', list: [] } }

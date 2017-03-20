@@ -25,6 +25,7 @@ describe('the element actions', () => {
       const actual = domain.receivedElement(data, hasError);
 
       expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(data);
     });
   });
 
@@ -38,6 +39,7 @@ describe('the element actions', () => {
     const actual = domain.createElement(data);
 
     expect(actual).toEqual(expected);
+    expect(actual.payload).toBe(data);
   });
 
   it('creates the action for editing an element', () => {
@@ -50,6 +52,7 @@ describe('the element actions', () => {
     const actual = domain.editElement(data);
 
     expect(actual).toEqual(expected);
+    expect(actual.payload).toBe(data);
   });
 
   [ true, false ].forEach(hasError => {
@@ -64,6 +67,7 @@ describe('the element actions', () => {
       const actual = domain.elementAdded(data, hasError);
 
       expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(data);
     });
   });
 
@@ -79,6 +83,7 @@ describe('the element actions', () => {
       const actual = domain.elementEdited(data, hasError);
 
       expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(data);
     });
   });
 
@@ -92,5 +97,6 @@ describe('the element actions', () => {
     const actual = domain.creatingElement(data);
 
     expect(actual).toEqual(expected);
+    expect(actual.payload).toBe(data);
   });
 });
