@@ -1,5 +1,6 @@
 import { default as elemTypeSaga } from './sagas/element-type';
 import { default as elemSaga } from './sagas/element';
+import { default as formDataSaga } from './sagas/form-data';
 import * as apis from './api/index'
 
 export default function setupRootSaga(http) {
@@ -16,6 +17,7 @@ export default function setupRootSaga(http) {
     yield [
       elemTypeSaga(elementTypeApi),
       elemSaga(elementApi),
+      formDataSaga(formDataApi)
     ];
   }
 }
