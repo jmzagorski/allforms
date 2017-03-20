@@ -1,5 +1,8 @@
 /* eslint-disable */
 
+/**
+ * @summary interface for action object
+ */
 export interface IAction {
   /**
    * @property {string} type the unique type of action
@@ -162,4 +165,52 @@ export interface ITemplate {
    * @property {string} html the html string for the template
    */
   html: string;
+}
+
+
+/**
+ * @summary the interface for form roll up instances based off the master form
+ */
+export interface IFormDataSummary {
+  /**
+   * @property {number} id the id of the form instance
+   */
+  id: number;
+
+ /**
+  * @property {string} name the friendly name
+  */
+  name:string;
+
+  /**
+   * @property {date} lastEdit the last edit date to the data
+   *
+   */
+  lastEdit: date;
+
+  /**
+   * @property {member} string the member name who owns the form
+   */
+  memberName: string;
+
+  /**
+   * @property {formId} string the associated master form id
+   */
+  formId: string;
+}
+
+/**
+ * @summary the interface for form that has the actual data
+ */
+export interface IFormData {
+  /**
+   * @property {number} id the id of the form instance
+   */
+  id: number;
+
+  /**
+   * @property {data} object key/value object that has the name of the input
+   * field and the value
+   */
+  data: Object;
 }

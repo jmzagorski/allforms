@@ -136,6 +136,50 @@ export const schema = {
         ]
       }
     },
+    "form-data": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "unique": true
+          },
+          "name": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          },
+          "lastEdit": {
+            "type": "string",
+            "faker": "date.past"
+          },
+          "memberName": {
+            "type": "string",
+            "faker": "name.firstName"
+          },
+          "formId": {
+            "type": "string"
+          }
+        },
+        "required": [ "id", "name", "lastEdit", "memberName", "formId" ]
+      }
+    },
+    "form-settings": {
+      "type": "object",
+      "properties": {
+        "namePattern": {
+          "type": "string",
+          "faker": "random.uuid"
+        },
+        "api": {
+          "type": "string",
+          "faker": "internet.url"
+        }
+      }
+    },
     "forms": {
       "type": "array",
       "minItems": 5,
@@ -179,7 +223,7 @@ export const schema = {
             "items": {
               "enum": [
                 {
-                  "name": "allforms",
+                  "name": "data",
                   "lastComment": "the last comment in all the forms",
                   "lastEditInDays": 30,
                   "icon": "folder",
