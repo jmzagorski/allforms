@@ -1,4 +1,3 @@
-import member from './member/member-reducer';
 import template from './template/template-reducer';
 
 export * from './element-type/actions';
@@ -16,11 +15,13 @@ export * from './form/actions';
 export * from './form/selectors';
 export { default as forms } from './form/reducer';
 
-export * from './member/member-actions';
+export * from './member/actions';
+export * from './member/selectors';
+export { default as member } from './member/reducer';
+
 export * from './template/template-actions';
 export * from './template/template-selectors';
-export * from './member/member-selectors';
 
 export {
-  member, template
+  template
 }

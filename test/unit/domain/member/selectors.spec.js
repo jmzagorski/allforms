@@ -1,4 +1,4 @@
-import * as selectors from '../../../../src/domain/member/member-selectors';
+import * as selectors from '../../../../src/domain/member/selectors';
 
 describe('the member selectors', () => {
   let state;

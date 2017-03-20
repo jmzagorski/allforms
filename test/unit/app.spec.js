@@ -1,7 +1,7 @@
 import { App } from '../../src/app';
 import { Store } from 'aurelia-redux-plugin';
 import { setupSpy } from './jasmine-helpers';
-import * as selectors from '../../src/domain/member/member-selectors';
+import * as selectors from '../../src/domain/member/selectors';
 
 describe('the app view model', () => {
   let sut;
