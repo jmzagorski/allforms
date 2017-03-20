@@ -1,5 +1,5 @@
 import * as formSelectors from '../../src/domain/form/form-selectors';
-import * as elemSelectors from '../../src/domain/element/element-selectors';
+import * as elemSelectors from '../../src/domain/element/selectors';
 import * as creator from '../../src/elements/factory';
 import {
   requestElement,
