@@ -1,20 +1,27 @@
 import { template } from '../../../../src/domain/index';
-import using from 'jasmine-data-provider';
 
 describe('the template reducer', () => {
-  var sut;
 
-  using([ 'LOAD_TEMPLATE_SUCCESS', 'ADD_TEMPLATE_SUCCESS' ], type => {
-    it('returns the action template on load and add success', () => {
-      const pTemplate = {};
+  it('returns the state when there is an errro on received', () => {
+    const state = {};
+    const action = { error: true, type: 'RECEIVED_TEMPLATE' }
+
+    const newState = template(state, {});
+
+    expect(newState).toBe(state);
+  });
+
+  [ 'RECEIVED_TEMPLATE', 'TEMPLATE_CREATED', 'TEMPLATE_EDITED' ].forEach(type => {
+    it('returns the template for actions', () => {
+      const payload = {};
       const action = {
         type,
-        template: pTemplate
-      };
+        payload
+      }
 
-      const state = template(null, action);
+      const newState = template(null, action);
 
-      expect(state).toBe(pTemplate);
+      expect(newState).toBe(payload);
     });
   });
 

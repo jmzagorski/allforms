@@ -1,13 +1,16 @@
-import {
-  LOAD_TEMPLATE_SUCCESS,
-  ADD_TEMPLATE_SUCCESS
-} from './actions';
+import * as actions from './actions';
 
 export default function templateReducer(state = null, action) {
   switch (action.type) {
-    case LOAD_TEMPLATE_SUCCESS:
-    case ADD_TEMPLATE_SUCCESS:
-      return action.template;
+    case actions.RECEIVED_TEMPLATE:
+      if (action.error) return state;
+
+      return action.payload;
+
+    case actions.TEMPLATE_CREATED:
+    case actions.TEMPLATE_EDITED:
+      return action.payload;
+
     default:
       return state;
   }
