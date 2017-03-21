@@ -87,7 +87,7 @@ interface ITemplateApi {
    * @param {ITemplate} template the new ITemplate object
    * @return {Promise<ITemplate>} a promise for the template object from the server
    */
-  edit(template: ITemplate): Promise<ITemplate>;
+  add(template: ITemplate): Promise<ITemplate>;
 
   /**
    * @summary edits an existing ITemplate object
@@ -100,5 +100,4 @@ interface ITemplateApi {
    * @param {ITemplate} template the ITemplate object
    * @return {Promise<ITemplate>} a promise for the template object from the server
    */
-  edit(template: ITemplate): Promise<ITemplate>;
 }
