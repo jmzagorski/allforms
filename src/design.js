@@ -3,44 +3,49 @@ import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from './metadata-dialog';
 import { select } from 'redux-saga/effects';
 import {
-  TemplateActions,
+  requestTemplate,
+  createTemplate,
+  editTemplate,
+  requestElementTypes,
   getTemplate,
   getActiveForm,
-  getElementTypes,
-  requestElementTypes
+  getElementTypes
 } from './domain/index';
 
 export class Design {
-  static inject() { return [ Store, DialogService, TemplateActions ]; }
+  static inject() { return [ Store, DialogService ]; }
 
-  constructor(store, dialogService, templateActions) {
+  constructor(store, dialogService) {
     this.html = '';
     this.style = null;
     this.designer = {};
     this.interactable = 'drag';
 
+    this._isNewTemplate = false;
     this._store = store;
-    this._templateActions = templateActions;
     this._dialogService = dialogService;
+  }
+
+
+  get elementTypes() {
+    return getElementTypes(this._state);
+  }
+
+  get _template() {
+    return getTemplate(this._state);
   }
 
   get _state() {
     return this._store.getState();
   }
 
-  get elementTypes() {
-    return getElementTypes(this._state);
-  }
-
-  async activate(params) {
+  activate(params) {
     this._store.dispatch(requestElementTypes())
+    this._store.dispatch(requestTemplate(params.form))
 
-    await this._templateActions.loadTemplateFor(params.form);
-
-    const template = getTemplate(this._state);
     const form = getActiveForm(this._state);
 
-    this.html = template.html || this.html;
+    this.html = this._template ? this._template.html : this.html;
     this.style = form.style;
     this.formId = form.id;
   }
@@ -64,14 +69,26 @@ export class Design {
 
     if (!result.wasCancelled) {
       this.designer.createElement(result.output);
-      await this.saveTemplate();
+      this.saveTemplate();
     }
   }
 
-  async saveTemplate() {
-    this._templateActions.save({
-      id: this.formId,
-      html: this.designer.element.innerHTML
-    });
+  saveTemplate() {
+    let action = null
+
+    if (this._template) {
+      action = editTemplate({
+        id: this.formId,
+        html: this.designer.element.innerHTML
+      });
+    } else {
+      action = createTemplate({
+        id: this.formId,
+        html: this.designer.element.innerHTML
+      });
+    }
+
+    debugger;
+    this._store.dispatch(action);
   }
 }

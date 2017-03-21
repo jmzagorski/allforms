@@ -24,6 +24,20 @@ export function receivedTemplate(data, hasError) {
   }
 }
 
+export function createTemplate(data) {
+  return {
+    type: CREATE_TEMPLATE,
+    payload: data
+  }
+}
+
+export function editTemplate(data) {
+  return {
+    type: EDIT_TEMPLATE,
+    payload: data
+  }
+}
+
 export function templateCreated(data, hasError) {
   return {
     type: TEMPLATE_CREATED,

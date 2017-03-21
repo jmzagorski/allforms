@@ -6,15 +6,16 @@ import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from '../../src/metadata-dialog';
 import {
+  requestTemplate,
   requestElementTypes,
-  TemplateActions,
+  createTemplate,
+  editTemplate
 } from '../../src/domain/index';
 import { setupSpy } from './jasmine-helpers';
 import using from 'jasmine-data-provider';
 
 describe('the design view model', () => {
   let sut;
-  let templateActionSpy;
   let templateSelectorSpy;
   let elemTypeSelectorSpy;
   let formSelectorSpy;
@@ -22,13 +23,12 @@ describe('the design view model', () => {
   let dialogSpy;
 
   beforeEach(() => {
-    templateActionSpy = setupSpy('templateAction', TemplateActions.prototype);
     storeSpy = setupSpy('store', Store.prototype);
     dialogSpy = setupSpy('dialog', DialogService.prototype);
     templateSelectorSpy = spyOn(templateSelectors, 'getTemplate');
     elemTypeSelectorSpy = spyOn(typeSelectors, 'getElementTypes');
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
-    sut = new Design(storeSpy, dialogSpy, templateActionSpy);
+    sut = new Design(storeSpy, dialogSpy);
 
     formSelectorSpy.and.returnValue({ style: '', id: 'abc' });
     templateSelectorSpy.and.returnValue({ html: '' });
@@ -41,23 +41,16 @@ describe('the design view model', () => {
     expect(sut.interactable).toEqual('drag');
   });
 
-  it('loads the template data during activate', async done => {
-    // make sure the loading is before the state calling
-    templateActionSpy.loadTemplateFor.and.callFake(() => {
-      expect(storeSpy.getState.calls.count()).toEqual(0);
-    });
+  it('dispatches to get the template', () => {
+    sut.activate({ form: 'a' });
 
-    await sut.activate({ form: 'a' });
-
-    expect(templateActionSpy.loadTemplateFor).toHaveBeenCalledWith('a');
-    done();
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestTemplate('a'));
   });
 
-  it('loads the element types during activate', async done => {
-    await sut.activate({ form: 'a' });
+  it('dispatches to request the element types', () => {
+    sut.activate({ form: 'a' });
 
     expect(storeSpy.dispatch).toHaveBeenCalledWith(requestElementTypes());
-    done();
   });
 
   it('gets the element types', () => {
@@ -74,48 +67,46 @@ describe('the design view model', () => {
   });
 
   using([
-    { template: {}, expect: { id: null, html: '' } },
+    { template: null, expect: { id: null, html: '' } },
+    { template: undefined, expect: { id: null, html: '' } },
     { template: { id: 'a', html: 'b' }, expect: { id: 'a', html: 'b' } }
   ], data => {
-    it('gets the template from the selector', async done => {
+    it('gets the template from the selector', () => {
       const state = {};
 
       storeSpy.getState.and.returnValue(state);
       templateSelectorSpy.and.returnValue(data.template)
 
-      await sut.activate({ form: 'a' });
+      sut.activate({ form: 'a' });
 
       expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
       expect(sut.html).toEqual(data.expect.html);
-      done();
     });
   });
 
-  it('gets the form properties from the active form', async done => {
+  it('gets the form properties from the active form', () => {
     const state = {}
 
     storeSpy.getState.and.returnValue(state);
     formSelectorSpy.and.returnValue({ id: 1, style: 'b' });
 
-    await sut.activate({ form: 'a' });
+    sut.activate({ form: 'a' });
 
     expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
     expect(sut.style).toEqual('b');
     expect(sut.formId).toEqual(1)
-    done();
   });
 
-  it('calls to create the element if dialog not cancelled', async done => {
+  it('renders the element when dialog is ok', async done => {
     const dialogResult = { wasCancelled: false, output: {} };
-    sut.designer = { createElement: () => { } };
-    sut.designer.element = { innerHTML: 'html' };
-    const designerSpy = spyOn(sut.designer, 'createElement');
+    const designerSpy = jasmine.createSpy('createElement');
+
+    sut.designer = {
+      createElement: designerSpy,
+      element:  { innerHTML: 'html' }
+    };
+
     dialogSpy.open.and.returnValue(dialogResult);
-    designerSpy.and.callFake(() => {
-      expect(templateActionSpy.save.calls.count()).toEqual(0);
-    });
-    // call this so the private _formId is set
-    await sut.activate({ form: 'a' });
 
     await sut.renderElement({ builder: 'a' });
 
@@ -124,39 +115,68 @@ describe('the design view model', () => {
       model: { type: 'a' }
     });
     expect(designerSpy.calls.argsFor(0)[0]).toBe(dialogResult.output);
-    expect(templateActionSpy.save.calls.count()).toEqual(1);
-    // id is abc because of the spying in the beforeEach
-    expect(templateActionSpy.save).toHaveBeenCalledWith({
-      id: 'abc',
-      html: 'html'
-    })
     done();
   });
 
-  it('does not create the element if dialog is cancelled', async done => {
-    const dialogResult = { wasCancelled: true, output: 1 };
+  [ { template: null, creator: createTemplate },
+    { template: undefined, creator: createTemplate },
+    { template: {}, creator: editTemplate }
+  ].forEach(data => {
+    it('saves the template when dialog is ok', async done => {
+      const dialogResult = { wasCancelled: false, output: {} };
+      const designerSpy = jasmine.createSpy('createElement');
+      sut.formId = 'abc';
 
-    sut.designer = { createElement: () => { } };
-    const designerSpy = spyOn(sut.designer, 'createElement');
+      sut.designer = {
+        createElement: designerSpy,
+        element:  { innerHTML: 'html' }
+      };
+
+      templateSelectorSpy.and.returnValue(data.template);
+      dialogSpy.open.and.returnValue(dialogResult);
+      designerSpy.and.callFake(() => {
+        expect(storeSpy.dispatch.calls.count()).toEqual(0);
+      });
+
+      await sut.renderElement({ builder: 'a' });
+
+      expect(storeSpy.dispatch.calls.count()).toEqual(1);
+      expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
+        { id: 'abc', html: 'html' }
+      ));
+      done();
+    });
+  });
+
+  it('does not create the element if dialog cancelled', async done => {
+    const dialogResult = { wasCancelled: true, output: 1 };
+    const designerSpy = jasmine.createSpy('createElement');
+    sut.designer = { createElement: designerSpy };
+    sut.formId = 'abc';
 
     dialogSpy.open.and.returnValue(dialogResult);
 
     await sut.renderElement({ builder: 'a' });
 
     expect(designerSpy).not.toHaveBeenCalled();
-    expect(templateActionSpy.save).not.toHaveBeenCalled();
     done();
   });
 
-  it('saves the template ojbject', async done => {
-    sut.designer = { element: { innerHTML: 'a' } };
-    await sut.activate({ form: 'a' });
+  [ { template: null, creator: createTemplate },
+    { template: undefined, creator: createTemplate },
+    { template: {}, creator: editTemplate }
+  ].forEach(data => {
+    it('saves the template object', () => {
+      sut.designer = { element: { innerHTML: 'a' } };
+      sut.formId = 'abc';
 
-    sut.saveTemplate();
+      templateSelectorSpy.and.returnValue(data.template);
 
-    expect(templateActionSpy.save.calls.argsFor(0)[0]).toEqual({
-      id: 'abc', html: 'a'
+      sut.saveTemplate();
+
+      expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
+        { id: 'abc', html: 'a' }
+      ));
     });
-    done();
   });
 });
