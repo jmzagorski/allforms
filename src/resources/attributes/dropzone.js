@@ -20,13 +20,25 @@ function ondropdeactivate(event) {
 }
 
 function ondrop(event) {
+  const dropping = event.relatedTarget;
+  const zone = event.target;
+
   // prevent parent from being dropped in child
-  if ($(event.relatedTarget).find(event.target).length) {
+  if ($(dropping).find(zone).length) {
     return;
   }
 
-  // TODO - bug element moves after drop
-  event.target.appendChild(event.relatedTarget);
+  // TODO can i set the transformation relative to the drop zone parent
+  // this is to prevent a bug to can move the element off screen after the
+  // drop
+  if (dropping.parentNode !== zone) {
+    dropping.style.webkitTransform = dropping.style.transform = null;
+
+    dropping.setAttribute('data-x', 0);
+    dropping.setAttribute('data-y', 0);
+
+    zone.appendChild(dropping);
+  }
 }
 
 export class DropzoneCustomAttribute {

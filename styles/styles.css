@@ -136,6 +136,7 @@ div.au-stagger {
 
 .draggable {
   position: absolute;
+  left: 0; /* make sure the always appear in the top left */
 }
 
 /** Radio Buttons **/

@@ -89,15 +89,26 @@ describe('the dropzone custom attribute', () => {
   });
 
   it('appends the child ondrop when not a parent of the target', async done => {
-    eventStub.relatedTarget = {};
-    spyOn($.fn, 'find').and.returnValue([]);
+    const parent = document.createElement('div');
+    const child = document.createElement('div');
+    child.style.webkitTransform = child.style.transform = 'translate(1px,1px)';
+    child.setAttribute('data-x', '1');
+    child.setAttribute('data-y', '2');
 
+    eventStub.target = parent;
+    eventStub.relatedTarget = child;
+
+    debugger;
     await sut.create(bootstrap);
 
     const config = interactStub.options.dropzone;
     config.ondrop(eventStub);
 
-    expect(appendChildSpy.calls.argsFor(0)[0]).toBe(eventStub.relatedTarget);
+    expect(parent.children[0]).toBe(child);
+    expect(child.style.webkitTransform).toEqual('');
+    expect(child.style.transform).toEqual('');
+    expect(child.getAttribute('data-x')).toEqual('0');
+    expect(child.getAttribute('data-y')).toEqual('0');
     done();
   });
 
@@ -111,6 +122,30 @@ describe('the dropzone custom attribute', () => {
     config.ondrop(eventStub);
 
     expect(appendChildSpy).not.toHaveBeenCalled();
+    done();
+  });
+
+  it('does nothing when already child', async done => {
+    const parent = document.createElement('div');
+    const child = document.createElement('div');
+    child.style.webkitTransform = child.style.transform = 'translate(1px,1px)';
+    child.setAttribute('data-x', '1');
+    child.setAttribute('data-y', '2');
+
+    parent.appendChild(child);
+
+    eventStub.target = parent;
+    eventStub.relatedTarget = child;
+
+    await sut.create(bootstrap);
+
+    const config = interactStub.options.dropzone;
+    config.ondrop(eventStub);
+
+    expect(child.style.webkitTransform).toEqual('translate(1px, 1px)');
+    expect(child.style.transform).toEqual('translate(1px, 1px)');
+    expect(child.getAttribute('data-x')).toEqual('1');
+    expect(child.getAttribute('data-y')).toEqual('2');
     done();
   });
 
