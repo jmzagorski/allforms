@@ -16,8 +16,11 @@ export function receivedTemplate(data, hasError) {
   return {
     type: RECEIVED_TEMPLATE,
     payload: data,
-    error: hasError
-  }
+    error: hasError,
+    meta: {
+      isSignal: true
+    }
+  };
 }
 
 export function createTemplate(data) {

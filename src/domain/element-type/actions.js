@@ -11,7 +11,10 @@ export function receivedElementTypes(data, hasError) {
   return {
     type: RECEIVED_ELEMENT_TYPES,
     payload: data,
-    error: hasError
+    error: hasError,
+    meta: {
+      isSignal: true
+    }
   };
 }
 

@@ -19,7 +19,8 @@ describe('the template actions', () => {
       const expected = {
         type: 'RECEIVED_TEMPLATE',
         payload,
-        error
+        error,
+        meta: { isSignal: true }
       };
 
       const actual = actions.receivedTemplate(payload, error);

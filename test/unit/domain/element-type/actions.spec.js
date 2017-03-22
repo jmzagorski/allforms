@@ -7,7 +7,8 @@ describe('the element type actions', () => {
       const expected = {
         type: 'RECEIVED_ELEMENT_TYPES',
         payload: data,
-        error: hasError
+        error: hasError,
+        meta: { isSignal: true }
       };
 
       const actual = domain.receivedElementTypes(data, hasError);
