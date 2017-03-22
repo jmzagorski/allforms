@@ -21,11 +21,10 @@ export class Design {
     this.designer = {};
     this.interactable = 'drag';
 
-    this._isNewTemplate = false;
     this._store = store;
     this._dialogService = dialogService;
+    this._unsubscribe = null;
   }
-
 
   get elementTypes() {
     return getElementTypes(this._state);
@@ -42,10 +41,9 @@ export class Design {
   activate(params) {
     this._store.dispatch(requestElementTypes())
     this._store.dispatch(requestTemplate(params.form))
+    this._unsubscribe = this._store.subscribe(this._update.bind(this))
 
     const form = getActiveForm(this._state);
-
-    this.html = this._template ? this._template.html : this.html;
     this.style = form.style;
     this.formId = form.id;
   }
@@ -88,7 +86,16 @@ export class Design {
       });
     }
 
-    debugger;
     this._store.dispatch(action);
+  }
+
+  deactivate() {
+    if (this._unsubscribe) this._unsubscribe();
+  }
+
+  _update() {
+    // i never want the html property to be undefined or that will be rendered
+    // in the browser
+    this.html = this._template ? this._template.html || '' : this.html;
   }
 }

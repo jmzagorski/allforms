@@ -66,21 +66,39 @@ describe('the design view model', () => {
     expect(sut.elementTypes).toBe(types);
   });
 
-  using([
-    { template: null, expect: { id: null, html: '' } },
-    { template: undefined, expect: { id: null, html: '' } },
-    { template: { id: 'a', html: 'b' }, expect: { id: 'a', html: 'b' } }
-  ], data => {
-    it('gets the template from the selector', () => {
-      const state = {};
+  it('subscribes to the store on activate', () => {
+    sut.activate({ form: 'a' });
 
-      storeSpy.getState.and.returnValue(state);
-      templateSelectorSpy.and.returnValue(data.template)
+    expect(storeSpy.subscribe).toHaveBeenCalled();
+  });
 
-      sut.activate({ form: 'a' });
+  it('updates the html property on the store subscription', () => {
+    const state = {};
+    const template = { html: 'b' };
+    let updateFunc = null;
 
-      expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-      expect(sut.html).toEqual(data.expect.html);
+    storeSpy.getState.and.returnValue(state);
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+    templateSelectorSpy.and.returnValue(template)
+
+    sut.activate({ form: 'a' });
+    updateFunc();
+
+    expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
+    expect(sut.html).toEqual('b');
+  });
+
+  [ null, undefined, {} ].forEach(template => {
+    it('always return an empty html string', () => {
+      let updateFunc = null;
+
+      templateSelectorSpy.and.returnValue(template)
+      storeSpy.subscribe.and.callFake(func => updateFunc = func);
+
+      sut.activate({ form: 'a' })
+      updateFunc();
+
+      expect(sut.html).toEqual('');
     });
   });
 
@@ -121,50 +139,50 @@ describe('the design view model', () => {
   [ { template: null, creator: createTemplate },
     { template: undefined, creator: createTemplate },
     { template: {}, creator: editTemplate }
-  ].forEach(data => {
-    it('saves the template when dialog is ok', async done => {
-      const dialogResult = { wasCancelled: false, output: {} };
-      const designerSpy = jasmine.createSpy('createElement');
-      sut.formId = 'abc';
-
-      sut.designer = {
-        createElement: designerSpy,
-        element:  { innerHTML: 'html' }
-      };
-
-      templateSelectorSpy.and.returnValue(data.template);
-      dialogSpy.open.and.returnValue(dialogResult);
-      designerSpy.and.callFake(() => {
-        expect(storeSpy.dispatch.calls.count()).toEqual(0);
-      });
-
-      await sut.renderElement({ builder: 'a' });
-
-      expect(storeSpy.dispatch.calls.count()).toEqual(1);
-      expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
-        { id: 'abc', html: 'html' }
-      ));
-      done();
-    });
-  });
-
-  it('does not create the element if dialog cancelled', async done => {
-    const dialogResult = { wasCancelled: true, output: 1 };
+].forEach(data => {
+  it('saves the template when dialog is ok', async done => {
+    const dialogResult = { wasCancelled: false, output: {} };
     const designerSpy = jasmine.createSpy('createElement');
-    sut.designer = { createElement: designerSpy };
     sut.formId = 'abc';
 
+    sut.designer = {
+      createElement: designerSpy,
+      element:  { innerHTML: 'html' }
+    };
+
+    templateSelectorSpy.and.returnValue(data.template);
     dialogSpy.open.and.returnValue(dialogResult);
+    designerSpy.and.callFake(() => {
+      expect(storeSpy.dispatch.calls.count()).toEqual(0);
+    });
 
     await sut.renderElement({ builder: 'a' });
 
-    expect(designerSpy).not.toHaveBeenCalled();
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
+      { id: 'abc', html: 'html' }
+    ));
     done();
   });
+});
 
-  [ { template: null, creator: createTemplate },
-    { template: undefined, creator: createTemplate },
-    { template: {}, creator: editTemplate }
+it('does not create the element if dialog cancelled', async done => {
+  const dialogResult = { wasCancelled: true, output: 1 };
+  const designerSpy = jasmine.createSpy('createElement');
+  sut.designer = { createElement: designerSpy };
+  sut.formId = 'abc';
+
+  dialogSpy.open.and.returnValue(dialogResult);
+
+  await sut.renderElement({ builder: 'a' });
+
+  expect(designerSpy).not.toHaveBeenCalled();
+  done();
+});
+
+[ { template: null, creator: createTemplate },
+  { template: undefined, creator: createTemplate },
+  { template: {}, creator: editTemplate }
   ].forEach(data => {
     it('saves the template object', () => {
       sut.designer = { element: { innerHTML: 'a' } };
@@ -175,8 +193,19 @@ describe('the design view model', () => {
       sut.saveTemplate();
 
       expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
-        { id: 'abc', html: 'a' }
-      ));
+      { id: 'abc', html: 'a' }
+    ));
     });
+  });
+
+  it('unsubscribes on deactivate', () => {
+    let unsubscribe = false;
+    const subscription = () => unsubscribe = true;
+    storeSpy.subscribe.and.returnValue(subscription);
+    sut.activate({ form: 'a' });
+
+    sut.deactivate();
+
+    expect(unsubscribe).toBeTruthy();
   });
 });
