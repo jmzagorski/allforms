@@ -12,7 +12,7 @@ describe('the designer custom element', () => {
   let context;
   // since i throw an error in the bind method, TODO is that a good idea?
   let dispose;
-  let realElement;
+  let realElements;
   let setDefaultSpy;
 
   beforeEach(() => {
@@ -20,6 +20,7 @@ describe('the designer custom element', () => {
     // interactable dependency so we get less potential side affects
     const interactFunc = jasmine.createSpy('interactFunc');
     const interactSpy = new InteractStub();
+    realElements = [];
     interactFunc.and.returnValue(interactSpy);
 
     sut = StageComponent.withResources('resources/elements/designer');
@@ -37,7 +38,11 @@ describe('the designer custom element', () => {
 
   afterEach(() => {
     if (dispose) sut.dispose();
-    if (realElement) realElement.parentNode.removeChild(realElement);
+    if (realElements.length) {
+      for (let e of realElements) {
+        if (document.getElementById(e.id)) e.parentNode.removeChild(e);
+      }
+    }
   });
 
   using([
@@ -90,11 +95,11 @@ describe('the designer custom element', () => {
   });
 
   it('sets the interact element properties', async done => {
-    realElement = document.createElement('div');
+    realElements.push(document.createElement('div'));
     const model = {
       id: 1,
       type: 'date',
-      create: () => realElement
+      create: () => realElements[0]
     };
     spyOn(DOM, 'getElementById').and.returnValue(undefined);
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
@@ -103,13 +108,36 @@ describe('the designer custom element', () => {
 
     const actual = sut.viewModel.createElement(model);
 
-    expect(actual).toBe(realElement)
+    expect(actual).toBe(realElements[0])
     expect(actual.id).toEqual('1');
     expect(actual.ondblclick).not.toEqual(null);
     expect(actual.getAttribute('draggable.bind')).toEqual('dragOptions');
     expect(actual.getAttribute('resizable.bind')).toEqual('resize');
     expect(actual.getAttribute('data-element-type')).toEqual('date');
     expect(sut.element.querySelector('form').children[0]).toBe(actual);
+    done();
+  });
+
+  it('sets the tab index so the delete key works', async done => {
+    realElements.push(document.createElement('div'));
+    realElements.push(document.createElement('div'));
+    const createSpy = jasmine.createSpy('create');
+    createSpy.and.returnValues(realElements[0], realElements[1]);
+    const model = {
+      id: 1,
+      type: 'date',
+      create: createSpy
+    };
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    const actualFirst = sut.viewModel.createElement(model);
+    model.id++; // or else the view model will grab the existing element;
+    const actualSecond = sut.viewModel.createElement(model);
+
+    expect(actualFirst.tabIndex).toEqual(1);
+    expect(actualSecond.tabIndex).toEqual(2);
     done();
   });
 
@@ -123,12 +151,12 @@ describe('the designer custom element', () => {
       const $created = {};
       const mutateSpy = jasmine.createSpy('mutate');
 
-      realElement = document.createElement('div');
-      realElement.id = model.id;
-      document.body.appendChild(realElement);
+      realElements.push(document.createElement('div'));
+      realElements[0].id = model.id;
+      document.body.appendChild(realElements[0]);
 
       model[method] = mutateSpy
-      mutateSpy.and.returnValue(realElement);
+      mutateSpy.and.returnValue(realElements[0]);
 
       sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
         .boundTo(context);
@@ -137,17 +165,17 @@ describe('the designer custom element', () => {
 
       const $actual = sut.viewModel.createElement(model);
 
-      expect(mutateSpy.calls.argsFor(0)[0]).toBe(realElement);
-      expect($actual).toBe(realElement);
+      expect(mutateSpy.calls.argsFor(0)[0]).toBe(realElements[0]);
+      expect($actual).toBe(realElements[0]);
       done();
     });
   });
 
   it('enhances the element with the template engine', async done => {
-    realElement = document.createElement('div');
+    realElements.push(document.createElement('div'));
     const model = {
       type: 'date',
-      create: () => realElement
+      create: () => realElements[0]
     };
     let enhanced = null;
     const resources = {};
@@ -175,10 +203,10 @@ describe('the designer custom element', () => {
   });
 
   it('dispatches an edit event on element double click', async done => {
-    realElement = document.createElement('div');
+    realElements.push(document.createElement('div'));
     const model = {
       type: 'date',
-      create: () => realElement,
+      create: () => realElements[0],
       id: 1
     };
     let event = null;
@@ -201,10 +229,10 @@ describe('the designer custom element', () => {
   });
 
   it('sets the default value on change', async done => {
-    realElement = document.createElement('div');
+    realElements.push(document.createElement('div'));
     const model = {
       type: 'date',
-      create: () => realElement
+      create: () => realElements[0]
     };
     sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
       .boundTo(context);
@@ -214,6 +242,54 @@ describe('the designer custom element', () => {
     actual.onchange({ target: actual });
 
     expect(setDefaultSpy).toHaveBeenCalledWith(actual);
+    done();
+  });
+
+  [ { code: 8, removed: true },
+    { code: 46, removed: true },
+    { code: 47, removed: false }
+  ].forEach(data => {
+    it('decides if should remove the element on delete or backspace key', async done => {
+      const elem = document.createElement('div')
+      const model = {
+        type: 'date',
+        create: () => elem,
+        id: 1
+      };
+      const keyEvent = { target: elem, keyCode: data.code };
+
+      realElements.push(elem);
+      sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+        .boundTo(context);
+      await sut.create(bootstrap);
+
+      const actual = sut.viewModel.createElement(model);
+
+      actual.onkeydown(keyEvent);
+
+      expect(!document.getElementById(model.id)).toEqual(data.removed);
+      done();
+    });
+  });
+
+  // to fix a bug where nested elements were being deleted
+  it('does not remove the element if there is not data type attribute', async done => {
+    realElements.push(document.createElement('div'));
+    const model = {
+      type: 'date',
+      create: () => realElements[0],
+      id: 1
+    };
+    sut.inView(`<designer formstyle.bind="formstyle"></designer>`)
+      .boundTo(context);
+    await sut.create(bootstrap);
+
+    const actual = sut.viewModel.createElement(model);
+
+    actual.removeAttribute('data-element-type')
+    actual.onkeydown({ target: actual });
+
+    expect(document.getElementById(model.id)).not.toEqual(null);
     done();
   });
 });

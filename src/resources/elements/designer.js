@@ -34,6 +34,7 @@ export class DesignerCustomElement {
     this._templateEngine = templateEngine;
     this._formWrapper = null;
     this._view = null;
+    this._tabIndicies = 0;;
   }
 
   created(owningView, thisView) {
@@ -63,6 +64,7 @@ export class DesignerCustomElement {
     // use this type of iterating because having issues with unit tetsts
     for (let i = 0; i < this._formWrapper.children.length; i++) {
       this._enhance(this._formWrapper.children[i]);
+      this._tabIndicies++;
     }
   }
 
@@ -79,6 +81,7 @@ export class DesignerCustomElement {
     $draggable.setAttribute('draggable.bind', 'dragOptions');
     $draggable.setAttribute('resizable.bind', 'resize');
     $draggable.setAttribute(DATA_ELEM_TYPE, model.type);
+    $draggable.tabIndex = ++this._tabIndicies;
     this._formWrapper.appendChild($draggable);
 
     this._enhance($draggable);
@@ -113,9 +116,18 @@ export class DesignerCustomElement {
     this.element.dispatchEvent(editing);
   }
 
+  _deleteElement(e) {
+    if (e.target.getAttribute(DATA_ELEM_TYPE) && (e.keyCode === 8 || e.keyCode == 46)) {
+
+      e.target.parentNode.removeChild(e.target);
+    }
+  }
+
   _enhance(element) {
     element.ondblclick = e => this._onEditElement(element);
     element.onchange = e => setDefaultVal(e.target);
+    element.onkeydown = this._deleteElement;
+    element.onclick = e => e.target.focus();
     this._templateEngine.enhance({
       element,
       bindingContext: this,
