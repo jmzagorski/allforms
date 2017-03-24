@@ -215,6 +215,13 @@ export const schema = {
             "minimum": 0,
             "maximum": 90
           },
+          "html": {
+            "type": "string"
+          },
+          "api": {
+            "type": "string",
+            "enum": [ "/api/form-data" ]
+          },
           "files": {
             "type": "array",
             "minItems": 9,
@@ -282,7 +289,7 @@ export const schema = {
             }
           }
         },
-        "required": ["id", "name", "style", "lastEditInDays", "files" ]
+        "required": ["id", "name", "summary", "style", "lastEditInDays", "api", "files" ]
       }
     }
   },
