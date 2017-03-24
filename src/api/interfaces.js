@@ -30,9 +30,10 @@ interface IElementTypeApi {
 interface IFormApi {
   /**
    * @summary A call to get all the master forms for the member
-   * @return {Promise<Form[]>} a promise for the IForm array
+   * @param {IForm} [id] an optional form id of the IFormObject
+   * @return {Promise<IForm[]> | Promise<IForm>} a promise for the IForm array
    */
-  getAll(): Promise<IForm>;
+  get(id?: string): Promise<IForm> | Promise<IForm[]>
 
   /**
    * @summary A call to save a new or existing form
