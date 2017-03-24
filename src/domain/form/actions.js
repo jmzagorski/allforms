@@ -35,7 +35,7 @@ export class FormActions {
    *
    */
   async loadForms() {
-    const forms = await this._api.getAll();
+    const forms = await this._api.get();
 
     this._store.dispatch(loadFormsSuccess(forms));
   }

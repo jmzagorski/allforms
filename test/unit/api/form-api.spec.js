@@ -14,9 +14,20 @@ describe('the form api', () => {
   it('fetches all the forms', async done => {
     httpStub.itemStub = [];
 
-    const actualForms = await sut.getAll();
+    const actualForms = await sut.get();
 
     expect(httpStub.url).toEqual('forms');
+    expect(actualForms).toBe(httpStub.itemStub);
+    done();
+  });
+
+  it('fetches a single form', async done => {
+    const id = 1;
+    httpStub.itemStub = [];
+
+    const actualForms = await sut.get(id);
+
+    expect(httpStub.url).toEqual('forms/1');
     expect(actualForms).toBe(httpStub.itemStub);
     done();
   });

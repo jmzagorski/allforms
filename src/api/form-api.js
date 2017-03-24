@@ -13,16 +13,18 @@ export class FormApi {
     this._http = http;
   }
 
-  async getAll() {
-    return await this._http.fetch('forms')
+  get(formId) {
+    const url = formId ? `forms/${formId}` : 'forms';
+
+    return this._http.fetch(url)
       .then(response => response.json());
   }
 
-  async save(form) {
+  save(form) {
     const url = 'forms';
     const method = form.id ? 'PUT' : 'POST';
 
-    return await this._http.fetch(url, {
+    return this._http.fetch(url, {
       method: method,
       body: json(form)
     }).then(response => response.json());

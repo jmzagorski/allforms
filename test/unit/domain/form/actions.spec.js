@@ -21,7 +21,7 @@ describe('the form actions', () => {
   it('loads all the forms', async done => {
     const forms = [];
 
-    apiSpy.getAll.and.returnValue(forms);
+    apiSpy.get.and.returnValue(forms);
 
     await sut.loadForms();
 
