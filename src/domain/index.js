@@ -4,7 +4,7 @@ export { default as elementTypes } from './element-type/reducer';
 
 export * from './element/actions';
 export * from './element/selectors';
-export { default as elements } from './element/reducer';
+export { default as element } from './element/reducer';
 
 export * from './form-data/actions';
 export { default as formData } from './form-data/reducer';
