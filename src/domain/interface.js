@@ -87,19 +87,19 @@ export interface IForm {
   summary: string;
 
   /**
-   * @property {string} style how the form looks (e.g. twitter bootstrap}
+   * @property {string} summary a brief summary about the form
    */
   style: string;
 
   /**
    * @property {string} lastComment the comment associated with the last edit
    */
-  style: string;
+  lastComment: string;
 
   /**
-   * @property {number} lastEditInDays number of days ago the form was edited
+   * @property {Date} lastEditInDays number of days ago the form was edited
    */
-  style: number;
+  lastEditInDays: date;
 
   /**
    * @property {IFormFile[]} files the different paths/actions associated
@@ -191,7 +191,7 @@ export interface IFormDataSummary {
   /**
    * @property {member} string the member name who owns the form
    */
-  memberName: string;
+  member: string;
 
   /**
    * @property {formId} string the associated master form id

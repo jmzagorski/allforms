@@ -33,7 +33,7 @@ interface IFormApi {
    * @param {IForm} [id] an optional form id of the IFormObject
    * @return {Promise<IForm[]> | Promise<IForm>} a promise for the IForm array
    */
-  get(id?: string): Promise<IForm> | Promise<IForm[]>
+  get(id?: string): Promise<IForm> | Promise<IForm[]>;
 
   /**
    * @summary A call to save a new or existing form
