@@ -21,7 +21,7 @@ export class FormApi {
   }
 
   save(form) {
-    const url = 'forms';
+    const url = form.id ? `forms/${form.id}` : 'forms';
     const method = form.id ? 'PUT' : 'POST';
 
     return this._http.fetch(url, {

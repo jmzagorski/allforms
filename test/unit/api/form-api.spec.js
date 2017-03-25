@@ -32,13 +32,12 @@ describe('the form api', () => {
     done();
   });
 
-  using([
-    { id: null, method: 'POST' },
-    { id: undefined, method: 'POST' },
-    { id: '', method: 'POST' },
-    { id: 'something', method: 'PUT' }
-  ], data => {
-    it('saves the new form based on the id', async done => {
+  [ { id: null, method: 'POST', url: 'forms' },
+    { id: undefined, method: 'POST', url: 'forms' },
+    { id: '', method: 'POST', url: 'forms' },
+    { id: 'something', method: 'PUT', url: 'forms/something' }
+  ].forEach(data => {
+    it('puts or posts the form based on the id', async done => {
       const form = { id: data.id, summary: 'asda' };
       const returnedForm = {};
       const fr = new FileReader();
@@ -51,7 +50,7 @@ describe('the form api', () => {
 
       const serverForm = await sut.save(form);
 
-      expect(httpStub.url).toEqual('forms');
+      expect(httpStub.url).toEqual(data.url);
       expect(httpStub.blob.method).toEqual(data.method);
       expect(serverForm).not.toBe(form);
       expect(serverForm).toBe(returnedForm);
