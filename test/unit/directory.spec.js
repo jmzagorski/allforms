@@ -34,9 +34,11 @@ describe('the directory view model', () => {
 
   it('listens for the form to update to get the routes', () => {
     let updateFunc = null;
+    const state = {};
     const history = [{ name: 'a', formId: 1 }, { name: 'b', formId: 2 }]
     routerSpy.routes = [ { name: 'a' }, { name: 'b' } ];
 
+    storeSpy.getState.and.returnValue(state);
     getHistorySpy.and.returnValue(history);
     routerSpy.generate.and.returnValues('/a', '/b');
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
@@ -44,6 +46,7 @@ describe('the directory view model', () => {
 
     updateFunc();
 
+    expect(getHistorySpy.calls.argsFor(0)[0]).toBe(state);
     expect(routerSpy.generate.calls.count()).toEqual(2);
     expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 1 });
     expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 2 });
@@ -64,5 +67,19 @@ describe('the directory view model', () => {
     updateFunc();
 
     expect(sut.historyRoutes).toEqual([]);
+  });
+
+  it('unsubscribes on deactivate', () => {
+    let unsubscribe = false;
+    const subscription = () => unsubscribe = true;
+
+    // skip iterating over the history
+    getHistorySpy.and.returnValue(null);
+    storeSpy.subscribe.and.returnValue(subscription);
+    sut.activate({ form: 'a' });
+
+    sut.deactivate();
+
+    expect(unsubscribe).toBeTruthy();
   });
 });
