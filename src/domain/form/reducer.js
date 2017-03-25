@@ -12,6 +12,10 @@ export default function formReducer(state = {}, action) {
 
       return action.payload;
 
+    case actions.EDIT_FORM:
+    case actions.CREATE_FORM:
+      return action.payload;
+
     default:
       return state;
   }

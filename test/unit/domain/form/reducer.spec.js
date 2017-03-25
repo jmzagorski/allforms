@@ -26,7 +26,8 @@ describe('the form reducer', () => {
   });
 
   [
-    domain.RECEIVED_FORM, domain.FORM_CREATED, domain.FORM_EDITED
+    domain.RECEIVED_FORM, domain.FORM_CREATED, domain.FORM_EDITED, domain.EDIT_FORM,
+    domain.CREATE_FORM
   ].forEach(type => {
     it('returns the payload for actions', () => {
       const payload = {};
