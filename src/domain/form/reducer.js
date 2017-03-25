@@ -1,17 +1,16 @@
-import {
-  LOAD_FORMS_SUCCESS,
-  ACTIVATE_FORM_SUCCESS
-} from './actions';
+import * as actions from './actions';
 
 export default function formReducer(state = {}, action) {
   switch (action.type) {
-    case LOAD_FORMS_SUCCESS:
-      return Object.assign({}, state, { list: action.forms });
+    // removes any current form from the state while request in action
+    case actions.REQUEST_FORM:
+      return null;
+    case actions.RECEIVED_FORM:
+    case actions.FORM_CREATED:
+    case actions.FORM_EDITED:
+      if (action.error) return state;
 
-    case ACTIVATE_FORM_SUCCESS:
-      return Object.assign({}, state, {
-        active: action.id
-      });
+      return action.payload;
 
     default:
       return state;

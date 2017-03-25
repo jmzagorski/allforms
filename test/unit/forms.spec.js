@@ -1,42 +1,43 @@
 import { Forms } from '../../src/forms';
 import { Router } from 'aurelia-router';
-import { Store } from 'aurelia-redux-plugin';
+import { FormApi } from '../../src/api/form-api';
 import { setupSpy} from './jasmine-helpers';
-import * as selectors from '../../src/domain/form/selectors';
 
 describe('the forms view model', () => {
   let sut;
-  let storeSpy;
   let routerSpy;
+  let apiSpy;
 
   beforeEach(() => {
-    storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
-    sut = new Forms(routerSpy, storeSpy);
+    apiSpy = setupSpy('api', FormApi.prototype);
+    sut = new Forms(routerSpy, apiSpy);
   });
 
-  it('gets all the forms from the current state', () => {
-    const expectForms = [ { id: 'b' } ];
-    const state = [ { id: 'a' } ];
-    const getFormsSpy = spyOn(selectors, 'getFormList');
+  it('gets all the forms from the api', async done => {
+    const expected = [ { id: 'b' } ];
 
-    storeSpy.getState.and.returnValue(state);
-    getFormsSpy.and.returnValue(expectForms);
+    apiSpy.get.and.returnValue(expected);
 
-    const actualForms = sut.forms;
+    await sut.activate();
 
-    expect(actualForms).toBe(expectForms);
-    expect(getFormsSpy).toHaveBeenCalledWith(state);
+    expect(sut.forms).toBe(expected);
+    done();
   });
 
-  it('generates a route for each form', () => {
+  it('generates a route for each form', async done => {
     const forms = [ { id: 'a' }, { id: 'b' }];
-    spyOn(selectors, 'getFormList').and.returnValue(forms);
 
-    sut.activate();
+    apiSpy.get.and.returnValue(forms);
+    routerSpy.generate.and.returnValues(1,2);
+
+    await sut.activate();
 
     expect(routerSpy.generate.calls.count()).toEqual(2);
     expect(routerSpy.generate).toHaveBeenCalledWith('dir', { form: 'a' });
     expect(routerSpy.generate).toHaveBeenCalledWith('dir', { form: 'b' });
+    expect(forms[0].url).toEqual(1);
+    expect(forms[1].url).toEqual(2);
+    done();
   });
 });

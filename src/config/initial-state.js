@@ -1,5 +1,6 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from 'aurelia-redux-plugin';
+import { FormApi } from '../api/form-api';
 import {
   MemberActions,
   FormActions,
@@ -13,18 +14,16 @@ import {
  */
 export default class {
 
-  static inject() { return [ Store, MemberActions, FormActions, EventAggregator ]; }
+  static inject() { return [ Store, MemberActions, EventAggregator ]; }
 
-  constructor(store, memberActions, formActions, eventAggregator) {
+  constructor(store, memberActions, eventAggregator) {
     this._store = store;
     this._memberActions = memberActions;
-    this._formActions = formActions;
     this._eventAggregator = eventAggregator;
   }
 
   async configure() {
     await this._memberActions.loadMember();
-    await this._formActions.loadForms();
 
     // subscribe for the lifetime of the app
     this._eventAggregator.subscribe(

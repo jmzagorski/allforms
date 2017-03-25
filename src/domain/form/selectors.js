@@ -1,11 +1,11 @@
 export function getActiveForm(state) {
-  const form = state.forms.list.find(f => f.id === state.forms.active);
-  form.files.sort((a, b) => a.priority - b.priority);
-  return form;
-}
+  const form = state.form;
 
-export function getFormList(state) {
-  return state.forms.list;
+  if (!form) return null;
+
+  form.files.sort((a, b) => a.priority - b.priority);
+
+  return form;
 }
 
 /**
@@ -16,6 +16,8 @@ export function getFormList(state) {
  */
 export function getRecentFormHistory(state) {
   const form = getActiveForm(state);
+
+  if (!form) return null;
 
   return form.files
     .map(file => {

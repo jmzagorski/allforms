@@ -3,7 +3,7 @@ import * as domain from './domain/index';
 
 const rootReducer = combineReducers({
   member: domain.member,
-  forms: domain.forms,
+  form: domain.form,
   element: domain.element,
   elementTypes: domain.elementTypes,
   template: domain.template

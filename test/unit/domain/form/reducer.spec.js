@@ -1,36 +1,40 @@
-import { forms } from '../../../../src/domain/index';
-import using from 'jasmine-data-provider';
+import * as domain from '../../../../src/domain/index';
 
 describe('the form reducer', () => {
-  using([
-    { state: null, list: [], returnState: { list: [] } },
-    { state: { b: 'a' }, list: [], returnState: { b: 'a', list: [] } }
-  ], data => {
-    it('returns the form object on load success', () => {
-      const action = {
-        type: 'LOAD_FORMS_SUCCESS',
-        forms: data.list
-      };
 
-      const state = forms(data.state, action);
+  it('returns null when sending a request for the form', () => {
+    const action = {
+      type: 'REQUEST_FORM'
+    };
 
-      expect(state).toEqual(data.returnState);
+    const state = domain.form(null, action);
+
+    expect(state).toEqual(null);
+  });
+
+  [
+    domain.RECEIVED_FORM, domain.FORM_CREATED, domain.FORM_EDITED
+  ].forEach(type => {
+    it('returns the original state on error for actions', () => {
+      const state = {};
+      const action = { type, error: true };
+
+      const newState = domain.form(state, action);
+
+      expect(newState).toBe(state);
     });
   });
 
-  using([
-    { state: null, active: 'c', returnState: { active: 'c' } },
-    { state: { b: 'a' }, active: 'c', returnState: { b: 'a', active: 'c' } }
-  ], data => {
-    it('returns the state with the active form', () => {
-      const action = {
-        type: 'ACTIVATE_FORM_SUCCESS',
-        id: data.active
-      };
+  [
+    domain.RECEIVED_FORM, domain.FORM_CREATED, domain.FORM_EDITED
+  ].forEach(type => {
+    it('returns the payload for actions', () => {
+      const payload = {};
+      const action = { type, payload };
 
-      const state = forms(data.state, action);
+      const newState = domain.form(null, action);
 
-      expect(state).toEqual(data.returnState);
+      expect(newState).toBe(payload);
     });
   });
 
@@ -38,9 +42,8 @@ describe('the form reducer', () => {
     const state = [];
     const action = { type: '' };
 
-    const newState = forms(state, action);
+    const newState = domain.form(state, action);
 
     expect(newState).toBe(state);
   });
 });
-

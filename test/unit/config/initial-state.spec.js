@@ -1,17 +1,13 @@
 import InitialState from '../../../src/config/initial-state';
 import { Store } from 'aurelia-redux-plugin';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import {
-  MemberActions,
-  FormActions
-} from '../../../src/domain/index';
+import { MemberActions } from '../../../src/domain/index';
 import { setupSpy } from '../jasmine-helpers';
 import using from 'jasmine-data-provider';
 
 describe('the initial state configuration', () => {
   let sut;
   let memberSpy;
-  let formSpy;
   let eaSpy;
   let storeSpy;
 
@@ -19,15 +15,13 @@ describe('the initial state configuration', () => {
     storeSpy = setupSpy('storeSpy', Store.prototype);
     eaSpy = setupSpy('eventAggr', EventAggregator.prototype);
     memberSpy = setupSpy('member', MemberActions.prototype);
-    formSpy = setupSpy('form', FormActions.prototype);
-    sut = new InitialState(storeSpy, memberSpy, formSpy, eaSpy);
+    sut = new InitialState(storeSpy, memberSpy, eaSpy);
   });
 
   it('loads the initial data from the actions', async done => {
     await sut.configure();
 
     expect(memberSpy.loadMember.calls.count()).toEqual(1);
-    expect(formSpy.loadForms.calls.count()).toEqual(1);
     done();
   });
 

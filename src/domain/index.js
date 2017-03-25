@@ -11,7 +11,7 @@ export { default as formData } from './form-data/reducer';
 
 export * from './form/actions';
 export * from './form/selectors';
-export { default as forms } from './form/reducer';
+export { default as form } from './form/reducer';
 
 export * from './member/actions';
 export * from './member/selectors';

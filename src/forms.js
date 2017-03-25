@@ -1,25 +1,23 @@
 import { Router } from 'aurelia-router';
-import { Store } from 'aurelia-redux-plugin';
-import { getFormList } from './domain/index';
+import { FormApi } from './api/form-api';
 
 export class Forms {
-  static inject() { return [ Router, Store ]; }
 
-  constructor(router, store) {
+  static inject = [ Router, FormApi ];
+
+  constructor(router, api) {
+    this.forms = [];
     this._router = router;
-    this._store = store;
-  }
-
-  get forms() {
-    return getFormList(this._store.getState());
+    this._api = api;
   }
 
   /**
    * @summary activates the forms view model through aurelia lifecycle
    * @desc activates the view model and creates urls for every form
-   *
    */
-  activate() {
+  async activate() {
+    this.forms = await this._api.get();
+
     this.forms.forEach(f => {
       f.url = this._router.generate('dir', { form: f.id });
     });
