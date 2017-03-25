@@ -1,1 +1,75 @@
-<template></template>
+<template>
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <form id="form-settings-form" class="form-horizontal"
+      submit.delegate="configure(model)">
+      <fieldset>
+
+        <div class="form-group">
+          <label for="name" class="control-label">
+            Form Name
+          </label>
+          <div>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-list-alt"></i></span>
+              <input id="name" name="name" placeholder="Form Name"
+              class="form-control" type="text" value.bind="model.name"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="summary" class="control-label">
+            Form Description
+          </label>
+          <div>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-pencil"></i>
+              </span>
+              <textarea id="summary" name="summary" placeholder="Some descriptive info"
+                class="form-control" value.bind="model.summary"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="autoname" class="control-label">
+            Auto Name Generator
+          </label>
+          <div>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-blackboard"></i>
+              </span>
+              <input id="autoname" name="autoname" placeholder="Auto name pattern"
+                class="form-control" value.bind="model.autoname">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="api" class="control-label">
+            API
+          </label>
+          <div>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-globe"></i>
+              </span>
+              <input id="api" name="api" placeholder="API Url"
+                class="form-control" value.bind="model.api">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div>
+            <input type="submit" class="btn btn-success" value="Configure">
+          </div>
+        </div>
+
+      </fieldset>
+    </form>
+  </section>
+</template>
