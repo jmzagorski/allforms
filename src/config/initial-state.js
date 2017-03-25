@@ -1,11 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from 'aurelia-redux-plugin';
 import { FormApi } from '../api/form-api';
-import {
-  MemberActions,
-  FormActions,
-  activateFormSuccess
-} from '../domain/index';
+import { MemberActions, requestForm } from '../domain/index';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app
@@ -36,7 +32,7 @@ export default class {
     const path = event.instruction.fragment.split('/');
 
     if (path.length > 1 && path[1] !== '') {
-      this._store.dispatch(activateFormSuccess(path[1]));
+      this._store.dispatch(requestForm(path[1]));
     }
   }
 }

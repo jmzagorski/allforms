@@ -1,9 +1,8 @@
 import InitialState from '../../../src/config/initial-state';
 import { Store } from 'aurelia-redux-plugin';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { MemberActions } from '../../../src/domain/index';
+import { requestForm, MemberActions } from '../../../src/domain/index';
 import { setupSpy } from '../jasmine-helpers';
-import using from 'jasmine-data-provider';
 
 describe('the initial state configuration', () => {
   let sut;
@@ -33,7 +32,7 @@ describe('the initial state configuration', () => {
     done();
   });
 
-  using([ '/formname', '/formname/anything' ], fragment => {
+  [ '/formname', '/formname/anything' ].forEach(fragment => {
     it('handles the route processing event', async done => {
       const event = {
         instruction: { fragment  }
@@ -47,10 +46,7 @@ describe('the initial state configuration', () => {
       await sut.configure();
 
       expect(storeSpy.dispatch.calls.count()).toEqual(1);
-      expect(storeSpy.dispatch).toHaveBeenCalledWith({
-        type: 'ACTIVATE_FORM_SUCCESS',
-        id: 'formname'
-      });
+      expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('formname'));
       done();
     });
   });
