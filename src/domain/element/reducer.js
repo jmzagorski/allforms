@@ -13,7 +13,7 @@ export default function elementReducer(state = {}, action) {
 
       return action.payload
 
-    // during the craete element request make sure the state is null because
+    // during the create element request make sure the state is null because
     // an auto id needs to be grabbed from the server
     case actions.CREATE_ELEMENT:
       return null; 

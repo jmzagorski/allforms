@@ -20,7 +20,6 @@ export class DataEdit {
   _update() {
     const template = getTemplate(this._store.getState());
 
-    debugger;
     if (template) {
       this.html = template.html;
     }

@@ -98,7 +98,6 @@ describe('the dropzone custom attribute', () => {
     eventStub.target = parent;
     eventStub.relatedTarget = child;
 
-    debugger;
     await sut.create(bootstrap);
 
     const config = interactStub.options.dropzone;
