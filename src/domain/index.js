@@ -16,7 +16,3 @@ export { default as form } from './form/reducer';
 export * from './member/actions';
 export * from './member/selectors';
 export { default as member } from './member/reducer';
-
-export * from './template/actions';
-export * from './template/selectors';
-export { default as template } from './template/reducer';

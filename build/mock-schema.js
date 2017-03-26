@@ -11,26 +11,6 @@ export const schema = {
       },
       "required": ["loginName"]
     },
-    "templates": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "faker": "lorem.word",
-            "unique": true
-          },
-          "html": {
-            "type": "string",
-            "enum": [""]
-          }
-        },
-        "required": [ "id", "html" ]
-      }
-    },
     "elements": {
       "type": "array",
       "minItems": 1,
@@ -216,7 +196,8 @@ export const schema = {
             "maximum": 90
           },
           "template": {
-            "type": "string"
+            "type": "string",
+            "enum": [ "" ]
           },
           "api": {
             "type": "string",
@@ -293,7 +274,7 @@ export const schema = {
       }
     }
   },
-  "required": [ "forms", "member", "templates", "elements", "element-types" ],
+  "required": [ "form-data", "forms", "member", "elements", "element-types" ],
   "definitions": {
     "name": {
       "type": "string",

@@ -102,6 +102,11 @@ export interface IForm {
   lastEditInDays: date;
 
   /**
+   * @property {string} template the html string template of the form
+   */
+  template: string;
+
+  /**
    * @property {IFormFile[]} files the different paths/actions associated
    * with the master form
    */
@@ -150,23 +155,6 @@ export interface IMember {
    */
   loginName: string;
 }
-
-/**
- * @summary the data describing the HTML of a IForm
- *
- */
-export interface ITemplate {
-  /**
-   * @property {string} id the id of the template (also the id of the master form
-   */
-  id: string;
-
-  /**
-   * @property {string} html the html string for the template
-   */
-  html: string;
-}
-
 
 /**
  * @summary the interface for form roll up instances based off the master form
