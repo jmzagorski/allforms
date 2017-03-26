@@ -39,8 +39,21 @@ describe('the form reducer', () => {
     });
   });
 
+  it('returns adds the template on edit form tempalte', () => {
+    const state = {};
+    const action = {
+      type: 'EDIT_FORM_TEMPLATE',
+      payload: 'a'
+    };
+
+    const newState = domain.form(state, action);
+
+    expect(newState).not.toBe(state);
+    expect(newState.template).toEqual('a');
+  });
+
   it('returns the original state when no action type matches', () => {
-    const state = [];
+    const state = {};
     const action = { type: '' };
 
     const newState = domain.form(state, action);

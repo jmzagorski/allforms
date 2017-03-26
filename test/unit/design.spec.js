@@ -1,22 +1,18 @@
 import * as typeSelectors from '../../src/domain/element-type/selectors';
-import * as templateSelectors from '../../src/domain/template/selectors';
 import * as formSelectors from '../../src/domain/form/selectors';
 import { Design } from '../../src/design';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from '../../src/metadata-dialog';
 import {
-  requestTemplate,
+  requestForm,
   requestElementTypes,
-  createTemplate,
-  editTemplate
+  editFormTemplate
 } from '../../src/domain/index';
 import { setupSpy } from './jasmine-helpers';
-import using from 'jasmine-data-provider';
 
 describe('the design view model', () => {
   let sut;
-  let templateSelectorSpy;
   let elemTypeSelectorSpy;
   let formSelectorSpy;
   let storeSpy
@@ -25,26 +21,25 @@ describe('the design view model', () => {
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     dialogSpy = setupSpy('dialog', DialogService.prototype);
-    templateSelectorSpy = spyOn(templateSelectors, 'getTemplate');
     elemTypeSelectorSpy = spyOn(typeSelectors, 'getElementTypes');
     formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     sut = new Design(storeSpy, dialogSpy);
 
     formSelectorSpy.and.returnValue({ style: '', id: 'abc' });
-    templateSelectorSpy.and.returnValue({ html: '' });
   });
 
   it('instantiates properties to defaults', () => {
     expect(sut.html).toEqual('');
     expect(sut.style).toEqual(null);
+    expect(sut.formId).toEqual(null);
     expect(sut.designer).toEqual({});
     expect(sut.interactable).toEqual('drag');
   });
 
-  it('dispatches to get the template', () => {
+  it('dispatches to get the form', () => {
     sut.activate({ form: 'a' });
 
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestTemplate('a'));
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('a'));
   });
 
   it('dispatches to request the element types', () => {
@@ -72,76 +67,74 @@ describe('the design view model', () => {
     expect(storeSpy.subscribe).toHaveBeenCalled();
   });
 
-  it('updates the html property on the store subscription', () => {
+  it('updates the view model properties on update', () => {
     const state = {};
-    const template = { html: 'b' };
+    const form = { template: 'b', style: 'a', id: 1 };
     let updateFunc = null;
 
     storeSpy.getState.and.returnValue(state);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
-    templateSelectorSpy.and.returnValue(template)
+    formSelectorSpy.and.returnValue(form)
 
     sut.activate({ form: 'a' });
     updateFunc();
 
-    expect(templateSelectorSpy.calls.argsFor(0)[0]).toBe(state)
+    expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
     expect(sut.html).toEqual('b');
+    expect(sut.style).toEqual('a');
+    expect(sut.formId).toEqual(1);
   });
 
-  [ null, undefined, {} ].forEach(template => {
-    it('always return an empty html string', () => {
-      let updateFunc = null;
+  it('does not update the vie wmodel properties without a form', () => {
+    let updateFunc = null;
 
-      templateSelectorSpy.and.returnValue(template)
-      storeSpy.subscribe.and.callFake(func => updateFunc = func);
-
-      sut.activate({ form: 'a' })
-      updateFunc();
-
-      expect(sut.html).toEqual('');
-    });
-  });
-
-  it('gets the form properties from the active form', () => {
-    const state = {}
-
-    storeSpy.getState.and.returnValue(state);
-    formSelectorSpy.and.returnValue({ id: 1, style: 'b' });
-
+    formSelectorSpy.and.returnValue(null);
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
     sut.activate({ form: 'a' });
 
-    expect(formSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-    expect(sut.style).toEqual('b');
-    expect(sut.formId).toEqual(1)
+    updateFunc();
+
+    expect(sut.style).toEqual(null);
+    expect(sut.formId).toEqual(null);
   });
 
-  it('renders the element when dialog is ok', async done => {
-    const dialogResult = { wasCancelled: false, output: {} };
-    const designerSpy = jasmine.createSpy('createElement');
+  it('always return an empty html string', () => {
+    let updateFunc = null;
 
-    sut.designer = {
-      createElement: designerSpy,
-      element:  { innerHTML: 'html' }
-    };
+    formSelectorSpy.and.returnValue({})
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
-    dialogSpy.open.and.returnValue(dialogResult);
+    sut.activate({ form: 'a' })
+    updateFunc();
 
-    await sut.renderElement({ builder: 'a' });
+    expect(sut.html).toEqual('');
+  });
 
-    expect(dialogSpy.open).toHaveBeenCalledWith({
-      viewModel: MetadataDialog,
-      model: { type: 'a' }
+  [ { builder: 'a' }, { detail: { model: { type: 'a' } } } ].forEach(event => {
+    it('renders the element when dialog is ok', async done => {
+      const dialogResult = { wasCancelled: false, output: {} };
+      const designerSpy = jasmine.createSpy('createElement');
+
+      dialogSpy.open.and.returnValue(dialogResult);
+
+      sut.designer = {
+        createElement: designerSpy,
+        element:  { innerHTML: 'html' }
+      };
+
+      await sut.renderElement(event);
+
+      expect(dialogSpy.open).toHaveBeenCalledWith({
+        viewModel: MetadataDialog,
+        model: { type: 'a'}
+      });
+      expect(designerSpy.calls.argsFor(0)[0]).toBe(dialogResult.output);
+      done();
     });
-    expect(designerSpy.calls.argsFor(0)[0]).toBe(dialogResult.output);
-    done();
   });
 
-  [ { template: null, creator: createTemplate },
-    { template: undefined, creator: createTemplate },
-    { template: {}, creator: editTemplate }
-].forEach(data => {
-  it('saves the template when dialog is ok', async done => {
-    const dialogResult = { wasCancelled: false, output: {} };
+  it('saves the form template when dialog is ok', async done => {
+    const dialogResult = { wasCancelled: false };
     const designerSpy = jasmine.createSpy('createElement');
     sut.formId = 'abc';
 
@@ -150,7 +143,6 @@ describe('the design view model', () => {
       element:  { innerHTML: 'html' }
     };
 
-    templateSelectorSpy.and.returnValue(data.template);
     dialogSpy.open.and.returnValue(dialogResult);
     designerSpy.and.callFake(() => {
       expect(storeSpy.dispatch.calls.count()).toEqual(0);
@@ -159,43 +151,31 @@ describe('the design view model', () => {
     await sut.renderElement({ builder: 'a' });
 
     expect(storeSpy.dispatch.calls.count()).toEqual(1);
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
-      { id: 'abc', html: 'html' }
-    ));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate('html'));
     done();
   });
-});
 
-it('does not create the element if dialog cancelled', async done => {
-  const dialogResult = { wasCancelled: true, output: 1 };
-  const designerSpy = jasmine.createSpy('createElement');
-  sut.designer = { createElement: designerSpy };
-  sut.formId = 'abc';
+  it('does not create the element if dialog cancelled', async done => {
+    const dialogResult = { wasCancelled: true, output: 1 };
+    const designerSpy = jasmine.createSpy('createElement');
+    sut.designer = { createElement: designerSpy };
+    sut.formId = 'abc';
 
-  dialogSpy.open.and.returnValue(dialogResult);
+    dialogSpy.open.and.returnValue(dialogResult);
 
-  await sut.renderElement({ builder: 'a' });
+    await sut.renderElement({ builder: 'a' });
 
-  expect(designerSpy).not.toHaveBeenCalled();
-  done();
-});
+    expect(designerSpy).not.toHaveBeenCalled();
+    done();
+  });
 
-[ { template: null, creator: createTemplate },
-  { template: undefined, creator: createTemplate },
-  { template: {}, creator: editTemplate }
-  ].forEach(data => {
-    it('saves the template object', () => {
-      sut.designer = { element: { innerHTML: 'a' } };
-      sut.formId = 'abc';
+  it('saves the template object', () => {
+    sut.designer = { element: { innerHTML: 'a' } };
+    sut.formId = 'abc';
 
-      templateSelectorSpy.and.returnValue(data.template);
+    sut.saveTemplate();
 
-      sut.saveTemplate();
-
-      expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(data.creator(
-      { id: 'abc', html: 'a' }
-    ));
-    });
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate('a'));
   });
 
   it('unsubscribes on deactivate', () => {

@@ -1,13 +1,10 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DialogService } from 'aurelia-dialog';
 import { MetadataDialog } from './metadata-dialog';
-import { select } from 'redux-saga/effects';
 import {
-  requestTemplate,
-  createTemplate,
-  editTemplate,
+  requestForm,
+  editFormTemplate,
   requestElementTypes,
-  getTemplate,
   getActiveForm,
   getElementTypes
 } from './domain/index';
@@ -18,6 +15,7 @@ export class Design {
   constructor(store, dialogService) {
     this.html = '';
     this.style = null;
+    this.formId = null;
     this.designer = {};
     this.interactable = 'drag';
 
@@ -30,22 +28,14 @@ export class Design {
     return getElementTypes(this._state);
   }
 
-  get _template() {
-    return getTemplate(this._state);
-  }
-
   get _state() {
     return this._store.getState();
   }
 
   activate(params) {
     this._store.dispatch(requestElementTypes())
-    this._store.dispatch(requestTemplate(params.form))
+    this._store.dispatch(requestForm(params.form))
     this._unsubscribe = this._store.subscribe(this._update.bind(this))
-
-    const form = getActiveForm(this._state);
-    this.style = form.style;
-    this.formId = form.id;
   }
 
   /**
@@ -53,9 +43,10 @@ export class Design {
    * @desc called either when creating a new element or when an existing element
    * needs to be edited
    * @param {Object} event custom event or element type builder function string
-   * @interface event { detail: { model: { id: Number, type: String} } } |
-   * { builder: String }
-   *
+   * @param {Object} event.detail.model.id: the model id on the detail object of
+   * an event
+   * @param {Object} event.detail.model.type: the element type to create
+   * @param {Object} event.builder: the builder is the element type to create
    */
   async renderElement(event) {
     const model = event.detail ? event.detail.model : { type: event.builder };
@@ -72,19 +63,7 @@ export class Design {
   }
 
   saveTemplate() {
-    let action = null
-
-    if (this._template) {
-      action = editTemplate({
-        id: this.formId,
-        html: this.designer.element.innerHTML
-      });
-    } else {
-      action = createTemplate({
-        id: this.formId,
-        html: this.designer.element.innerHTML
-      });
-    }
+    const action = editFormTemplate(this.designer.element.innerHTML);
 
     this._store.dispatch(action);
   }
@@ -94,8 +73,15 @@ export class Design {
   }
 
   _update() {
+    const form = getActiveForm(this._state);
+
+    if (!form) return;
+
+    this.style = form.style;
+    this.formId = form.id;
+
     // i never want the html property to be undefined or that will be rendered
     // in the browser
-    this.html = this._template ? this._template.html || '' : this.html;
+    this.html = form.template || this.html;
   }
 }

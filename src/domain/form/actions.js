@@ -4,6 +4,7 @@ export const CREATE_FORM = 'CREATE_FORM';
 export const FORM_CREATED = 'FORM_CREATED';
 export const EDIT_FORM = 'EDIT_FORM';
 export const FORM_EDITED = 'FORM_EDITED';
+export const EDIT_FORM_TEMPLATE = 'EDIT_FORM_TEMPLATE';
 
 export function requestForm(id) {
   return {
@@ -39,6 +40,13 @@ export function editForm(form) {
   return {
     type: EDIT_FORM,
     payload: form
+  }
+}
+
+export function editFormTemplate(template) {
+  return {
+    type: EDIT_FORM_TEMPLATE,
+    payload: template
   }
 }
 

@@ -1,5 +1,6 @@
-import { put, takeLatest, call } from 'redux-saga/effects';
-import * as actions from '../domain/form/actions'
+import { put, takeLatest, call, select } from 'redux-saga/effects';
+import * as actions from '../domain/form/actions';
+import { getActiveForm } from '../domain/form/selectors';
 
 /**
  * @summary calls to get a single IForm object
@@ -59,6 +60,20 @@ export function* editForm(api, action) {
   }
 }
 
+export function* editTemplate(api, action) {
+  try {
+
+    const form = yield select(getActiveForm);
+    const apiForm = yield call([api, api.save], form);
+
+    yield put(actions.formEdited(apiForm));
+
+  } catch(e) {
+
+    yield put(actions.formEdited(e, true));
+  }
+}
+
 /**
  * @summary Watches for form actions
  * @param {IFormApi} api the IFormApi service
@@ -67,4 +82,5 @@ export default function* formSaga(api) {
   yield takeLatest(actions.REQUEST_FORM, getForm, api);
   yield takeLatest(actions.CREATE_FORM, addForm, api);
   yield takeLatest(actions.EDIT_FORM, editForm, api);
+  yield takeLatest(actions.EDIT_FORM_TEMPLATE, editTemplate, api);
 }

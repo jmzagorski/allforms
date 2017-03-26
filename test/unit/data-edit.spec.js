@@ -1,8 +1,8 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DataEdit } from '../../src/data-edit';
 import { setupSpy } from './jasmine-helpers';
-import { requestTemplate } from '../../src/domain/index';
-import * as selectors from '../../src/domain/template/selectors';
+import { requestForm } from '../../src/domain/index';
+import * as selectors from '../../src/domain/form/selectors';
 
 describe('edit data view model', () => {
   let storeSpy;
@@ -29,18 +29,18 @@ describe('edit data view model', () => {
     sut.activate(params);
 
     expect(storeSpy.subscribe).toHaveBeenCalled();
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestTemplate(params.form));
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm(params.form));
   });
 
-  [ { template: null, expect: '' },
-    { template: undefined, expect: '' },
-    { template: { html: 'a' }, expect: 'a' }
+  [ { form: null, expect: '' },
+    { form: undefined, expect: '' },
+    { form: { template: 'a' }, expect: 'a' }
   ].forEach(data => {
-    it('sets the view model html to the template if exists on subscribe', () => {
+    it('sets the view model html to the form template if exists on subscribe', () => {
       const params = { form: 1 };
       const state = {};
-      const getTemplateSpy = spyOn(selectors, 'getTemplate').and
-        .returnValue(data.template);
+      const getFormSpy = spyOn(selectors, 'getActiveForm').and
+        .returnValue(data.form);
       let updateFunc = null;
 
       storeSpy.getState.and.returnValue(state);
@@ -50,15 +50,15 @@ describe('edit data view model', () => {
       sut.activate(params);
       updateFunc();
 
-      expect(getTemplateSpy.calls.count()).toEqual(1);
-      expect(getTemplateSpy.calls.argsFor(0)[0]).toBe(state);
+      expect(getFormSpy.calls.count()).toEqual(1);
+      expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
       expect(sut.html).toEqual(data.expect);
     });
   });
 
-  it('gets the template on every store subscribe call', () => {
+  it('gets the form on every store subscribe call', () => {
     const params = { form: 1 };
-    const getTemplateSpy = spyOn(selectors, 'getTemplate');
+    const getFormSpy = spyOn(selectors, 'getActiveForm');
     let updateFunc = null;
 
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
@@ -67,6 +67,6 @@ describe('edit data view model', () => {
     updateFunc();
     updateFunc();
 
-    expect(getTemplateSpy.calls.count()).toEqual(2);
+    expect(getFormSpy.calls.count()).toEqual(2);
   });
 })

@@ -215,7 +215,7 @@ export const schema = {
             "minimum": 0,
             "maximum": 90
           },
-          "html": {
+          "template": {
             "type": "string"
           },
           "api": {

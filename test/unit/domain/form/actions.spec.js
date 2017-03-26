@@ -63,6 +63,19 @@ describe('the form actions', () => {
     });
   });
 
+  it('create an action for editing the form template', () => {
+    const payload = {};
+    const expected = {
+      type: 'EDIT_FORM_TEMPLATE',
+      payload
+    }
+
+    const actual = domain.editFormTemplate(payload);
+
+    expect(actual).toEqual(expected);
+    expect(actual.payload).toBe(payload);
+  });
+
   it('create an action for a form being edited', () => {
     const payload = {};
     const expected = {

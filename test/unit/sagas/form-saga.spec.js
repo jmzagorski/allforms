@@ -1,5 +1,5 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
-import { receivedForm, formAdded, formEdited } from '../../../src/domain/index'
+import { put, call, takeLatest, select } from 'redux-saga/effects';
+import { receivedForm, formAdded, formEdited, getActiveForm } from '../../../src/domain/index'
 import * as saga from '../../../src/sagas/form-saga';
 
 describe('the form saga', () => {
@@ -17,6 +17,9 @@ describe('the form saga', () => {
     );
     expect(iterator.next().value).toEqual(
       takeLatest('EDIT_FORM', saga.editForm, api)
+    );
+    expect(iterator.next().value).toEqual(
+      takeLatest('EDIT_FORM_TEMPLATE', saga.editTemplate, api)
     );
     expect(iterator.next()).toEqual({
       done: true, value: undefined
@@ -124,6 +127,46 @@ describe('the form saga', () => {
     const err = new Error();
 
     const iterator = saga.editForm(api, action);
+    iterator.next();
+
+    expect(iterator.throw(err).value).toEqual(
+      put(formEdited(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('edits the form template', () => {
+    const api = { save: () => { } };
+    const action= { payload: {} };
+    const stateForm = {};
+    const apiForm = {};
+
+    const iterator = saga.editTemplate(api, action);
+
+    expect(iterator.next().value).toEqual(
+      select(getActiveForm)
+    );
+    expect(iterator.next(stateForm).value).toEqual(
+      call([api, api.save], stateForm)
+    );
+    expect(iterator.next(apiForm).value).toEqual(
+      put(formEdited(apiForm))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('sends an error in the catch of edit form template', () => {
+    const api = { save: () => { } };
+    const action= { payload: 1 };
+    const err = new Error();
+
+    const iterator = saga.editTemplate(api, action);
     iterator.next();
 
     expect(iterator.throw(err).value).toEqual(

@@ -1,5 +1,5 @@
 import { Store } from 'aurelia-redux-plugin';
-import { getTemplate, requestTemplate } from './domain/index';
+import { getActiveForm, requestForm } from './domain/index';
 
 export class DataEdit {
   static inject() { return [ Store ]; }
@@ -14,14 +14,14 @@ export class DataEdit {
   activate(params) {
     this._unsubscribe = this._store.subscribe(() => this._update());
 
-    this._store.dispatch(requestTemplate(params.form));
+    this._store.dispatch(requestForm(params.form));
   }
 
   _update() {
-    const template = getTemplate(this._store.getState());
+    const form = getActiveForm(this._store.getState());
 
-    if (template) {
-      this.html = template.html;
+    if (form) {
+      this.html = form.template;
     }
   }
 

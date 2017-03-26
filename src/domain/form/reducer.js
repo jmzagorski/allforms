@@ -16,6 +16,9 @@ export default function formReducer(state = {}, action) {
     case actions.CREATE_FORM:
       return action.payload;
 
+    case actions.EDIT_FORM_TEMPLATE:
+      return Object.assign({}, state, { template: action.payload });
+
     default:
       return state;
   }
