@@ -46,9 +46,9 @@ describe('the designer custom element', () => {
   });
 
   using([
-    { template: '', html: '<form id="a"></form>' },
-    { template: '<form></form>', html: '<form id="a"></form>' },
-    { template: '<div></div>', html: '<form id="a"><div></div></form>' }
+    { template: '', html: '<form method="post" action="#" id="a"></form>' },
+    { template: '<form></form>', html: '<form method="post" action="#" id="a"></form>' },
+    { template: '<div></div>', html: '<form method="post" action="#" id="a"><div></div></form>' }
   ], data => {
     it('always has a form element', async done => {
       context.template = data.template;

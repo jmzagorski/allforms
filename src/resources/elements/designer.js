@@ -57,6 +57,8 @@ export class DesignerCustomElement {
       this.element.appendChild(this._formWrapper);
     }
 
+    this._formWrapper.method = "post";
+    this._formWrapper.action = this._formWrapper.action || "#";
     this._formWrapper.id = this.formid
   }
 
