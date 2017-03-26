@@ -1,10 +1,11 @@
 <template>
-<form submit.delegate="submit()">
-  <ai-dialog>
-    <ai-dialog-body>
+  <form submit.delegate="submit()">
+    <ai-dialog>
+      <ai-dialog-body>
 
-      <!--inheritly bind the model to the children-->
-      <compose repeat.for="schema of schemas" view.bind="schema" >
+        <!--inheritly bind the model to the children-->
+        <compose repeat.for="schema of schemas" view.bind="schema" >
+        </compose>
 
       </ai-dialog-body>
       <ai-dialog-footer>
