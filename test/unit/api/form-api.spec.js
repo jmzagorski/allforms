@@ -57,4 +57,24 @@ describe('the form api', () => {
       fr.readAsText(httpStub.blob.body);
     });
   });
+
+  it('patches the form template', async done => {
+    const form = { id: 1, template: 'test' }
+    const returnedForm = {};
+    const fr = new FileReader();
+
+    httpStub.itemStub = returnedForm;
+    fr.addEventListener('loadend', () => {
+      expect(fr.result).toEqual(JSON.stringify(form));
+      done();
+    });
+
+    const serverElem = await sut.saveTemplate(form);
+
+    expect(httpStub.url).toEqual('forms/1');
+    expect(httpStub.blob.method).toEqual('PATCH');
+    expect(serverElem).not.toBe(form);
+    expect(serverElem).toBe(returnedForm);
+    fr.readAsText(httpStub.blob.body);
+  });
 });

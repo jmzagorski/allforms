@@ -29,4 +29,11 @@ export class FormApi {
       body: json(form)
     }).then(response => response.json());
   }
+
+  saveTemplate({id, template}) {
+    return this._http.fetch(`forms/${id}`, {
+      method: 'PATCH',
+      body: json({ id, template })
+    }).then(response => response.json());
+  }
 }

@@ -9,7 +9,7 @@ export const schema = {
           "faker": "name.firstName"
         }
       },
-      "required": ["loginName"]
+      "required": [ "loginName" ]
     },
     "elements": {
       "type": "array",
@@ -31,9 +31,13 @@ export const schema = {
             "type": "string",
             "faker": "lorem.word",
             "unique": true
-          }
+          },
+          "template": {
+            "type": "string",
+            "enum": [ null ]
+          },
         },
-        "required": [ "id", "formId" ]
+        "required": [ "id", "formId", "template" ]
       }
     },
     "element-types": {
@@ -197,7 +201,7 @@ export const schema = {
           },
           "template": {
             "type": "string",
-            "enum": [ "" ]
+            "enum": [ null ]
           },
           "api": {
             "type": "string",
@@ -270,7 +274,7 @@ export const schema = {
             }
           }
         },
-        "required": ["id", "name", "summary", "style", "lastEditInDays", "api", "files" ]
+        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api", "files" ]
       }
     }
   },

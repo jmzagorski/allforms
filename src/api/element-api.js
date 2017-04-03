@@ -27,4 +27,11 @@ export class ElementApi {
       body: json(element)
     }).then(response => response.json());
   }
+
+  saveTemplate({id, template}) {
+    return this._http.fetch(`elements/${id}`, {
+      method: 'PATCH',
+      body: json({ id, template })
+    }).then(response => response.json());
+  }
 }

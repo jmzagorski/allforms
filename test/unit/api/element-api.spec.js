@@ -47,4 +47,24 @@ describe('the element api', () => {
       fr.readAsText(httpStub.blob.body);
     });
   });
+
+  it('patches the element template', async done => {
+    const elem = { id: 1, template: 'test' }
+    const returnedElem = {};
+    const fr = new FileReader();
+
+    httpStub.itemStub = returnedElem;
+    fr.addEventListener('loadend', () => {
+      expect(fr.result).toEqual(JSON.stringify(elem));
+      done();
+    });
+
+    const serverElem = await sut.saveTemplate(elem);
+
+    expect(httpStub.url).toEqual('elements/1');
+    expect(httpStub.blob.method).toEqual('PATCH');
+    expect(serverElem).not.toBe(elem);
+    expect(serverElem).toBe(returnedElem);
+    fr.readAsText(httpStub.blob.body);
+  });
 });

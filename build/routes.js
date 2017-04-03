@@ -1,3 +1,4 @@
 module.exports = {
-  "/api/": "/"
+  "/api/": "/",
+  "/api/:id": "/:id"
 }
