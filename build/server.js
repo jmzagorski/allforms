@@ -3,6 +3,7 @@ var autoid = require('./autoid-generator');
 var nocontent = require('./nocontent-middleware');
 var delProps = require('./delete-props');
 var formApi = require('./add-form-api');
+var formTemplate = require('./build-form-template');
 var routes = require('./routes');
 var server = jsonServer.create();
 var router = jsonServer.router('./src/db.json');
@@ -18,6 +19,7 @@ server.use(jsonServer.bodyParser);
 server.use(autoid);
 server.use(delProps);
 server.use(formApi);
+server.use(formTemplate);
 
 server.use(jsonServer.rewriter(routes));
 
