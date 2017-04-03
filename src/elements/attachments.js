@@ -26,9 +26,6 @@ export const bootstrap = stampit()
         $formGroup.$input.removeAttribute('multiple');
       }
 
-      // when designing for the element we don't want the file dialog to pop up
-      $formGroup.$input.onclick = e => e.preventDefault();
-
       return $formGroup.$element;
     }
   })

@@ -17,7 +17,6 @@ export const standard = stampit()
   .methods({
     create($element) {
       const $link = $element || DOM.createElement('a');
-      $link.onclick = e => e.preventDefault();
       $link.href = this.href;
       $link.textContent = this.text;
       return $link;

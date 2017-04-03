@@ -22,13 +22,4 @@ describe('the attachment element entity', () => {
       expect($elem.children[1].getAttribute('multiple')).toEqual(data.expect);
     });
   });
-
-  it('prevents the click', () => {
-    const sut = attachments.bootstrap();
-    const $elem = sut.create();
-
-    const canceled = !$elem.click();
-
-    expect(canceled).toBeTruthy();
-  });
 });

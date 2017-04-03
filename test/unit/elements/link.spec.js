@@ -24,16 +24,6 @@ describe('the link element entity', () => {
     expect($elem.textContent).toContain('a');
   });
 
-  // don't want the click event when designing the form
-  it('prevents the click event', () => {
-    const sut = link.standard();
-    const $elem = sut.create();
-
-    const canceled = !$elem.click();
-
-    expect(canceled).toBeTruthy();
-  });
-
   it('updates a standard link', () => {
     const sut = link.standard();
     const $existing = document.createElement('a');
