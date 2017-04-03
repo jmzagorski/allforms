@@ -42,23 +42,41 @@ describe('the resizable custom attribute', () => {
     });
   });
 
-  it('fires handler on resizemove', async done => {
-    const event = {
-      target: {
-        style: {}
-      },
-      rect: { width: 1, height: 2 }
-    };
-    sut.inView(`<div resizable.bind="true"></div>`);
+  [ { x: 5, expectX: 8, y: 6, expectY: 10 },
+    { x: null, expectX: 3, y: null, expectY: 4 }
+  ].forEach(data => {
+    it('fires handler on resizemove', async done => {
+      const getAttrSpy = jasmine.createSpy('getAttr');
+      const setAttrSpy = jasmine.createSpy('setAttr');
+      const event = {
+        target: {
+          style: {},
+          getAttribute: getAttrSpy,
+          setAttribute: setAttrSpy
+        },
+        rect: { width: 1, height: 2 },
+        deltaRect: { left: 3, top: 4 }
+      };
 
-    await sut.create(bootstrap);
-    const interactEvent = interactStub.events.find(e => e.event === 'resizemove');
+      getAttrSpy.and.returnValues(data.x, data.y);
 
-    expect(event).toBeDefined();
-    interactEvent.callback(event)
-    expect(event.target.style.width).toEqual('1px');
-    expect(event.target.style.height).toEqual('2px');
-    done();
+      sut.inView(`<div resizable.bind="true"></div>`);
+
+      await sut.create(bootstrap);
+      const interactEvent = interactStub.events.find(e => e.event === 'resizemove');
+
+      interactEvent.callback(event)
+
+      expect(event.target.style.width).toEqual('1px');
+      expect(event.target.style.height).toEqual('2px');
+      expect(event.target.style.transform).toEqual(`translate(${data.expectX}px,${data.expectY}px)`);
+      expect(event.target.style.webkitTransform).toEqual(`translate(${data.expectX}px,${data.expectY}px)`);
+      expect(getAttrSpy.calls.argsFor(0)).toEqual(['data-x']);
+      expect(getAttrSpy.calls.argsFor(1)).toEqual(['data-y']);
+      expect(setAttrSpy.calls.argsFor(0)).toEqual(['data-x', data.expectX]);
+      expect(setAttrSpy.calls.argsFor(1)).toEqual(['data-y', data.expectY]);
+      done();
+    });
   });
 
   it('watches the value change event', async done => {
