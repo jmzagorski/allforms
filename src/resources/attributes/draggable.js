@@ -20,6 +20,12 @@ export class DraggableCustomAttribute {
 
   constructor(element, interact) {
     this.element = element;
+    this.defaults = {
+      enabled: true,
+      restriction: 'body',
+      onend: null,
+      onstart: null,
+    };
     this._interact = interact;
     this._interactable = null;
 
@@ -28,7 +34,11 @@ export class DraggableCustomAttribute {
 
   // TODO - how to observe the enabled property to turn this on and off
   bind() {
-    this._interactable = this._interact(this.element).draggable({
+    this.value = this.value || this.defaults;
+
+    this._interactable = this._interact(this.element);
+
+    this._interactable.draggable({
       enabled: this.value.enabled,
       inertia: true,
       restrict: {
@@ -36,7 +46,9 @@ export class DraggableCustomAttribute {
         endOnly: true,
         elementRect: { top: 0, left: 0, bottom: 0, right: 0 }
       },
-      onmove: dragHandler
+      onmove: dragHandler,
+      onend: this.value.onend,
+      onstart: this.value.onstart
     });
   }
 

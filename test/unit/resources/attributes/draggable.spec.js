@@ -27,6 +27,10 @@ describe('the draggable custom attribute', () => {
   afterEach(() => sut.dispose());
 
   it('configures the draggable options', async done => {
+    const onendFunc = () => {};
+    const onstartFunc = () => {};
+    context.options.onend = onendFunc;
+    context.options.onstart = onstartFunc;
     sut.inView(`<div draggable.bind="options"></div>`)
       .boundTo(context);
 
@@ -37,8 +41,31 @@ describe('the draggable custom attribute', () => {
     expect(config).toBeDefined();
     expect(config.inertia).toBeTruthy();
     expect(config.enabled).toBeTruthy();
+    expect(config.onend).toBe(onendFunc);
+    expect(config.onstart).toBe(onstartFunc);
+    expect(config.onmove).toBeDefined();
     expect(config.restrict).toEqual({
       restriction: 'test',
+      endOnly: true,
+      elementRect: { top: 0, left: 0, bottom: 0, right: 0}
+    });
+    done();
+  });
+
+  it('configures default options if not value', async done => {
+    sut.inView(`<div draggable></div>`)
+
+    await sut.create(bootstrap)
+    const config = interactStub.options.drag;
+
+    expect(config).toBeDefined();
+    expect(config.inertia).toBeTruthy();
+    expect(config.enabled).toBeTruthy();
+    expect(config.onend).toEqual(null);
+    expect(config.onstart).toEqual(null);
+    expect(config.onmove).toBeDefined();
+    expect(config.restrict).toEqual({
+      restriction: 'body',
       endOnly: true,
       elementRect: { top: 0, left: 0, bottom: 0, right: 0}
     });
