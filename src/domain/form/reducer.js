@@ -1,8 +1,8 @@
 import * as actions from './actions';
 
-export default function formReducer(state = {}, action) {
+export default function formReducer(state = null, action) {
   switch (action.type) {
-    // removes any current form from the state while request in action
+      // TODO temporary until fix bug
     case actions.REQUEST_FORM:
       return null;
     case actions.RECEIVED_FORM:
@@ -15,9 +15,6 @@ export default function formReducer(state = {}, action) {
     case actions.EDIT_FORM:
     case actions.CREATE_FORM:
       return action.payload;
-
-    case actions.EDIT_FORM_TEMPLATE:
-      return Object.assign({}, state, { template: action.payload });
 
     default:
       return state;

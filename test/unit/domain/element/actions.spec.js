@@ -2,6 +2,19 @@ import * as domain from '../../../../src/domain/index';
 
 describe('the element actions', () => {
 
+  it('creates the action for setting up the defaults on a new element', () => {
+    const payload = {};
+    const expected = {
+      type: 'DEFAULT_NEW_ELEMENT',
+      payload
+    };
+
+    const actual = domain.defaultNewElement(payload);
+
+    expect(actual).toEqual(expected);
+    expect(actual.payload).toBe(payload);
+  });
+
   it('creates the action for requesting an element', () => {
     const expected = {
       type: 'REQUEST_ELEMENT',

@@ -18,6 +18,9 @@ describe('the element saga', () => {
     expect(iterator.next().value).toEqual(
       takeLatest('EDIT_ELEMENT', saga.editElement, api)
     );
+    expect(iterator.next().value).toEqual(
+      takeLatest('EDIT_FORM_TEMPLATE', saga.editTemplate, api)
+    );
     expect(iterator.next()).toEqual({
       done: true, value: undefined
     });
@@ -46,9 +49,22 @@ describe('the element saga', () => {
     });
   });
 
+  [ null, undefined, '', 0 ].forEach(id => {
+    it('has no iterator when payload id is missing', () => {
+      const action= { payload: { id } };
+
+      const iterator = saga.getElement(null, action);
+
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
+    });
+  });
+
   it('sends an error in the catch of getting the element', () => {
     const api = { get: () => { } };
-    const action= { payload: 1 };
+    const action= { payload: { id: 1 } };
     const err = new Error();
 
     const iterator = saga.getElement(api, action);
@@ -124,6 +140,42 @@ describe('the element saga', () => {
     const err = new Error();
 
     const iterator = saga.editElement(api, action);
+    iterator.next();
+
+    expect(iterator.throw(err).value).toEqual(
+      put(elementEdited(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('edits the element template', () => {
+    const api = { saveTemplate: () => { } };
+    const action= { payload: { element: { id: 1 } } };
+    const element = { id: 2 };
+
+    const iterator = saga.editTemplate(api, action);
+
+    expect(iterator.next().value).toEqual(
+      call([api, api.saveTemplate], action.payload.element)
+    );
+    expect(iterator.next(element).value).toEqual(
+      put(elementEdited(element))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('sends an error in the catch of edit element template', () => {
+    const api = { saveTemplate: () => { } };
+    const action= { payload: { element: {} } };
+    const err = new Error();
+
+    const iterator = saga.editTemplate(api, action);
     iterator.next();
 
     expect(iterator.throw(err).value).toEqual(

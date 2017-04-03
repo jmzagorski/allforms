@@ -5,6 +5,14 @@ export const EDIT_ELEMENT = 'EDIT_ELEMENT';
 export const RECEIVED_ELEMENT = 'RECEIVED_ELEMENT';
 export const ELEMENT_ADDED = 'ELEMENT_ADDED';
 export const ELEMENT_EDITED = 'ELEMENT_EDITED';
+export const DEFAULT_NEW_ELEMENT = 'DEFAULT_NEW_ELEMENT';
+
+export function defaultNewElement(element) {
+  return {
+    type: DEFAULT_NEW_ELEMENT,
+    payload: element
+  }
+};
 
 /**
  * @summary creates the action when a new element has been initialized to create

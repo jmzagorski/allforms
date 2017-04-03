@@ -11,10 +11,12 @@ import { getActiveForm } from '../domain/form/selectors';
 export function* getForm(api, action) {
   try {
 
-    const form = yield call([api, api.get], action.payload.id);
-    const hasError = !form;
+    if (action.payload.id) {
+      const form = yield call([api, api.get], action.payload.id);
+      const hasError = !form;
 
-    yield put(actions.receivedForm(form, hasError));
+      yield put(actions.receivedForm(form, hasError));
+    }
 
   } catch(e) {
 
@@ -63,10 +65,9 @@ export function* editForm(api, action) {
 export function* editTemplate(api, action) {
   try {
 
-    const form = yield select(getActiveForm);
-    const apiForm = yield call([api, api.save], form);
+    const form = yield call([api, api.saveTemplate], action.payload.form);
 
-    yield put(actions.formEdited(apiForm));
+    yield put(actions.formEdited(form));
 
   } catch(e) {
 

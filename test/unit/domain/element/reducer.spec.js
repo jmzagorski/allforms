@@ -1,4 +1,4 @@
-import * as domain from '../../../../src/domain/index';
+import * as domain from '../../../../src/domain';
 
 describe('the element reducer', () => {
 
@@ -16,7 +16,8 @@ describe('the element reducer', () => {
   });
 
   [
-    domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED
+    domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED,
+    domain.DEFAULT_NEW_ELEMENT
   ].forEach(type => {
     it('returns the payload for actions', () => {
       const payload = {};
@@ -26,14 +27,6 @@ describe('the element reducer', () => {
 
       expect(newState).toBe(payload);
     });
-  });
-
-  it('returns null when the element is being created', () => {
-    const action = { type: 'CREATE_ELEMENT' };
-
-    const newState = domain.element(null, action);
-
-    expect(newState).toEqual(null);
   });
 
   it('returns the original state when no action type matches', () => {

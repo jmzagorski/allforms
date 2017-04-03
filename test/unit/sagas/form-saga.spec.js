@@ -51,7 +51,7 @@ describe('the form saga', () => {
 
   it('sends an error in the catch of getting the form', () => {
     const api = { get: () => { } };
-    const action= { payload: 1 };
+    const action= { payload: { id: 1 } };
     const err = new Error();
 
     const iterator = saga.getForm(api, action);
@@ -63,6 +63,19 @@ describe('the form saga', () => {
     expect(iterator.next()).toEqual({
       done: true,
       value: undefined
+    });
+  });
+
+  [ null, undefined, '', 0 ].forEach(id => {
+    it('has no iterator when payload id is missing', () => {
+      const action= { payload: { id } };
+
+      const iterator = saga.getForm(null, action);
+
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
     });
   });
 
@@ -139,21 +152,17 @@ describe('the form saga', () => {
   });
 
   it('edits the form template', () => {
-    const api = { save: () => { } };
-    const action= { payload: {} };
-    const stateForm = {};
-    const apiForm = {};
+    const api = { saveTemplate: () => { } };
+    const action= { payload: { form: { id: 1 } } };
+    const form = { id: 2 };
 
     const iterator = saga.editTemplate(api, action);
 
     expect(iterator.next().value).toEqual(
-      select(getActiveForm)
+      call([api, api.saveTemplate], action.payload.form)
     );
-    expect(iterator.next(stateForm).value).toEqual(
-      call([api, api.save], stateForm)
-    );
-    expect(iterator.next(apiForm).value).toEqual(
-      put(formEdited(apiForm))
+    expect(iterator.next(form).value).toEqual(
+      put(formEdited(form))
     );
     expect(iterator.next()).toEqual({
       done: true,
@@ -162,8 +171,8 @@ describe('the form saga', () => {
   });
 
   it('sends an error in the catch of edit form template', () => {
-    const api = { save: () => { } };
-    const action= { payload: 1 };
+    const api = { saveTemplate: () => { } };
+    const action= { payload: { form: {} } };
     const err = new Error();
 
     const iterator = saga.editTemplate(api, action);

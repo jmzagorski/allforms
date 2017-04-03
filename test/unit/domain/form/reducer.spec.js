@@ -2,16 +2,6 @@ import * as domain from '../../../../src/domain/index';
 
 describe('the form reducer', () => {
 
-  it('returns null when sending a request for the form', () => {
-    const action = {
-      type: 'REQUEST_FORM'
-    };
-
-    const state = domain.form(null, action);
-
-    expect(state).toEqual(null);
-  });
-
   [
     domain.RECEIVED_FORM, domain.FORM_CREATED, domain.FORM_EDITED
   ].forEach(type => {
@@ -37,19 +27,6 @@ describe('the form reducer', () => {
 
       expect(newState).toBe(payload);
     });
-  });
-
-  it('returns adds the template on edit form tempalte', () => {
-    const state = {};
-    const action = {
-      type: 'EDIT_FORM_TEMPLATE',
-      payload: 'a'
-    };
-
-    const newState = domain.form(state, action);
-
-    expect(newState).not.toBe(state);
-    expect(newState.template).toEqual('a');
   });
 
   it('returns the original state when no action type matches', () => {
