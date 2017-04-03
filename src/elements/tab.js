@@ -6,7 +6,7 @@ import map from './viewMap';
 const defaults = stampit()
   .props({
     headers: '',
-    id: null,
+    groupName: null,
     context: '',
     contexts: []
   });
@@ -27,9 +27,7 @@ export const bootstrap = stampit()
       const list = DOM.createElement('ul');
       const contentWrapper = DOM.createElement('div');
 
-      wrapper.style.height = '100%';
-      wrapper.style.width = '100%';
-      wrapper.id = this.id.toString().replace(/ /g, '');
+      wrapper.id = this.groupName.toString().replace(/ /g, '');
       wrapper.appendChild(list);
       wrapper.appendChild(contentWrapper);
 
@@ -41,7 +39,7 @@ export const bootstrap = stampit()
       list.className = `nav nav-${this.context}s`;
 
       for (let i = 0; i < headers.length; i++) {
-        const $tabHeader = _createBootstrapHeader(headers[i], this.id, this.context, list);
+        const $tabHeader = _createBootstrapHeader(headers[i], this.groupName, this.context, list);
         contentWrapper.appendChild($tabHeader.content);
         list.appendChild($tabHeader.item);
 

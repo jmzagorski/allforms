@@ -5,7 +5,7 @@ describe('the tab element', () => {
   it('has bootstrap tab properties', () => {
     const sut = tab.bootstrap();
 
-    expect(sut.id).toBeDefined();
+    expect(sut.groupName).toBeDefined();
     expect(sut.headers).toBeDefined();
     expect(sut.context).toBeDefined();
     expect(sut.contexts).toEqual(['tab', 'pill']);
@@ -29,7 +29,7 @@ describe('the tab element', () => {
 
   it('creates a new bootstrap tab group', () => {
     const sut = tab.bootstrap();
-    sut.id = 'navtab';
+    sut.groupName = 'navtab';
     sut.headers = 'test,one';
     sut.context = 'pill';
 
@@ -37,8 +37,6 @@ describe('the tab element', () => {
 
     expect($elem.tagName).toEqual('DIV');
     expect($elem.id).toEqual('navtab');
-    expect($elem.style.height).toEqual('100%');
-    expect($elem.style.width).toEqual('100%');
 
     const $nav = $elem.children[0];
     expect($nav.tagName).toEqual('UL');
@@ -84,10 +82,10 @@ describe('the tab element', () => {
     expect($secondContent.getAttribute('dropzone')).toEqual('');
   });
 
-  [ { id: 11, expect: '11' }, { id: 'te st', expect: 'test'} ].forEach(data => {
-    it('does not have spaces in the id', () => {
+  [ { groupName: 11, expect: '11' }, { groupName: 'te st', expect: 'test'} ].forEach(data => {
+    it('does not have spaces in the groupName', () => {
       const sut = tab.bootstrap();
-      sut.id = data.id
+      sut.groupName = data.groupName
       sut.headers = 'fi rst';
       sut.context = 'tab';
 
@@ -103,9 +101,9 @@ describe('the tab element', () => {
     })
   })
 
-  it('does not start the id with a number', () => {
+  it('does not start the groupName with a number', () => {
     const sut = tab.bootstrap();
-    sut.id = '1';
+    sut.groupName = '1';
     sut.headers = '11deetwo';
     sut.context = 'tab';
 
@@ -120,7 +118,7 @@ describe('the tab element', () => {
 
   it('activates the first tab header', () => {
     const sut = tab.bootstrap();
-    sut.id = 'navtab';
+    sut.groupName = 'navtab';
     sut.headers = 'Main, Sub';
 
     const $elem = sut.create();
@@ -135,7 +133,7 @@ describe('the tab element', () => {
     const content1 = '<div>Hi</div>';
     const content2 = '<div>Bye</div>';
 
-    sut.id = 'navtab';
+    sut.groupName = 'navtab';
     sut.headers = 'one, two';
     sut.context = 'pill';
 
@@ -178,7 +176,7 @@ describe('the tab element', () => {
   it('removes old headers', () => {
     const sut = tab.bootstrap();
 
-    sut.id = 'navtab';
+    sut.groupName = 'navtab';
     sut.headers = 'one, two';
     sut.context = 'pill';
 
@@ -194,7 +192,7 @@ describe('the tab element', () => {
   it('adds new headers', () => {
     const sut = tab.bootstrap();
 
-    sut.id = 'navtab';
+    sut.groupName = 'navtab';
     sut.headers = 'one';
     sut.context = 'pill';
 
