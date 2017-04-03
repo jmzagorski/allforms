@@ -99,17 +99,4 @@ describe('the element actions', () => {
       expect(actual.payload).toBe(data);
     });
   });
-
-  it('creates the action for initializing an element', () => {
-    const data = {};
-    const expected = {
-      type: 'CREATING_ELEMENT',
-      payload: data
-    };
-
-    const actual = domain.creatingElement(data);
-
-    expect(actual).toEqual(expected);
-    expect(actual.payload).toBe(data);
-  });
 });

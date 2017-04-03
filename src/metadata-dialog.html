@@ -4,7 +4,8 @@
       <ai-dialog-body>
 
         <!--inheritly bind the model to the children-->
-        <compose repeat.for="schema of schemas" view.bind="schema" >
+        <compose repeat.for="schema of schemas" view.bind="schema"
+          model.bind="model">
         </compose>
 
       </ai-dialog-body>

@@ -2,12 +2,11 @@ import creator from './elements/factory';
 import { Store } from 'aurelia-redux-plugin';
 import { DialogController } from 'aurelia-dialog';
 import {
-  getActiveForm,
-  creatingElement,
   getActiveElement,
   createElement,
   requestElement,
-  editElement
+  editElement,
+  defaultNewElement
 } from './domain/index';
 
 export class MetadataDialog {
@@ -16,9 +15,9 @@ export class MetadataDialog {
   constructor(dialog, store) {
     this.model = {};
     this.schemas = [];
-    this.isNew = false;
 
-    this._unsubscribe = null;
+    this._$elem = {};
+    this._unsubscribes = [];
     this._dialog = dialog;
     this._store = store; 
   }
@@ -32,34 +31,40 @@ export class MetadataDialog {
   }
 
   /**
-   * @summary activates the dialog
-   * @desc activates the dialog by loading or creating an element object
-   * @param {Object} element the IElement object
-   * @return {Promise<void>} a promise to activate the view
+   * @summary activates the dialog by loading or creating an IElement object
+   * @param {Object} event the event object that called the dialog
+   * @param {Object} event.builder the type of element to build
+   * @param {Object} event.style the form style associated with the event
+   * @param {Object} event.formId the form the element will be created on
+   * @param {Object} [event.$elem] the existing dom element
    */
-  activate(element) {
-    const form = getActiveForm(this._state);
-    this.model = creator(form.style, element.type);
-    // always need this, it is the relationship to the form
-    this.model.formId = form.id;
+  activate(event) {
+    this.model = creator(event.style, event.builder);
+    this.model.formId = event.formId;
     this.model.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
+    Object.assign(this.model, event);
 
-    if (!element.id) {
-      this.isNew = true;
-      Object.assign(this.model, element);
-      this._store.dispatch(creatingElement(this.model));
-    } else {
-      this._store.dispatch(requestElement(element.id));
-      Object.assign(this.model, element, this.element);
-    }
+    this._unsubscribes.push(this._store.subscribe(this._update.bind(this)));
+    this._store.dispatch(defaultNewElement(this.model));
+
+    if (event.$elem) this._store.dispatch(requestElement(event.$elem.id));
   }
 
   submit() {
-    const actionCreator = this.isNew ? createElement : editElement;
+    let actionCreator;
+
+    if (!this.model.$elem) {
+      this._$elem = this.model.create();
+      actionCreator = createElement;
+    } else {
+      this._$elem = this.model.mutate ? this.model.mutate(this.model.$elem) :
+        this.model.create(this.model.$elem);
+
+      actionCreator = editElement;
+    }
 
     // wait for the store to update to automatically signal ok
-    this._unsubscribe = this._store.subscribe(async () => await this._ok());
-
+    this._unsubscribes.push(this._store.subscribe(async () => await this._ok()));
     this._store.dispatch(actionCreator(this.model));
   }
 
@@ -68,13 +73,20 @@ export class MetadataDialog {
   }
 
   deactivate() {
-    if (this._unsubscribe) this._unsubscribe();
+    for (let u of this._unsubscribes) u();
   }
 
   // the element needs an id before proceeding!
   async _ok() {
     if (this.element && this.element.id) {
-      await this._dialog.ok(Object.assign(this.model, this.element));
+      this._$elem.id = this.element.id;
+      await this._dialog.ok(this._$elem);
+    }
+  }
+  
+  _update() {
+    if (this.element) {
+      Object.assign(this.model, this.element);
     }
   }
 }

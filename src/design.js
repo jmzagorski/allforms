@@ -7,23 +7,32 @@ import {
   requestElementTypes,
   getActiveForm,
   getElementTypes
-} from './domain/index';
+} from './domain';
+
+const DATA_BUILDER = 'data-builder';
 
 export class Design {
-  static inject() { return [ Store, DialogService ]; }
+  static inject =  [ Store, DialogService ];
 
   constructor(store, dialogService) {
-    this.html = '';
-    this.style = null;
     this.formId = null;
-    this.designer = {};
-    this.interactable = 'drag';
+    this.style = null;
+    this.api = null;
+		this.html = '';
+    this.interactOptions = {
+      dragOptions: {
+        restriction: '#page-host',
+        enabled: true
+      },
+      resize: false
+    };
 
     this._store = store;
     this._dialogService = dialogService;
-    this._unsubscribe = null;
+    this._unsubscribe = () => {};
   }
 
+  // TODO remove from store
   get elementTypes() {
     return getElementTypes(this._state);
   }
@@ -32,56 +41,75 @@ export class Design {
     return this._store.getState();
   }
 
+  /**
+   * @summary called by aurelia to activates the view model
+   * @param {Object} params the request parameters
+   */
   activate(params) {
+    this._unsubscribe = this._store.subscribe(this._update.bind(this))
     this._store.dispatch(requestElementTypes())
     this._store.dispatch(requestForm(params.form))
-    this._unsubscribe = this._store.subscribe(this._update.bind(this))
   }
 
   /**
-   * @summary collects the metadata to render the element
-   * @desc called either when creating a new element or when an existing element
-   * needs to be edited
-   * @param {Object} event custom event or element type builder function string
-   * @param {Object} event.detail.model.id: the model id on the detail object of
-   * an event
-   * @param {Object} event.detail.model.type: the element type to create
-   * @param {Object} event.builder: the builder is the element type to create
+   * @summary creates or edits a form element
+   * @param {Object} event event object that raised the function
+   * @param {Object} event.builder function string instruction on how to create
+   * the element
+   * @param {Object} [event.detail] an existing event that raised this event
+   * @param {Object} [event.detail.$elem] the element the event came from
    */
-  async renderElement(event) {
-    const model = event.detail ? event.detail.model : { type: event.builder };
+  async createElement(event) {
+    const dialogModel = {
+      builder: event.builder || event.detail.$elem.getAttribute(DATA_BUILDER),
+      $elem: event.detail ? event.detail.$elem : null,
+      style: this.style,
+      formId: this.formId
+    };
 
     const result = await this._dialogService.open({
       viewModel: MetadataDialog,
-      model
+      model: dialogModel
     });
 
     if (!result.wasCancelled) {
-      this.designer.createElement(result.output);
-      this.saveTemplate();
+      result.output.setAttribute(DATA_BUILDER, dialogModel.builder)
+      this.savePosition({
+        detail: {
+          formHtml: this.html + result.output.outerHTML,
+          elementHtml: result.output.outerHTML,
+          elementId: result.output.id
+        }
+      });
     }
   }
 
-  saveTemplate() {
-    const action = editFormTemplate(this.designer.element.innerHTML);
-
-    this._store.dispatch(action);
+  deactivate() {
+    this._unsubscribe();
   }
 
-  deactivate() {
-    if (this._unsubscribe) this._unsubscribe();
+  savePosition(event) {
+    this._store.dispatch(editFormTemplate({
+      form: {
+        template: event.detail.formHtml,
+        id: this.formId
+      },
+      element: {
+        template: event.detail.elementHtml,
+        id: event.detail.elementId
+      }
+    }));
+
+    this._store.dispatch(requestForm(this.formId))
   }
 
   _update() {
     const form = getActiveForm(this._state);
-
-    if (!form) return;
-
-    this.style = form.style;
-    this.formId = form.id;
-
-    // i never want the html property to be undefined or that will be rendered
-    // in the browser
-    this.html = form.template || this.html;
+    if (form) {
+      this.formId = form.id;
+      this.style = form.style;
+      this.api = form.api;
+      this.html = form.template || this.html;
+    }
   }
 }

@@ -1,5 +1,4 @@
 export const REQUEST_ELEMENT = 'REQUEST_ELEMENT';
-export const CREATING_ELEMENT = 'CREATING_ELEMENT';
 export const CREATE_ELEMENT = 'CREATE_ELEMENT';
 export const EDIT_ELEMENT = 'EDIT_ELEMENT';
 export const RECEIVED_ELEMENT = 'RECEIVED_ELEMENT';
@@ -13,17 +12,6 @@ export function defaultNewElement(element) {
     payload: element
   }
 };
-
-/**
- * @summary creates the action when a new element has been initialized to create
- * @return {IAction} the action object
- */
-export function creatingElement(element){
-  return {
-    type: CREATING_ELEMENT,
-    payload: element
-  };
-}
 
 /**
  * @summary creates the action for requesting a single element
