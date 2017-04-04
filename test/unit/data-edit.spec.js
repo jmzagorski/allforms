@@ -1,8 +1,9 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DataEdit } from '../../src/data-edit';
 import { setupSpy } from './jasmine-helpers';
-import { requestForm } from '../../src/domain/index';
-import * as selectors from '../../src/domain/form/selectors';
+import { requestForm, requestFormData } from '../../src/domain/index';
+import * as formSelectors from '../../src/domain/form/selectors';
+import * as dataSelectors from '../../src/domain/form-data/selectors';
 
 describe('edit data view model', () => {
   let storeSpy;
@@ -12,7 +13,6 @@ describe('edit data view model', () => {
     storeSpy = setupSpy('store', Store.prototype);
 
     sut = new DataEdit(storeSpy);
-
   });
 
   it('initialized default properties', () => {
@@ -21,7 +21,7 @@ describe('edit data view model', () => {
   });
 
   it('dispatches the request action after subscribing', () => {
-    const params = { form: 1 };
+    const params = { form: 1, formDataId: 2 };
 
     storeSpy.subscribe.and.callFake(arg => {
       expect(storeSpy.dispatch).not.toHaveBeenCalled();
@@ -30,33 +30,43 @@ describe('edit data view model', () => {
     sut.activate(params);
 
     expect(storeSpy.subscribe).toHaveBeenCalled();
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm(params.form));
+    expect(storeSpy.dispatch.calls.count()).toEqual(2);
+    expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([ requestForm(params.form) ]);
+    expect(storeSpy.dispatch.calls.argsFor(1)).toEqual([ requestFormData(params.formDataId) ]);
   });
 
-  it('sets the view model html to the form template if exists on subscribe', () => {
-    const params = { formDataId: 1 };
+  it('sets up the view mode propertiers if the form and data exist on update', () => {
     const state = {};
     const form = { template: 'a', api: 'b' };
-    const getFormSpy = spyOn(selectors, 'getActiveForm').and.returnValue(form);
+    const formData = { data: 'c' };
+    const getFormSpy = spyOn(formSelectors, 'getActiveForm').and.returnValue(form);
+    const getDataSpy = spyOn(dataSelectors, 'getFormData').and.returnValue(formData);
     let updateFunc = null;
 
     storeSpy.getState.and.returnValue(state);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
-    sut.activate(params);
+    sut.activate({ formDataId: 1 });
     updateFunc();
 
     expect(getFormSpy.calls.count()).toEqual(1);
+    expect(getDataSpy.calls.count()).toEqual(1);
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
+    expect(getDataSpy.calls.argsFor(0)[0]).toBe(state);
     expect(sut.html).toEqual('a');
     expect(sut.autoSaveOpts).toEqual({
-      action: 'PATCH', api: 'b/1'
+      action: 'PATCH', api: 'b/1', data: 'c'
     });
   });
 
-  [ null, undefined ].forEach(form => {
+  [ { form: null, formData: {} },
+    { form: undefined, formData: {} },
+    { form: {}, formData: null },
+    { form: {}, formData: undefined },
+  ].forEach(data => {
     it('does not set view model properties without a form', () => {
-      const getFormSpy = spyOn(selectors, 'getActiveForm').and.returnValue(form);
+      spyOn(formSelectors, 'getActiveForm').and.returnValue(data.form);
+      spyOn(dataSelectors, 'getFormData').and.returnValue(data.formData);
       let updateFunc = null;
 
       storeSpy.subscribe.and.callFake(func => updateFunc = func);

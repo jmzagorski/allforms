@@ -1,5 +1,10 @@
 import { Store } from 'aurelia-redux-plugin';
-import { getActiveForm, requestForm } from './domain/index';
+import {
+  getActiveForm,
+  requestForm,
+  requestFormData,
+  getFormData
+} from './domain';
 
 export class DataEdit {
   static inject() { return [ Store ]; }
@@ -14,19 +19,23 @@ export class DataEdit {
   }
 
   activate(params) {
-    this.formDataId = params.formDataId;
+    this._formDataId = params.formDataId;
     this._unsubscribe = this._store.subscribe(() => this._update());
     this._store.dispatch(requestForm(params.form));
+    this._store.dispatch(requestFormData(params.formDataId));
   }
 
   _update() {
-    const form = getActiveForm(this._store.getState());
+    const state = this._store.getState();
+    const form = getActiveForm(state);
+    const formData = getFormData(state);
 
-    if (form) {
+    if (form && formData) {
       this.html = form.template;
       this.autoSaveOpts = {
         action: 'PATCH',
-        api: form.api + '/' + this.formDataId
+        api: form.api + '/' + this._formDataId,
+        data: formData.data
       };
     }
   }
