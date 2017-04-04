@@ -2,33 +2,6 @@ import * as domain from '../../../../src/domain/index';
 
 describe('the form data actions', () => {
 
-  it('creates the action for requesting the form data list', () => {
-    const expected = {
-      type: 'REQUEST_FORM_DATA_LIST',
-      payload: { formId: 1 }
-    };
-
-    const actual = domain.requestFormDataList(1);
-
-    expect(actual).toEqual(expected);
-  });
-
-  [ true, false ].forEach(hasError => {
-    it('creates the action for received form data list', () => {
-      const data = {};
-      const expected = {
-        type: 'RECEIVED_FORM_DATA_LIST',
-        payload: data,
-        error: hasError
-      };
-
-      const actual = domain.receivedFormDataList(data, hasError);
-
-      expect(actual).toEqual(expected);
-      expect(actual.payload).toBe(data);
-    });
-  });
-
   it('creates the action for a request for form data', () => {
     const expected = {
       type: 'REQUEST_FORM_DATA',

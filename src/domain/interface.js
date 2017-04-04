@@ -157,37 +157,6 @@ export interface IMember {
 }
 
 /**
- * @summary the interface for form roll up instances based off the master form
- */
-export interface IFormDataSummary {
-  /**
-   * @property {number} id the id of the form instance
-   */
-  id: number;
-
- /**
-  * @property {string} name the friendly name
-  */
-  name:string;
-
-  /**
-   * @property {date} lastEdit the last edit date to the data
-   *
-   */
-  lastEdit: date;
-
-  /**
-   * @property {member} string the member name who owns the form
-   */
-  member: string;
-
-  /**
-   * @property {formId} string the associated master form id
-   */
-  formId: string;
-}
-
-/**
  * @summary the interface for form that has the actual data
  */
 export interface IFormData {

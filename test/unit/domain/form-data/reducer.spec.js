@@ -2,20 +2,6 @@ import { formData } from '../../../../src/domain/index';
 
 describe('the form data reducer', () => {
 
-  it('returns the form data list when received', () => {
-    const payload = [];
-    const state ={};
-    const action = {
-      type: 'RECEIVED_FORM_DATA_LIST',
-      payload
-    };
-
-    const newState = formData(state, action);
-
-    expect(newState).not.toBe(state);
-    expect(newState.list).toBe(payload);
-  });
-
   [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED'
   ].forEach(type => {
     it('returns the wip payload for new form data and editing', () => {

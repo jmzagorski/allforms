@@ -12,3 +12,4 @@ yarn.lock
 db.json
 /karma-*
 tasks.txt
+tags

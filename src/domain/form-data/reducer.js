@@ -10,9 +10,6 @@ import * as actions from './actions';
 export default function formData(state = {}, action) {
 
   switch(action.type) {
-    case actions.RECEIVED_FORM_DATA_LIST:
-      return Object.assign({}, state, { list: action.payload });
-
     case actions.RECEIVED_FORM_DATA:
       if (action.error) {
         return Object.assign({}, state, { wip: null  });

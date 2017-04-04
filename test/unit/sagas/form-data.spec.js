@@ -15,9 +15,6 @@ describe('the form data saga', () => {
     const iterator = saga.default(api);
 
     expect(iterator.next().value).toEqual(
-      takeLatest('REQUEST_FORM_DATA_LIST', saga.getFormDataListAsync, api)
-    );
-    expect(iterator.next().value).toEqual(
       takeLatest('REQUEST_FORM_DATA', saga.getFormDataAsync, api)
     );
     expect(iterator.next().value).toEqual(
@@ -28,42 +25,6 @@ describe('the form data saga', () => {
     );
     expect(iterator.next()).toEqual({
       done: true, value: undefined
-    });
-  });
-
-  it('gets the form data list', () => {
-    const returnedData = { id: 1 };
-    const api = { getAll: () => { } };
-    const action= { payload: { formId: 1 } };
-
-    const iterator = saga.getFormDataListAsync(api, action);
-
-    expect(iterator.next().value).toEqual(
-      call([api, api.getAll], action.payload.formId)
-    );
-    expect(iterator.next(returnedData).value).toEqual(
-      put(receivedFormDataList(returnedData))
-    );
-    expect(iterator.next()).toEqual({
-      done: true,
-      value: undefined
-    });
-  });
-
-  it('sends an error in the catch of getting the form data list', () => {
-    const api = { getAll: () => { } };
-    const action= { payload: 1 };
-    const err = new Error();
-
-    const iterator = saga.getFormDataListAsync(api, action);
-    iterator.next();
-
-    expect(iterator.throw(err).value).toEqual(
-      put(receivedFormDataList(err, true))
-    );
-    expect(iterator.next()).toEqual({
-      done: true,
-      value: undefined
     });
   });
 
