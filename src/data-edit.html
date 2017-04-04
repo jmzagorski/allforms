@@ -1,3 +1,6 @@
 <template>
-  <div innerhtml.one-time="html"></div>
+  <require from="./resources/elements/autosave-form"></require>
+
+  <div innerhtml.one-way="html | sanitizeHTML" autosave-form.one-way="autoSaveOpts"></div>
+
 </template>

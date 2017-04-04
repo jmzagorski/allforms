@@ -205,7 +205,7 @@ export const schema = {
           },
           "api": {
             "type": "string",
-            "enum": [ "/api/form-data" ]
+            "enum": [ "http://localhost:9001/api/form-data" ]
           },
           "files": {
             "type": "array",

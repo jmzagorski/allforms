@@ -6,14 +6,16 @@ export class DataEdit {
 
   constructor(store) {
     this.html = '';
+    this.autoSaveOpts = {};
 
+    this._formDataId = null;
     this._store = store;
     this._unsubscribe = () => {};
   }
 
   activate(params) {
+    this.formDataId = params.formDataId;
     this._unsubscribe = this._store.subscribe(() => this._update());
-
     this._store.dispatch(requestForm(params.form));
   }
 
@@ -22,6 +24,10 @@ export class DataEdit {
 
     if (form) {
       this.html = form.template;
+      this.autoSaveOpts = {
+        action: 'PATCH',
+        api: form.api + '/' + this.formDataId
+      };
     }
   }
 

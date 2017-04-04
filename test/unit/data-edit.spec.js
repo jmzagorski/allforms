@@ -17,6 +17,7 @@ describe('edit data view model', () => {
 
   it('initialized default properties', () => {
     expect(sut.html).toEqual('');
+    expect(sut.autoSaveOpts).toBeDefined();
   });
 
   it('dispatches the request action after subscribing', () => {
@@ -32,41 +33,50 @@ describe('edit data view model', () => {
     expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm(params.form));
   });
 
-  [ { form: null, expect: '' },
-    { form: undefined, expect: '' },
-    { form: { template: 'a' }, expect: 'a' }
-  ].forEach(data => {
-    it('sets the view model html to the form template if exists on subscribe', () => {
-      const params = { form: 1 };
-      const state = {};
-      const getFormSpy = spyOn(selectors, 'getActiveForm').and
-        .returnValue(data.form);
-      let updateFunc = null;
-
-      storeSpy.getState.and.returnValue(state);
-
-      storeSpy.subscribe.and.callFake(func => updateFunc = func);
-
-      sut.activate(params);
-      updateFunc();
-
-      expect(getFormSpy.calls.count()).toEqual(1);
-      expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
-      expect(sut.html).toEqual(data.expect);
-    });
-  });
-
-  it('gets the form on every store subscribe call', () => {
-    const params = { form: 1 };
-    const getFormSpy = spyOn(selectors, 'getActiveForm');
+  it('sets the view model html to the form template if exists on subscribe', () => {
+    const params = { formDataId: 1 };
+    const state = {};
+    const form = { template: 'a', api: 'b' };
+    const getFormSpy = spyOn(selectors, 'getActiveForm').and.returnValue(form);
     let updateFunc = null;
 
+    storeSpy.getState.and.returnValue(state);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
     sut.activate(params);
     updateFunc();
-    updateFunc();
 
-    expect(getFormSpy.calls.count()).toEqual(2);
+    expect(getFormSpy.calls.count()).toEqual(1);
+    expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
+    expect(sut.html).toEqual('a');
+    expect(sut.autoSaveOpts).toEqual({
+      action: 'PATCH', api: 'b/1'
+    });
+  });
+
+  [ null, undefined ].forEach(form => {
+    it('does not set view model properties without a form', () => {
+      const getFormSpy = spyOn(selectors, 'getActiveForm').and.returnValue(form);
+      let updateFunc = null;
+
+      storeSpy.subscribe.and.callFake(func => updateFunc = func);
+
+      sut.activate({});
+      updateFunc();
+
+      expect(sut.html).toEqual('');
+      expect(sut.autoSaveOpts).toEqual({});
+    });
+  });
+
+  it('unsubscribes on deactivate', () => {
+    let unsubscribe = false;
+    const subscription = () => unsubscribe = true;
+    storeSpy.subscribe.and.returnValue(subscription);
+    sut.activate({ });
+
+    sut.deactivate();
+
+    expect(unsubscribe).toBeTruthy();
   });
 })
