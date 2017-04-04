@@ -81,4 +81,23 @@ describe('the auto save form attribute', () => {
     expect(httpStub.blob.method).toEqual('a');
     fr.readAsText(httpStub.blob.body);
   });
+
+  it('populates the form on value changed', async done => {
+    const context = { autoSaveOpts: { action: 'a', api: 'b' } };
+
+    sut.inView(`<form autosave-form.bind="autoSaveOpts">
+      <input value="c" name="d"><input value="e" name="f">
+    </form>`)
+      .boundTo(context);
+
+    await sut.create(bootstrap);
+
+    context.autoSaveOpts = { action: 'a', api: 'b', data: { d: 'g', f: 'h' } };
+
+    setTimeout(() => {
+      expect(sut.element.elements['d'].value).toEqual('g');
+      expect(sut.element.elements['f'].value).toEqual('h');
+      done();
+    })
+  });
 });

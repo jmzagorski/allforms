@@ -38,6 +38,10 @@ export class AutosaveFormCustomAttribute {
 
   valueChanged(){
     this.bind();
+
+    for (let d in this.value.data) {
+      this.$form.elements[d].value = this.value.data[d];
+    }
   }
 
   _collectValues() {
