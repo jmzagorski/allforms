@@ -23,6 +23,12 @@ describe('the member reducer', () => {
 
     expect(newState).toBe(state);
   });
+
+  it('defaults the state to null', () => {
+    const action = { type: '' };
+
+    const newState = member(undefined, action);
+
+    expect(newState).toEqual(null);
+  });
 });
-
-

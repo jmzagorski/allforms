@@ -37,4 +37,12 @@ describe('the element reducer', () => {
 
     expect(newState).toBe(state);
   });
+
+  it('defaults the state to null', () => {
+    const action = { type: '' };
+
+    const newState = domain.element(undefined, action);
+
+    expect(newState).toEqual(null);
+  });
 });

@@ -4,7 +4,7 @@ import * as actions from './actions';
  * @summary Listens and responds to element actions by creating or returning
  * the state
  */
-export default function elementReducer(state = {}, action) {
+export default function elementReducer(state = null, action) {
   switch (action.type) {
     case actions.DEFAULT_NEW_ELEMENT:
       return action.payload;
