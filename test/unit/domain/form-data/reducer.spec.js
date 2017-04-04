@@ -4,7 +4,7 @@ describe('the form data reducer', () => {
 
   [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED'
   ].forEach(type => {
-    it('returns the wip payload for new form data and editing', () => {
+    it('returns the payload', () => {
       const payload = {};
       const state ={};
       const action = {
@@ -14,34 +14,16 @@ describe('the form data reducer', () => {
 
       const newState = formData(state, action);
 
-      expect(newState).not.toBe(state);
-      expect(newState.wip).toBe(payload);
+      expect(newState).toBe(payload);
     });
   });
 
-  it('removes the wip object when received is an error', () => {
-    const payload = { id: 1 };
-    const state ={};
-    const action = {
-      type: 'RECEIVED_FORM_DATA',
-      payload,
-      error: true
-    };
-
-    const newState = formData(state, action);
-
-    expect(newState).not.toBe(state);
-    expect(newState.wip).toEqual(null);
-  });
-
-  [ 'FORM_DATA_CREATED', 'FORM_DATA_EDITED', 'DEFAULT'
+  [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED'
   ].forEach(type => {
-    it('returns the original state', () => {
-      const payload = {};
+    it('returns the original state on error', () => {
       const state ={};
       const action = {
         type,
-        payload,
         error: true
       };
 
@@ -49,5 +31,22 @@ describe('the form data reducer', () => {
 
       expect(newState).toBe(state);
     });
+  });
+
+  it('returns the by default', () => {
+    const state ={};
+    const action = { type: 'Anyting' };
+
+    const newState = formData(state, action);
+
+    expect(newState).toBe(state);
+  });
+
+  it('defaults the state to null', () => {
+    const action = { type: '' };
+
+    const newState = formData(undefined, action);
+
+    expect(newState).toEqual(null);
   });
 });

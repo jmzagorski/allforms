@@ -5,7 +5,8 @@ const rootReducer = combineReducers({
   member: domain.member,
   form: domain.form,
   element: domain.element,
-  elementTypes: domain.elementTypes
+  elementTypes: domain.elementTypes,
+  formData: domain.formData
 });
 
 export default rootReducer;
