@@ -7,6 +7,7 @@ export * from './element/selectors';
 export { default as element } from './element/reducer';
 
 export * from './form-data/actions';
+export * from './form-data/selectors';
 export { default as formData } from './form-data/reducer';
 
 export * from './form/actions';
