@@ -5,6 +5,11 @@ export const EDIT_FORM_DATA = 'EDIT_FORM_DATA';
 export const FORM_DATA_CREATED = 'FORM_DATA_CREATED';
 export const FORM_DATA_EDITED = 'FORM_DATA_EDITED';
 
+/**
+ * @summary creates the action object for requesting the IFormData object
+ * @param {Number} formDataId the unique id of the data form
+ * @return {IAction} the IAction object
+ */
 export function requestFormData(formDataId) {
   return {
     type: REQUEST_FORM_DATA,
@@ -12,6 +17,12 @@ export function requestFormData(formDataId) {
   }
 }
 
+/**
+ * @summary action creator for when the form is received from the server
+ * @param {IFormData | Error} data the IFormData object or Error object
+ * @param {Boolean} [hasError] a flag to indicate in the data arg is an error
+ * @return {IAction} the action object
+ */
 export function receivedFormData(formData, hasError) {
   return {
     type: RECEIVED_FORM_DATA,

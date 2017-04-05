@@ -166,6 +166,28 @@ export interface IFormData {
   id: number;
 
   /**
+   * @property {string} formId the master form id
+   */
+  formId: string;
+
+  /**
+   * @property {string} [name] the name associated wit the data form. Optional if
+   * the master form has a auto name setup
+   */
+  name: string;
+
+  /**
+   * @property {string} summary short description of the data form
+   */
+  summary: string;
+
+  /**
+   * @property {number} [parentId] if the data form was copied, this holds the
+   * reference to the parent
+   */
+  parentId: number;
+
+  /**
    * @property {data} object key/value object that has the name of the input
    * field and the value
    */
