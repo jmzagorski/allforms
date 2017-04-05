@@ -120,6 +120,33 @@ export const schema = {
         ]
       }
     },
+    "snapshots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 0,
+            "unique": true
+          },
+          "saved": {
+            "type": "string",
+            "faker": "date.past"
+          },
+          "data": {
+            "type": "object"
+          },
+          "formDataId": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [ "id", "saved", "formDataId" ]
+      }
+    },
     "form-data": {
       "type": "array",
       "minItems": 1,
@@ -279,7 +306,7 @@ export const schema = {
       }
     }
   },
-  "required": [ "form-data", "forms", "member", "elements", "element-types" ],
+  "required": [ "form-data", "forms", "member", "elements", "element-types", "snapshots" ],
   "definitions": {
     "name": {
       "type": "string",

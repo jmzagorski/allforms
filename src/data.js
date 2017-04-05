@@ -27,7 +27,7 @@ export class Data {
     }
   }
 
-  async capture(dataId) {
-    // TODO: take a snapshot of the data, save as pdf, keep form data intact
+  capture(formDataId) {
+    return this._api.snapshot(formDataId);
   }
 }

@@ -1,6 +1,7 @@
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { importFetch } from '../utils';
 
+
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
 /**
@@ -53,6 +54,13 @@ export class FormDataApi {
     return this._http.fetch(url, {
       method: method,
       body: json(formData)
+    }).then(response => response.json());
+  }
+
+  snapshot(id) {
+    return this._http.fetch(`form-data/${id}/snapshots`, {
+      method: 'POST',
+      body: json({ formDataId: id })
     }).then(response => response.json());
   }
 }

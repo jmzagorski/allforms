@@ -57,4 +57,24 @@ describe('the form data api', () => {
       fr.readAsText(httpStub.blob.body);
     });
   });
+
+  it('snapshots the form data', async done => {
+    const formData = { id: 123 };
+    const returnedData = {};
+    const fr = new FileReader();
+
+    httpStub.itemStub = returnedData;
+
+    fr.addEventListener('loadend', () => {
+      expect(fr.result).toEqual(JSON.stringify({ formDataId: formData.id}));
+      done();
+    });
+
+    const actual = await sut.snapshot(formData.id);
+
+    expect(httpStub.url).toEqual('form-data/123/snapshots');
+    expect(httpStub.blob.method).toEqual('POST');
+    expect(actual).toBe(returnedData);
+    fr.readAsText(httpStub.blob.body);
+  });
 });

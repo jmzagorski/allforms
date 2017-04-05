@@ -1,6 +1,15 @@
 /* eslint-disable */
 import * as interfaces from '../domain/interfaces';
 
+interface ISnapShotApi {
+  /**
+   * @summary saves a new ISnapShot object
+   * @param {ISnapShot} snapShot the ISnapShot object
+   * @return {Promise<ISnapShot>} a promise for the saved ISnapShot object
+   */
+  save(snapShot: ISnapShot): Promise<ISnapShot>;
+}
+
 interface IElementApi {
   
   /**

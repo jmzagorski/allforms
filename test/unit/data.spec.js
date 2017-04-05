@@ -79,4 +79,11 @@ describe('the data view model', () => {
     expect(sut.dataList[1].copyUrl).toEqual('d');
     done();
   });
+
+  it('calls the api to snapshot the data', async done => {
+    await sut.capture(123);
+  
+    expect(apiSpy.snapshot).toHaveBeenCalledWith(123);
+    done();
+  });
 })

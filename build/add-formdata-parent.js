@@ -1,6 +1,3 @@
-var jsonServer = require('json-server');
-var router = jsonServer.router('./src/db.json');
-
 module.exports = function(router) {
   return function (req, res, next) {
 
