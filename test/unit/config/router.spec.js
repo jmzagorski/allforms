@@ -55,8 +55,17 @@ describe('the router configuration', () => {
     });
   });
 
-  it('should have a data route', () => {
+  it('should have a new form route', () => {
     expect(sut.router.routes[4]).toEqual({
+      route: '/new',
+      name: 'new-form',
+      moduleId: './settings',
+      nav: false
+    });
+  });
+
+  it('should have a data route', () => {
+    expect(sut.router.routes[5]).toEqual({
       route: '/:form/data',
       name: 'data',
       moduleId: './data',
@@ -70,7 +79,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a view route', () => {
-    expect(sut.router.routes[5]).toEqual({
+    expect(sut.router.routes[6]).toEqual({
       route: '/:form/view',
       name: 'view',
       moduleId: './view',
@@ -84,7 +93,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a design route', () => {
-    expect(sut.router.routes[6]).toEqual({
+    expect(sut.router.routes[7]).toEqual({
       route: '/:form/design',
       name: 'design',
       moduleId: './design',
@@ -98,7 +107,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a contributors route', () => {
-    expect(sut.router.routes[7]).toEqual({
+    expect(sut.router.routes[8]).toEqual({
       route: '/:form/contributors',
       name: 'contributors',
       moduleId: './contributors',
@@ -112,7 +121,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a history route', () => {
-    expect(sut.router.routes[8]).toEqual({
+    expect(sut.router.routes[9]).toEqual({
       route: '/:form/history',
       name: 'history',
       moduleId: './history',
@@ -126,7 +135,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a interface route', () => {
-    expect(sut.router.routes[9]).toEqual({
+    expect(sut.router.routes[10]).toEqual({
       route: '/:form/interface',
       name: 'interface',
       moduleId: './interface',
@@ -140,8 +149,8 @@ describe('the router configuration', () => {
   });
 
   it('should have a settings route', () => {
-    expect(sut.router.routes[10]).toEqual({
-      route: '/settings/:form?',
+    expect(sut.router.routes[11]).toEqual({
+      route: '/:form/settings',
       name: 'settings',
       moduleId: './settings',
       nav: false,

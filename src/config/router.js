@@ -36,6 +36,11 @@ export default class {
         moduleId: './data-new',
         nav: false
       }, {
+        route: '/new',
+        name: 'new-form',
+        moduleId: './settings',
+        nav: false
+      }, {
     /*
      * EVERYTHING BELOW HERE SHOULD HAVE A SETTINGS AND BE ORDERED IN THE 
      * ORDER YOU WANT THE USER TO SEE THE ICONS. THESE WILL APPEAR AS A LIST IN 
@@ -101,7 +106,7 @@ export default class {
           description: 'create predefined fields'
         }
       }, {
-        route: '/settings/:form?',
+        route: '/:form/settings',
         name: 'settings',
         moduleId: './settings',
         nav: false,

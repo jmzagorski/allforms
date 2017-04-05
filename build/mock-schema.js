@@ -179,19 +179,6 @@ export const schema = {
         "required": [ "id", "name", "lastEdit", "memberName", "formId" ]
       }
     },
-    "form-settings": {
-      "type": "object",
-      "properties": {
-        "namePattern": {
-          "type": "string",
-          "faker": "random.uuid"
-        },
-        "api": {
-          "type": "string",
-          "faker": "internet.url"
-        }
-      }
-    },
     "forms": {
       "type": "array",
       "minItems": 5,
