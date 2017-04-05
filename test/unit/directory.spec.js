@@ -10,19 +10,19 @@ describe('the directory view model', () => {
   let routerSpy;
   let storeSpy;
   let formStub;
-  let getHistorySpy;
+  let getFormSpy;
   const params = { form: 'a' };
 
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
-    getHistorySpy = spyOn(selectors, 'getRecentFormHistory');
+    getFormSpy = spyOn(selectors, 'getActiveForm');
 
     sut = new Directory(routerSpy, storeSpy);
   });
 
-  it('defines the history routes', () => {
-    expect(sut.historyRoutes).toEqual([]);
+  it('defines the routes', () => {
+    expect(sut.routes).toEqual([]);
   });
 
   it('dispatches a request for the form on activate', () => {
@@ -35,48 +35,53 @@ describe('the directory view model', () => {
   it('listens for the form to update to get the routes', () => {
     let updateFunc = null;
     const state = {};
-    const history = [{ name: 'a', formId: 1 }, { name: 'b', formId: 2 }]
-    routerSpy.routes = [ { name: 'a' }, { name: 'b' } ];
+    routerSpy.routes = [{
+      name: 'a',
+      settings: { dirListing: true, icon: 'c', description: 'd' }
+    }, {
+      name: 'b',
+      settings: { dirListing: true, icon: 'e', description: 'f' }
+    }, {
+      name: 'notshown', settings: {}
+    }];
 
     storeSpy.getState.and.returnValue(state);
-    getHistorySpy.and.returnValue(history);
-    routerSpy.generate.and.returnValues('/a', '/b');
+    getFormSpy.and.returnValue({ id: 1});
+    routerSpy.generate.and.returnValues('/g', '/h');
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
-    sut.activate({ form: 'a' });
+    sut.activate({ });
 
     updateFunc();
 
-    expect(getHistorySpy.calls.argsFor(0)[0]).toBe(state);
+    expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
     expect(routerSpy.generate.calls.count()).toEqual(2);
     expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 1 });
-    expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 2 });
-    expect(sut.historyRoutes).toEqual([{
-      name: 'a', formId: 1, url: '/a'
+    expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 1 });
+    expect(sut.routes).toEqual([{
+      url: '/g', description: 'd', icon: 'c', name: 'a'
     }, {
-      name: 'b', formId: 2, url: '/b'
+      url: '/h', description: 'f', icon: 'e', name: 'b'
     }])
   });
 
-  it('does not generate routes when history does not exist', () => {
+  it('does not generate routes when form does not exist', () => {
     let updateFunc = null;
 
-    getHistorySpy.and.returnValue(null);
+    getFormSpy.and.returnValue(null);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
-    sut.activate({ form: 'a' });
+    sut.activate({ });
 
     updateFunc();
 
-    expect(sut.historyRoutes).toEqual([]);
+    expect(sut.routes).toEqual([]);
   });
 
   it('unsubscribes on deactivate', () => {
     let unsubscribe = false;
     const subscription = () => unsubscribe = true;
 
-    // skip iterating over the history
-    getHistorySpy.and.returnValue(null);
     storeSpy.subscribe.and.returnValue(subscription);
-    sut.activate({ form: 'a' });
+    sut.activate({ });
 
     sut.deactivate();
 

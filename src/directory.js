@@ -1,4 +1,4 @@
-import { getRecentFormHistory, requestForm } from './domain/index';
+import { getActiveForm, requestForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
@@ -6,7 +6,7 @@ export class Directory {
   static inject() { return [ Router, Store ]; }
 
   constructor(router, store) {
-    this.historyRoutes = [];
+    this.routes = [];
     this._router = router;
     this._store = store;
     this._unsubscribe = () => {};
@@ -18,20 +18,24 @@ export class Directory {
   }
 
   _update() {
-    const history =  getRecentFormHistory(this._store.getState());
+    const form =  getActiveForm(this._store.getState());
 
-    if (!history) return;
+    if (!form) return;
 
-    history.forEach(h => {
-      const route = this._router.routes.find(r => h.name === r.name);
-
-      // TODO log warning
-      if (route) {
-        const url = this._router.generate(route.name, { form: h.formId });
-        this.historyRoutes.push(Object.assign({}, h, { url }));
-      }
-    });
+    this._router.routes
+      .filter(r => r.settings.dirListing)
+      .forEach(route => {
+        const url = this._router.generate(route.name, { form: form.id });
+        this.routes.push({
+          url,
+          description: route.settings.description,
+          icon: route.settings.icon,
+          name: route.name
+        });
+      });
   }
 
-  deactivate = () => this._unsubscribe();
+  deactivate() {
+    this._unsubscribe();
+  }
 }

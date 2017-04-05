@@ -234,75 +234,9 @@ export const schema = {
           "api": {
             "type": "string",
             "enum": [ "http://localhost:9001/api/form-data" ]
-          },
-          "files": {
-            "type": "array",
-            "minItems": 9,
-            "maxItems": 9,
-            "uniqueItems": true,
-            "items": {
-              "enum": [
-                {
-                  "name": "data",
-                  "lastComment": "the last comment in all the forms",
-                  "lastEditInDays": 30,
-                  "icon": "folder",
-                  "priority": 1
-                },
-                {
-                  "name": "view",
-                  "lastComment": "i edited the data on the form",
-                  "lastEditInDays": 20,
-                  "icon": "eye",
-                  "priority": 2
-                },
-                {
-                  "name": "design",
-                  "lastComment": "why i made a design change goes here",
-                  "lastEditInDays": 10,
-                  "icon": "magic",
-                  "priority": 3
-                },
-                {
-                  "name": "lookups",
-                  "lastComment": "i added a new lookup table",
-                  "lastEditInDays": 50,
-                  "icon": "database",
-                  "priority": 4
-                },
-                {
-                  "name": "snapshots",
-                  "lastComment": "took a snapshot of something",
-                  "lastEditInDays": 60,
-                  "icon": "camera-retro",
-                  "priority": 6
-                },
-                {
-                  "name": "contributors",
-                  "lastComment": "removed an unauth user now",
-                  "lastEditInDays": 60,
-                  "icon": "file-text-o",
-                  "priority": 7
-                },
-                {
-                  "name": "history",
-                  "lastComment": "the last comment on anything",
-                  "lastEditInDays": 2,
-                  "icon": "file-text-o",
-                  "priority": 8
-                },
-                {
-                  "name": "settings",
-                  "lastComment": "changed form setting",
-                  "lastEditInDays": 9,
-                  "icon": "cog",
-                  "priority": 9
-                }
-              ]
-            }
           }
         },
-        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api", "files" ]
+        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api" ]
       }
     }
   },

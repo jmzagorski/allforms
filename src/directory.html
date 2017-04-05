@@ -10,16 +10,13 @@
       </div>
       <table class="table">
         <tbody>
-          <tr repeat.for="h of historyRoutes" class="${h.hasRouteClass}">
+          <tr repeat.for="r of routes">
             <td>
-              <i class="fa fa-${h.icon} fa-fw" aria-hidden="true"></i>
-              <a href.bind="h.url">&nbsp; ${h.name}</a>
+              <i class="fa fa-${r.icon} fa-fw" aria-hidden="true"></i>
+              <a href.bind="r.url">&nbsp; ${r.name}</a>
             </td>
             <td class="text-muted">
-              ${h.comment}
-            </td>
-            <td class="text-muted">
-              ${h.revisedDays} days ago
+              ${r.description}
             </td>
           </tr>
         </tbody>
