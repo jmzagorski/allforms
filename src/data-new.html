@@ -5,7 +5,11 @@
       <fieldset>
 
         <legend class="text-center">
-          Create a new data form for ${form}
+          New data form for ${model.formId}
+          <br>
+          <span class="text-primary" show.bind="model.parentId">
+            Copying data from parent ${model.parentId}
+          </span>
         </legend>
 
         <div class="form-group">

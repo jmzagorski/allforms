@@ -19,12 +19,13 @@ describe('the new data form view model', () => {
     expect(sut.model).not.toEqual(null);
   });
 
-  it('gets the form id from params on activate', () => {
-    const params = { form: 1 };
+  it('activates the view model with setting the params', () => {
+    const params = { form: 1, parentId: 2 };
 
     sut.activate(params);
 
     expect(sut.model.formId).toEqual(params.form);
+    expect(sut.model.parentId).toEqual(params.parentId);
   });
 
   it('dispatches an event to create the new form', () => {

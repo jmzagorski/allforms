@@ -1,6 +1,6 @@
 import { Router } from 'aurelia-router';
 import { Store } from 'aurelia-redux-plugin';
-import { createFormData } from './domain/index';
+import { createFormData } from './domain';
 
 export class DataNew {
 
@@ -14,6 +14,7 @@ export class DataNew {
 
   activate(params) {
     this.model.formId = params.form;
+    this.model.parentId = params.parentId;
   }
 
   create() {

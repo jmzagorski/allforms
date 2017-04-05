@@ -22,6 +22,7 @@ export class Data {
     if (this.dataList) {
       this.dataList.forEach(d => {
         d.url = this._router.generate('formData', { form: params.form, formDataId: d.id });
+        d.copyUrl = this._router.generate('newData', { form: params.form, parentId: d.id });
       });
     }
   }

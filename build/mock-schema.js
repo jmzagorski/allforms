@@ -122,13 +122,14 @@ export const schema = {
     },
     "form-data": {
       "type": "array",
-      "minItems": 9,
-      "maxItems": 9,
+      "minItems": 1,
+      "maxItems": 1,
       "items": {
         "type": "object",
         "properties": {
           "id": {
             "type": "number",
+            "minimum": 0,
             "unique": true
           },
           "name": {

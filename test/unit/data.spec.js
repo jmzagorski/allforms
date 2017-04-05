@@ -40,13 +40,13 @@ describe('the data view model', () => {
     await sut.activate(params);
   
     expect(sut.routeToNew).toBe(data);
-    expect(routerSpy.generate).toHaveBeenCalledWith('newData', { form: params.form });
+    expect(routerSpy.generate.calls.argsFor(0)).toEqual([ 'newData', { form: params.form } ]);
     done();
   });
 
   it('generates a route for each existing data form', async done => {
     const data = [ { id: 1}, { id: 2 } ];
-    routerSpy.generate.and.returnValues('new', 'a', 'b');
+    routerSpy.generate.and.returnValues('new', 'a', 'b', 'c');
     apiSpy.getAll.and.returnValue(data);
 
     await sut.activate(params);
@@ -54,11 +54,29 @@ describe('the data view model', () => {
     expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual(
       'formData', { form: params.form, formDataId: 1 }
     );
-    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual(
+    expect(routerSpy.generate.calls.argsFor(3)[0]).toEqual(
       'formData', { form: params.form, formDataId: 2 }
     );
     expect(sut.dataList[0].url).toEqual('a');
-    expect(sut.dataList[1].url).toEqual('b');
+    expect(sut.dataList[1].url).toEqual('c');
+    done();
+  });
+
+  it('generates a copy route for each existing data form', async done => {
+    const data = [ { id: 1}, { id: 2 } ];
+    routerSpy.generate.and.returnValues('new', 'a', 'b', 'c', 'd');
+    apiSpy.getAll.and.returnValue(data);
+
+    await sut.activate(params);
+  
+    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual(
+      'newData', { form: params.form, parentId: 1 }
+    );
+    expect(routerSpy.generate.calls.argsFor(4)[0]).toEqual(
+      'newData', { form: params.form, parentId: 2 }
+    );
+    expect(sut.dataList[0].copyUrl).toEqual('b');
+    expect(sut.dataList[1].copyUrl).toEqual('d');
     done();
   });
 })
