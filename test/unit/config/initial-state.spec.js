@@ -32,28 +32,27 @@ describe('the initial state configuration', () => {
     done();
   });
 
-  [ '/formname', '/formname/anything' ].forEach(fragment => {
-    it('handles the route processing event', async done => {
-      const event = {
-        instruction: { fragment  }
-      };
+  it('handles the route processing event', async done => {
+    const form = 'formname'
+    const event = {
+      instruction: { params: { form }  }
+    };
 
-      eaSpy.subscribe.and.callFake((name, handler) => {
-        handler(event);
-        return {};
-      });
-
-      await sut.configure();
-
-      expect(storeSpy.dispatch.calls.count()).toEqual(1);
-      expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('formname'));
-      done();
+    eaSpy.subscribe.and.callFake((name, handler) => {
+      handler(event);
+      return {};
     });
+
+    await sut.configure();
+
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('formname'));
+    done();
   });
 
   it('does not handle the route processing event', async done => {
     const event = {
-      instruction: { fragment: '/'  }
+      instruction: { params: {}  }
     };
 
     eaSpy.subscribe.and.callFake((name, handler) => {

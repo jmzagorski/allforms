@@ -29,10 +29,10 @@ export default class {
   }
 
   setActiveForm(event) {
-    const path = event.instruction.fragment.split('/');
+    const form = event.instruction.params.form;
 
-    if (path.length > 1 && path[1] !== '') {
-      this._store.dispatch(requestForm(path[1]));
+    if (form) {
+      this._store.dispatch(requestForm(form));
     }
   }
 }
