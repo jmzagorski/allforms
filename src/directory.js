@@ -18,6 +18,7 @@ export class Directory {
   }
 
   _update() {
+    this.routes = [];
     const form =  getActiveForm(this._store.getState());
 
     if (!form) return;

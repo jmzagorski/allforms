@@ -64,6 +64,21 @@ describe('the directory view model', () => {
     }])
   });
 
+  // if you dont clear the routes any update may duplicate the routes
+  it('refreshes the route array on each update', () => {
+    let updateFunc = null;
+    sut.routes = [ 1 ];
+    routerSpy.routes = [];
+
+    getFormSpy.and.returnValue({ });
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+    sut.activate({ });
+
+    updateFunc();
+
+    expect(sut.routes).toEqual([]);
+  });
+
   it('does not generate routes when form does not exist', () => {
     let updateFunc = null;
 
