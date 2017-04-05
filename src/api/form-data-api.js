@@ -4,6 +4,8 @@ import { importFetch } from '../utils';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
+export const baseUrl = 'form-data'
+
 /**
  * @summary RESTFUL api for interact with the form data backend
  * @implements {IFormDataApi}
@@ -28,7 +30,7 @@ export class FormDataApi {
    * array
    */
   getAll(formId) {
-    return this._http.fetch(`forms/${formId}/form-data`)
+    return this._http.fetch(`forms/${formId}/${baseUrl}`)
       .then(response => response.json());
   }
 
@@ -38,7 +40,7 @@ export class FormDataApi {
    * @return {Promise<IFormData>} a promise to return the IFormData object
    */
   get(formDataId) {
-    return this._http.fetch(`form-data/${formDataId}`)
+    return this._http.fetch(`${baseUrl}/${formDataId}`)
       .then(response => response.json());
   }
 
@@ -48,7 +50,7 @@ export class FormDataApi {
    * @return {Promise<IFormData>} a promise to return the IFormData object
    */
   save(formData) {
-    const url = formData.id ? `form-data/${formData.id}` : 'form-data';
+    const url = formData.id ? `${baseUrl}/${formData.id}` : baseUrl;
     const method = formData.id ? 'PUT' : 'POST';
 
     return this._http.fetch(url, {
@@ -58,7 +60,7 @@ export class FormDataApi {
   }
 
   snapshot(id) {
-    return this._http.fetch(`form-data/${id}/snapshots`, {
+    return this._http.fetch(`${baseUrl}/${id}/snapshots`, {
       method: 'POST',
       body: json({ formDataId: id })
     }).then(response => response.json());

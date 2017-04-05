@@ -17,6 +17,7 @@ export class Forms {
    */
   async activate() {
     this.forms = await this._api.get();
+    this.routeToNew = this._router.generate('new-form');
 
     this.forms.forEach(f => {
       f.url = this._router.generate('dir', { form: f.id });
