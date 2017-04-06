@@ -12,7 +12,7 @@
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="glyphicon glyphicon-list-alt"></i></span>
-              <input id="name" name="name" placeholder="Form Name"
+              <input id="name" name="name" placeholder="Form Name" required
               class="form-control" type="text" value.bind="model.name"/>
             </div>
           </div>
@@ -28,7 +28,7 @@
                 <i class="glyphicon glyphicon-pencil"></i>
               </span>
               <textarea id="summary" name="summary" placeholder="Some descriptive info"
-                class="form-control" value.bind="model.summary"></textarea>
+                class="form-control" value.bind="model.summary" required></textarea>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
                 <i class="glyphicon glyphicon-globe"></i>
               </span>
               <input id="api" name="api" placeholder="API Url"
-                class="form-control" value.bind="model.api">
+                class="form-control" value.bind="model.api" required>
             </div>
           </div>
         </div>
