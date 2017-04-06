@@ -125,7 +125,3 @@ export function getIndicesOf(searchStr, str) {
 export function isObject(val) {
   return Object.prototype.toString.call(val) === '[object Object]';
 }
-
-export function replaceBetween(str, start, end, replace) {
-  return str.substring(0, start) + replace + str.substring(end);
-}

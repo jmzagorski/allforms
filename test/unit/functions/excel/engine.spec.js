@@ -17,7 +17,6 @@ describe('the excel engine', () => {
   let isObjSpy;
   let indicesSpy;
   let charPosSpy;
-  let replaceSpy;
 
   beforeEach(() => {
     parserSpy = setupSpy('parser', parser.Parser.prototype);
@@ -31,7 +30,6 @@ describe('the excel engine', () => {
     isObjSpy = spyOn(utils, 'isObject');
     indicesSpy = spyOn(utils, 'getIndicesOf');
     charPosSpy = spyOn(utils, 'getEndingCharPos');
-    replaceSpy = spyOn(utils, 'replaceBetween');
   });
 
   it('returns the supported formulas', () => {
@@ -41,49 +39,49 @@ describe('the excel engine', () => {
 
   it('sets the variable when an argument is an object', async done => {
     const formula = '';
-    const args = { key: 'val' };
-    isObjSpy.and.returnValue(true);
+    const args = { key: 'val', last: 'value' };
+    // skip macro expansion
     indicesSpy.and.returnValue([]);
 
     await sut.parse(formula, args);
 
-    expect(parserSpy.setVariable).toHaveBeenCalledWith('key', 'val');
+    expect(parserSpy.setVariable.calls.argsFor(0)).toEqual([ 'key', 'val' ]);
+    expect(parserSpy.setVariable.calls.argsFor(1)).toEqual([ 'last', 'value' ]);
     done();
   });
 
+  // FIXME: kind of testing too much?
   it('transforms any macros in order', async done => {
-    const formula = 'MACROSTUB1+MACROSTUB2+1';
-    const expectFormula = 'a';
-    macroStub1.transform.and.returnValue('c');
-    isObjSpy.and.returnValue(false);
-    indicesSpy.and.returnValues([2], [1]);
-    replaceSpy.and.returnValues('MACROSTUB1+Replace1+1', 'Replace2+Replace1+1');
-    charPosSpy.and.returnValues(7,8);
-    parserSpy.parse.and.returnValue(expectFormula)
+    const formula = 'MACROSTUB2(C+D)+MACROSTUB1(A+B)+1+E';
+    const expectFormula = 'D+C+1+E';
+    const variables = { A: 1, B: 2, C: 3, D: 4 };
+    // fake that MACROSTUB2 is really in front of MACROSTUB1 to test order
+    indicesSpy.and.returnValues([16], [0]);
+    // this needs to be right because getVariables will run its logic
+    charPosSpy.and.returnValues(14,30);
+    parserSpy.parse.and.returnValue('final result');
+    parserSpy.getVariable.and.returnValues(3, 4, 1, 2);
 
     macroStub2.transform.and.callFake(arg => {
       expect(macroStub1.transform.calls.count()).toEqual(0);
-      return 'd';
+      return 'D';
     });
+    macroStub1.transform.and.returnValue('C');
 
-    const actualFormula = await sut.parse(formula, 6, 7, 8);
+    const actualFormula = await sut.parse(formula, variables);
 
+    expect(indicesSpy.calls.count()).toEqual(2);
     expect(indicesSpy.calls.argsFor(0)).toEqual(['MACROSTUB1', formula])
     expect(indicesSpy.calls.argsFor(1)).toEqual(['MACROSTUB2', formula])
-    expect(macroStub2.transform.calls.count()).toEqual(1);
-    // todo is this right?
-    expect(macroStub2.transform).toHaveBeenCalledWith([6, 7, 8]);
-    expect(macroStub1.transform.calls.count()).toEqual(1);
-    // todo is this right?
-    expect(macroStub1.transform).toHaveBeenCalledWith([6, 7, 8]);
-    // 11 is the index of MACROSTUB2 in the formula
     expect(charPosSpy.calls.count()).toEqual(2);
-    expect(charPosSpy.calls.argsFor(0)).toEqual([formula, 11, '(']);
-    expect(charPosSpy.calls.argsFor(1)).toEqual(['MACROSTUB1+Replace1+1', 0, '(']);
-    expect(replaceSpy.calls.argsFor(0)).toEqual([formula, 11, 8, 'd'])
-    expect(replaceSpy.calls.argsFor(1)).toEqual(['MACROSTUB1+Replace1+1', 0, 9, 'c'])
-    expect(parserSpy.parse).toHaveBeenCalledWith('Replace2+Replace1+1')
-    expect(actualFormula).toEqual(expectFormula);
+    expect(charPosSpy.calls.argsFor(0)).toEqual([formula, 0, '(']);
+    expect(charPosSpy.calls.argsFor(1)).toEqual([formula, 16, '(']);
+    expect(macroStub1.transform.calls.count()).toEqual(1);
+    expect(macroStub1.transform).toHaveBeenCalledWith([1, 2])
+    expect(macroStub2.transform.calls.count()).toEqual(1);
+    expect(macroStub2.transform).toHaveBeenCalledWith([3, 4])
+    expect(parserSpy.parse).toHaveBeenCalledWith('D+C+1+E')
+    expect(actualFormula).toEqual('final result');
     done();
   });
 

@@ -34,10 +34,10 @@ describe('the formula element', () => {
       const $elem = sut.create();
 
       expect($elem.tagName).toEqual('SPAN');
-      expect($elem.className).toEqual(data.className);
       expect($elem.textContent).toEqual('a5');
 
       const $output = $elem.children[0];
+      expect($output.className).toEqual(data.className);
       expect($output.tagName).toEqual('OUTPUT');
       expect($output.name).toEqual('b');
       expect($output.getAttribute('for')).toEqual('c d');
@@ -64,10 +64,10 @@ describe('the formula element', () => {
       const $updated = sut.create($elem);
 
       expect($updated).toBe($elem);
-      expect($updated.className).toEqual(data.className);
       expect($updated.textContent).toEqual('c7');
 
       const $output = $updated.children[0];
+      expect($output.className).toEqual(data.className);
       expect($output.name).toEqual('d');
       expect($output.getAttribute('for')).toEqual('');
     });

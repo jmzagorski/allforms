@@ -2,14 +2,10 @@ import {
   Parser,
   SUPPORTED_FORMULAS
 } from 'hot-formula-parser';
-
 import {
-  isObject,
   getIndicesOf,
-  replaceBetween,
   getEndingCharPos
 } from '../../utils';
-
 import {
   inject,
   All
@@ -33,24 +29,20 @@ export class ExcelEngine {
   }
 
   // TODO - cache formula
-  async parse(formula, ...args) {
+  async parse(formula, args) {
     //let cached = cache.get(formula);
 
     //for (let a of args.filter(a => isObject(a)) {
-      //const value = this._parser.getVariable(Object.keys(a)[0])
-      //const cachedVal = cached.param[v];
+    //const value = this._parser.getVariable(Object.keys(a)[0])
+    //const cachedVal = cached.param[v];
 
-      //if (cachedVal !== value) break;
+    //if (cachedVal !== value) break;
 
-      //return cachedVal;
+    //return cachedVal;
     //}
 
-    for (let arg of args) {
-      if (isObject(arg)) {
-        const value = this._getObjectArgVal(arg);
-        const key = Object.keys(arg)[0];
-        this._parser.setVariable(key, value);
-      }
+    if (args) {
+      for (let arg in args) this.setVariable(arg, args[arg]);
     }
 
     const cleanFormula = await this.expandMacros(formula, args);
@@ -60,7 +52,6 @@ export class ExcelEngine {
 
   /**
    * @summary Expands all macro functions in the formula
-   *
    */
   async expandMacros(formula, ...args) {
     let macroIndexes = [];
@@ -74,9 +65,19 @@ export class ExcelEngine {
 
     macroIndexes = macroIndexes.sort((a, b) => a.index - b.index);
 
+    const replaces = [];
     for (let mi of macroIndexes) {
-      const func = await mi.macro.transform(...args);
-      formula = this._replaceText(formula, mi.macro.constructor.name.toUpperCase(), func);
+      const macroEndPos = getEndingCharPos(formula, mi.index, '(');
+      const macroStr = formula.substring(mi.index, macroEndPos +1);
+      const variables = this.getVariables(macroStr);
+      const variableValues = variables.map(v => this._parser.getVariable(v));
+      const func = await mi.macro.transform(variableValues);
+
+      replaces.push({ original: macroStr, replace: func});
+    }
+
+    for (let replace of replaces) {
+      formula = formula.replace(replace.original, replace.replace)
     }
 
     return formula;
@@ -96,20 +97,5 @@ export class ExcelEngine {
 
   setVariable(name, value) {
     this._parser.setVariable(name, value);
-  }
-
-  _getObjectArgVal(obj) {
-    return obj[Object.keys(obj)[0]];
-  }
-
-  _replaceText(formula, search, replace) {
-    let match = null;
-
-    while ((match = formula.match(`\\b${search}\\b`))) { // eslint-disable-line no-cond-assign
-      const end = getEndingCharPos(formula, match.index, '(');
-      formula = replaceBetween(formula, match.index, end + 1, replace);
-    }
-
-    return formula;
   }
 }

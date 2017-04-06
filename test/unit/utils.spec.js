@@ -126,12 +126,4 @@ describe('the utility functions', () => {
     });
   });
 
-  it('replaces a string between two indices', () => {
-    const text = 'The dog meowed loudly';
-
-    const result = utils.replaceBetween(text, 8, 14, 'barked');
-
-    expect(result).toEqual('The dog barked loudly');
-  });
-
 });
