@@ -17,7 +17,10 @@ const metadata = stampit()
 
 export const bootstrap = stampit()
   .methods({
-    create() {
+    create($element) {
+      return $element ? this._mutate($element) : this._create();
+    },
+    _create() {
       const $formgroup = DOM.createElement('div');
       const $label = DOM.createElement('label');
       const $text = DOM.createElement('textarea');
@@ -28,11 +31,11 @@ export const bootstrap = stampit()
       $formgroup.appendChild($label);
       $formgroup.appendChild($text);
 
-      this.mutate($formgroup);
+      this._mutate($formgroup);
 
       return $formgroup;
     },
-    mutate($element) {
+    _mutate($element) {
       const $label = $element.querySelector('label');
       const $text = $element.querySelector('textarea');
 

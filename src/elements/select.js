@@ -18,7 +18,10 @@ const metadata = stampit()
 
 export const bootstrap = stampit()
   .methods({
-    create() {
+    create($element) {
+      return $element ? this._mutate($element) : this._create();
+    },
+    _create() {
       const $formGroup = DOM.createElement('div');
       const $label = DOM.createElement('label');
       const $select = DOM.createElement('select');
@@ -27,11 +30,11 @@ export const bootstrap = stampit()
       $formGroup.appendChild($label);
       $formGroup.appendChild($select);
 
-      this.mutate($formGroup);
+      this._mutate($formGroup);
 
       return $formGroup;
     },
-    mutate($element) {
+    _mutate($element) {
       const $label = $element.querySelector('label');
       const $select = $element.querySelector('select');
 

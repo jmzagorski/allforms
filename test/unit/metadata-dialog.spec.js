@@ -1,4 +1,3 @@
-import * as formSelectors from '../../src/domain/form/selectors';
 import * as elemSelectors from '../../src/domain/element/selectors';
 import * as creator from '../../src/elements/factory';
 import {
@@ -13,9 +12,8 @@ import { Store } from 'aurelia-redux-plugin';
 import { DialogController } from 'aurelia-dialog';
 import { setupSpy } from './jasmine-helpers';
 
-describe('the metadata dialog view model', () => {
+describe('the element metadata dialog view model', () => {
   let sut;
-  let formSelectorSpy;
   let elemSelectorSpy;
   let storeSpy
   let dialogSpy;
@@ -24,12 +22,9 @@ describe('the metadata dialog view model', () => {
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     dialogSpy = setupSpy('dialog', DialogController.prototype);
-    formSelectorSpy = spyOn(formSelectors, 'getActiveForm');
     elemSelectorSpy = spyOn(elemSelectors, 'getActiveElement');
     creatorSpy = spyOn(creator, 'default');
     sut = new MetadataDialog(dialogSpy, storeSpy);
-
-    formSelectorSpy.and.returnValue({ id: 'a', style: 'bootstrap' });
 
     // default so tests don't error, if an element cannot be made, error
     // should be thrown in factory iteself
@@ -41,103 +36,100 @@ describe('the metadata dialog view model', () => {
     expect(sut.schemas).toEqual([]);
   });
 
-  it('gets the element as a readonly property', () => {
+  it('sets up the defaults on a new model', () => {
+    const event = { formId: 3, builder: 'a', style: 'xx' };
     const state = {};
-    const expected = {};
 
-    storeSpy.getState.and.returnValue(state);
-    elemSelectorSpy.and.returnValue(expected)
-
-    const actual = sut.element;
-
-    expect(elemSelectorSpy.calls.argsFor(0)[0]).toBe(state)
-    expect(actual).toBe(expected);
-  });
-
-  it('creates the model from the creator and the passed in event', () => {
-    const event = { formId: 3, id: 1, $elem: 'ab', builder: 'a', style: 'xx' };
-    const state = {};
-    storeSpy.getState.and.returnValue(state);
+    creatorSpy.and.returnValue({ schema: ['view'] })
 
     sut.activate(event);
 
     expect(creatorSpy).toHaveBeenCalledWith('xx', 'a');
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(defaultNewElement(sut.model));
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.subscribe).not.toHaveBeenCalledWith();
+    expect(storeSpy.getState).not.toHaveBeenCalled();
+    expect(sut.schemas.length).toEqual(1);
+    expect(sut.schemas[0]).toEqual('./elements/views/view');
     expect(sut.model).toEqual({
-      schema: [],
+      schema: ['view'],
       formId: 3,
-      id: 1,
-      $elem: 'ab',
       builder: 'a',
       style: 'xx'
     });
   });
 
-  it('pushes the relative path to the elements schema', () => {
-    creatorSpy.and.returnValue({ schema: ['view.html'] })
+  it('sets up the defaults on a existing model', () => {
+    const event = { $elem: { id: 1 } };
 
-    sut.activate({});
-
-    expect(sut.schemas).toEqual([ './elements/views/view.html' ]);
-  });
-
-  it('subscribes before dispatches on activate', () => {
     storeSpy.subscribe.and.callFake(() => {
-      expect(storeSpy.dispatch).not.toHaveBeenCalled();
+      expect(storeSpy.dispatch.calls.count()).toEqual(0);
     });
 
-    sut.activate({ $elem: { id: 1 }});
+    sut.activate(event);
 
+    expect(sut.model).toEqual({ id: 1 });
+    expect(sut.schemas).toEqual([]);
+    expect(creatorSpy).not.toHaveBeenCalledWith();
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([requestElement(1)]);
     expect(storeSpy.subscribe.calls.count()).toEqual(1);
-    expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([defaultNewElement(sut.model)]);
-    expect(storeSpy.dispatch.calls.argsFor(1)).toEqual([requestElement(1)]);
+    expect(storeSpy.getState).not.toHaveBeenCalled();
   });
 
-  it('does not dispatch if no existing element', () => {
-    sut.activate({ });
-
-    expect(storeSpy.dispatch).not.toHaveBeenCalledWith();
-  });
-
-  [ { element: { name: 'a' }, expected: { name: 'a' } },
-    { element: { bb: 'a' }, expected: { bb: 'a', name: 'b' } },
-    { element: null, expected: { name: 'b' } },
-    { element: undefined, expected: { name: 'b' } }
+  [ { element: { id: 1, name: 'a' }, expected: { id: 1, schema: ['view.html'], name: 'a' } },
+    { element: { id: 1, bb: 'a' }, expected: { id: 1, schema: ['view.html'], bb: 'a', name: 'b' } },
+    { element: { id: 3 }, expected: { id: 1 } },
+    { element: null, expected: { id: 1 } },
+    { element: undefined, expected: { id: 1 } }
   ].forEach(data => {
-    it('adds the element properties on subscription update', () => {
+    it('adds the element properties on subscription update when ids match', () => {
       let update = null;
-      creatorSpy.and.returnValue({ formId: 3, schema: [], id: 1, name: 'b' });
+      creatorSpy.and.returnValue({ schema: ['view.html'], name: 'b' });
       storeSpy.subscribe.and.callFake(func => update = func);
       elemSelectorSpy.and.returnValue(data.element);
-      data.expected.id = 1;
-      data.expected.schema = [];
-      data.expected.formId = 3;
 
-      sut.activate({ formId: 3 });
+      sut.activate({ $elem: { id: 1 } });
       update();
 
       expect(sut.model).toEqual(data.expected);
     });
   });
 
-  [ { $elem: null, creator: createElement, func: 'create' },
-    { $elem: {}, creator: editElement, func: 'mutate' },
-    { $elem: {}, creator: editElement, func: 'create' }
+  it('clears the schemas on ever update', () => {
+    let update = null;
+    creatorSpy.and.returnValue({ schema: ['view.html'], });
+    storeSpy.subscribe.and.callFake(func => update = func);
+    elemSelectorSpy.and.returnValue({ id: 1 });
+
+    sut.activate({ $elem: { id: 1 } });
+    update();
+    update();
+
+    expect(sut.schemas).toEqual([ './elements/views/view.html' ]);
+  });
+
+  [ { $elem: null, id: null, creator: createElement },
+    { $elem: null, id: undefined, creator: createElement },
+    { $elem: null, id: 0, creator: createElement },
+    { $elem: {}, id: 1, creator: editElement }
   ].forEach(data => {
     it('dispatches an action creator on submit', () => {
       const creatorSpy = jasmine.createSpy('creatorFunc');
-      sut.model.$elem = data.$elem;
-      sut.model[data.func] = creatorSpy;
+      // activate to set the private _$elem
+      sut.activate({ $elem: data.$elem })
+      sut.model.create = creatorSpy;
+      sut.model.id = data.id
       const expectAction = data.creator(sut.model);
 
       sut.submit();
 
-      expect(storeSpy.dispatch).toHaveBeenCalledWith(expectAction)
-      expect(creatorSpy.calls.argsFor(0)[0]).toEqual(data.$elem || undefined);
+      expect(storeSpy.dispatch.calls.mostRecent().args).toEqual([expectAction])
+      expect(creatorSpy.calls.argsFor(0)[0]).toEqual(data.$elem);
     });
   });
 
-  [ null, undefined, { id: null }, { id: undefined }, { id: '' }
-  ].forEach(element => {
+  [ null, undefined, { id: null }, { id: undefined }, { id: '' } ].forEach(element => {
     it('does not call the dialog when element is not ready', async done => {
       let okFunc = null
       sut.model = { id: 1 }
@@ -180,17 +172,19 @@ describe('the metadata dialog view model', () => {
     done();
   });
 
-  it('unsubscribes from the store on deactivate', () => {
-    let subscriptions = 0;
-    const func = () => subscriptions++
-    creatorSpy.and.returnValue({ schema: [], create: () => {} });
-    storeSpy.subscribe.and.returnValue(func);
+  [ { $elem: { id: null }, count: 2}, { count: 1} ].forEach(data => {
+    it('unsubscribes from the store on deactivate', () => {
+      let subscriptions = 0;
+      const func = () => subscriptions++
+      storeSpy.subscribe.and.returnValue(func);
 
-    sut.activate({});
-    sut.submit();
+      sut.activate({ $elem: data.$elem });
+      sut.model.create = () => {}
+      sut.submit();
 
-    sut.deactivate();
+      sut.deactivate();
 
-    expect(subscriptions).toEqual(2);
+      expect(subscriptions).toEqual(data.count);
+    });
   });
 });

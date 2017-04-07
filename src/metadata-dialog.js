@@ -7,63 +7,47 @@ import {
   requestElement,
   editElement,
   defaultNewElement
-} from './domain/index';
+} from './domain';
 
 export class MetadataDialog {
-  static inject() { return [ DialogController, Store ]; }
+  static inject = [ DialogController, Store ];
 
   constructor(dialog, store) {
     this.model = {};
     this.schemas = [];
 
-    this._$elem = {};
-    this._unsubscribes = [];
     this._dialog = dialog;
     this._store = store; 
+    this._$elem = null;
+    this._unsubscribes = [];
   }
 
-  get element() {
-    return getActiveElement(this._state);
-  }
-
-  get _state() {
-    return this._store.getState();
+  get _element() {
+    return getActiveElement(this._store.getState()) || {};
   }
 
   /**
    * @summary activates the dialog by loading or creating an IElement object
-   * @param {Object} event the event object that called the dialog
-   * @param {Object} event.builder the type of element to build
-   * @param {Object} event.style the form style associated with the event
-   * @param {Object} event.formId the form the element will be created on
-   * @param {Object} [event.$elem] the existing dom element
+   * @param {string} builder the type of element to build
+   * @param {string} style the element style
+   * @param {string} formId the form the element will be created on
+   * @param {Element} [$elem] an optional existing dom element to mutate
    */
-  activate(event) {
-    this.model = creator(event.style, event.builder);
-    this.model.formId = event.formId;
-    this.model.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
-    Object.assign(this.model, event);
+  activate({ builder, style, formId, $elem}) {
+    this._setupDefaults(builder, style, formId, $elem);
 
-    this._unsubscribes.push(this._store.subscribe(this._update.bind(this)));
-    this._store.dispatch(defaultNewElement(this.model));
-
-    if (event.$elem) this._store.dispatch(requestElement(event.$elem.id));
+    if ($elem) {
+      // IMPORTANT: set this before subscribing since i am not null checking
+      // this._$elem in the _update method
+      this._$elem = $elem;
+      this._unsubscribes.push(this._store.subscribe(this._update.bind(this)));
+      this._store.dispatch(requestElement($elem.id));
+    } 
   }
 
   submit() {
-    let actionCreator;
-
-    if (!this.model.$elem) {
-      this._$elem = this.model.create();
-      actionCreator = createElement;
-    } else {
-      this._$elem = this.model.mutate ? this.model.mutate(this.model.$elem) :
-        this.model.create(this.model.$elem);
-
-      actionCreator = editElement;
-    }
-
-    // wait for the store to update to automatically signal ok
+    const actionCreator = this.model.id ? editElement : createElement;
+    this._$elem = this.model.create(this._$elem);
     this._unsubscribes.push(this._store.subscribe(async () => await this._ok()));
     this._store.dispatch(actionCreator(this.model));
   }
@@ -78,15 +62,37 @@ export class MetadataDialog {
 
   // the element needs an id before proceeding!
   async _ok() {
-    if (this.element && this.element.id) {
-      this._$elem.id = this.element.id;
+    if (this._element.id) {
+      this._$elem.id = this._element.id;
       await this._dialog.ok(this._$elem);
     }
   }
-  
-  _update() {
-    if (this.element) {
-      Object.assign(this.model, this.element);
+
+  _setupDefaults(builder, style, formId, $elem) {
+    if ($elem) {
+      this.model.id = $elem.id;
+    } else {
+      this.model = creator(style, builder);
+      this.model.formId = formId;
+      this.model.builder = builder;
+      this.model.style = style;
+      this._generateSchemas();
+      this._store.dispatch(defaultNewElement(this.model));
     }
+  }
+
+  _update() {
+    // wait for the element to get on the state
+    debugger;
+    if (this._element.id == this._$elem.id) {
+      this.model = creator(this._element.style, this._element.builder);
+      Object.assign(this.model, this._element);
+      this._generateSchemas();
+    }
+  }
+
+  _generateSchemas() {
+    this.schemas = [];
+    this.model.schema.forEach(view => this.schemas.push(`./elements/views/${view}`));
   }
 }

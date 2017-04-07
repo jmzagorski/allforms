@@ -143,14 +143,7 @@
 /**
  * @summary creates a new element
  * @function
- * @name Element#create()
+ * @name Element#create(element)
+ * @param {HtmlElement} [element] the element to update
  * @returns {HtmlElement} the new element
- */
-
-/**
- * @summary updates an existing element
- * @function
- * @name Element#mutate(element)
- * @param {HtmlElement} element the element to update
- * @return {HtmlElement} the updated element
  */

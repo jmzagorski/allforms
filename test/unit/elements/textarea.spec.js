@@ -50,7 +50,7 @@ describe('the textarea element', () => {
     sut.text = 'd';
     sut.rows = 7;
 
-    const $updated = sut.mutate($existing);
+    const $updated = sut.create($existing);
 
     expect($updated).toBe($existing);
 

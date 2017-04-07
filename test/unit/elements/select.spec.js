@@ -65,7 +65,7 @@ describe('the select element', () => {
 
     const parseSpy = spyOn(utils, 'parseCsv').and.returnValue([['hi', 'bye']]);
 
-    const $updated = sut.mutate($existing);
+    const $updated = sut.create($existing);
 
     const $label = $existing.children[0];
     const $select = $existing.children[1];

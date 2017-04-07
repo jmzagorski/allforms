@@ -21,7 +21,10 @@ export const bootstrap = stampit()
     this.contexts = [ 'tab', 'pill' ];
   })
   .methods({
-    create() {
+    create($element) {
+      return $element ? this._mutate($element) : this._create();
+    },
+    _create() {
       const headers = _splitHeaders(this.headers);
       const wrapper = DOM.createElement('div');
       const list = DOM.createElement('ul');
@@ -52,7 +55,7 @@ export const bootstrap = stampit()
 
       return wrapper;
     },
-    mutate($element) {
+    _mutate($element) {
       const headers = _splitHeaders(this.headers);
       const list = $element.querySelector('ul');
       const domHeaders = $element.querySelectorAll('li');

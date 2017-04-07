@@ -9,8 +9,6 @@ import {
   getElementTypes
 } from './domain';
 
-const DATA_BUILDER = 'data-builder';
-
 export class Design {
   static inject =  [ Store, DialogService ];
 
@@ -18,7 +16,7 @@ export class Design {
     this.formId = null;
     this.style = null;
     this.api = null;
-		this.html = '';
+    this.html = '';
     this.interactOptions = {
       dragOptions: {
         restriction: '#page-host',
@@ -53,34 +51,36 @@ export class Design {
 
   /**
    * @summary creates or edits a form element
-   * @param {Object} event event object that raised the function
-   * @param {Object} event.builder function string instruction on how to create
+   * @param {string} builder function string instruction on how to create
    * the element
-   * @param {Object} [event.detail] an existing event that raised this event
-   * @param {Object} [event.detail.$elem] the element the event came from
    */
-  async createElement(event) {
-    const dialogModel = {
-      builder: event.builder || event.detail.$elem.getAttribute(DATA_BUILDER),
-      $elem: event.detail ? event.detail.$elem : null,
-      style: this.style,
-      formId: this.formId
-    };
-
+  async createMetadata(event) {
+    event.formId = this.formId;
+    event.style = this.style;
     const result = await this._dialogService.open({
       viewModel: MetadataDialog,
-      model: dialogModel
+      model: event
     });
 
     if (!result.wasCancelled) {
-      result.output.setAttribute(DATA_BUILDER, dialogModel.builder)
-      this.savePosition({
-        detail: {
-          formHtml: this.html + result.output.outerHTML,
-          elementHtml: result.output.outerHTML,
-          elementId: result.output.id
-        }
+      debugger;
+      this._saveLayout({
+        formHtml: event.$form ? event.$form.outerHTML : this.html + result.output.outerHTML,
+        $elem: result.output
       });
+    }
+  }
+
+  async saveInteraction(event) {
+    switch (event.detail.type) {
+      case 'dblclick':
+        await this.createMetadata({ $form: event.detail.$form, $elem: event.detail.$elem });
+        break;
+      default:
+        this._saveLayout({
+          formHtml: event.detail.$form.outerHTML,
+          $elem: event.detail.$elem,
+        });
     }
   }
 
@@ -88,15 +88,15 @@ export class Design {
     this._unsubscribe();
   }
 
-  savePosition(event) {
+  _saveLayout({ formHtml, $elem }) {
     this._store.dispatch(editFormTemplate({
       form: {
-        template: event.detail.formHtml,
+        template: formHtml,
         id: this.formId
       },
       element: {
-        template: event.detail.elementHtml,
-        id: event.detail.elementId
+        template: $elem.outerHTML,
+        id: $elem.id
       }
     }));
 

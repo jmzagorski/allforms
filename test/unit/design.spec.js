@@ -79,32 +79,31 @@ describe('the design view model', () => {
     expect(storeSpy.subscribe.calls.count()).toEqual(1);
   });
 
-  it('creates the element when dialog is ok for new element', async done => {
-    const setAttrSpy = jasmine.createSpy('setAttr');
+  it('saves the new layout when dialog is not cancelled', async done => {
     const dialogResult = {
       wasCancelled: false,
-      output: { outerHTML: 'elem html', id: '2', setAttribute: setAttrSpy }
-    };
-    const expectDialogModel = {
-      builder: 'a', $elem: null, style: 'c', formId: 'd'
+      output: { outerHTML: 'elem html', id: '2' }
     };
     sut.style = 'c';
     sut.formId = 'd';
-    sut.html = 'form html'
+    sut.html = 'existing'
+
+    const expectDialogModel = {
+      builder: 'a', style: sut.style, formId: sut.formId
+    };
 
     dialogSpy.open.and.returnValue(dialogResult);
 
-    await sut.createElement({ builder: 'a' });
+    await sut.createMetadata({ builder: 'a' });
 
     expect(dialogSpy.open).toHaveBeenCalledWith({
       viewModel: MetadataDialog,
       model: expectDialogModel
     });
-    expect(setAttrSpy).toHaveBeenCalledWith('data-builder', 'a')
     expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate({
       form: {
-        template: 'form htmlelem html',
-        id: 'd'
+        template: 'existingelem html',
+        id: sut.formId
       },
       element: {
         template: 'elem html',
@@ -112,39 +111,44 @@ describe('the design view model', () => {
       }
     }));
     expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(
-      requestForm('d')
+      requestForm(sut.formId)
     );
     done();
   });
 
-  it('creates the element when dialog is ok for existing elem', async done => {
-    const $elem = { id: '2', getAttribute: jasmine.createSpy('getAttr') };
-    const setAttrSpy = jasmine.createSpy('setAttr');
+  it('creates the metadata from a interact dblclick event', async done => {
+    const $elem = { id: '2', outerHTML: 'elem html' };
+    const event = {
+      detail: {
+        $form: { outerHTML: 'formHtml' },
+        type: 'dblclick',
+        $elem
+      }
+    }
     const dialogResult = {
       wasCancelled: false,
-      output: { outerHTML: 'elem html', id: '2', setAttribute: setAttrSpy }
-    };
-    const expectDialogModel = {
-      builder: 'a', $elem, style: 'c', formId: 'd'
+      output: $elem
     };
     sut.style = 'c';
     sut.formId = 'd';
-    sut.html = 'form html'
+    sut.html = 'should not be saved';
 
-    $elem.getAttribute.and.returnValue('a');
+    const expectDialogModel = {
+      $elem, formId: sut.formId, style: sut.style, $form: event.detail.$form
+    };
+
     dialogSpy.open.and.returnValue(dialogResult);
 
-    await sut.createElement({ detail: { $elem } });
+    await sut.saveInteraction(event);
 
     expect(dialogSpy.open).toHaveBeenCalledWith({
       viewModel: MetadataDialog,
       model: expectDialogModel
     });
-    expect(setAttrSpy).toHaveBeenCalledWith('data-builder', 'a')
     expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate({
       form: {
-        template: 'form htmlelem html',
-        id: 'd'
+        template: 'formHtml',
+        id: sut.formId
       },
       element: {
         template: 'elem html',
@@ -152,9 +156,37 @@ describe('the design view model', () => {
       }
     }));
     expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(
-      requestForm('d')
+      requestForm(sut.formId)
     );
-    expect($elem.getAttribute).toHaveBeenCalledWith('data-builder');
+    done();
+  });
+
+  it('saves the layout on any other interaction', async done => {
+    const $elem = { id: '2', outerHTML: 'elem html' };
+    const event = {
+      detail: {
+        $form: { outerHTML: 'formHtml' },
+        type: '???',
+        $elem
+      }
+    }
+    sut.formId = 'a';
+
+    await sut.saveInteraction(event);
+
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate({
+      form: {
+        template: 'formHtml',
+        id: sut.formId
+      },
+      element: {
+        template: 'elem html',
+        id: '2'
+      }
+    }));
+    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(
+      requestForm(sut.formId)
+    );
     done();
   });
 
@@ -163,37 +195,10 @@ describe('the design view model', () => {
 
     dialogSpy.open.and.returnValue(dialogResult);
 
-    await sut.createElement({ builder: 'a' });
+    await sut.createMetadata({});
 
     expect(storeSpy.dispatch).not.toHaveBeenCalled();
     done();
-  });
-
-  it('saves the elements position', () => {
-    const event = {
-      detail: {
-        formHtml: 'a',
-        elementHtml: 'b',
-        elementId: 2
-      }
-    };
-    sut.formId = 'c';
-
-    sut.savePosition(event);
-
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(editFormTemplate({
-      form: {
-        template: 'a',
-        id: 'c'
-      },
-      element: {
-        template: 'b',
-        id: 2
-      }
-    }));
-    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(
-      requestForm('c')
-    );
   });
 
   it('unsubscribes on deactivate', () => {

@@ -14,17 +14,27 @@ describe('the tab element', () => {
     expect(sut.schema).toContain('contexts.html');
   });
 
-  [ { headers: 'same,same', method: 'create' },
-    { headers: 'same,same', method: 'mutate' }
-  ].forEach(data => {
-    it('throws when naming the same header', () => {
-      const sut = tab.bootstrap();
-      sut.headers = data.headers;
+  it('throws when naming the same header for new tabs', () => {
+    const sut = tab.bootstrap();
+    sut.headers = 'same, same';
 
-      const ex = () => sut[data.method]();
+    const ex = () => sut.create();
 
-      expect(ex).toThrow(new Error('Cannot have duplicate headers'));
-    });
+    expect(ex).toThrow(new Error('Cannot have duplicate headers'));
+  });
+
+  it('throws when naming the same header for existing tabs', () => {
+    const sut = tab.bootstrap();
+    sut.groupName = 'navtab';
+    sut.headers = 'one';
+    sut.context = 'pill';
+    const $existing = sut.create();
+
+    sut.headers = 'same, same'
+
+    const ex = () => sut.create($existing);
+
+    expect(ex).toThrow(new Error('Cannot have duplicate headers'));
   });
 
   it('creates a new bootstrap tab group', () => {
@@ -144,7 +154,7 @@ describe('the tab element', () => {
     $existing.children[1].children[0].innerHTML = content1;
     $existing.children[1].children[1].innerHTML = content2;
 
-    const $updated = sut.mutate($existing);
+    const $updated = sut.create($existing);
 
     const $items = $updated.querySelectorAll('li');
     const contentWrapper = $updated.children[1];
@@ -183,7 +193,7 @@ describe('the tab element', () => {
     const $existing = sut.create();
     sut.headers = 'one';
 
-    const $updated = sut.mutate($existing);
+    const $updated = sut.create($existing);
 
     const $item = $updated.querySelectorAll('li');
     expect($item.length).toEqual(1);
@@ -199,7 +209,7 @@ describe('the tab element', () => {
     const $existing = sut.create();
     sut.headers = 'one,two';
 
-    const $updated = sut.mutate($existing);
+    const $updated = sut.create($existing);
 
     const $item = $updated.querySelectorAll('li');
     expect($item.length).toEqual(2);

@@ -3,6 +3,13 @@ import { bindable } from 'aurelia-framework';
 
 const DRAGGABLE = 'draggable.bind';
 
+export const EVENTS = {
+  valset: 'valset',
+  dblclick: 'dblclick',
+  move: 'move',
+  delete: 'delete'
+};
+
 export class InteractFormCustomElement {
 
   @bindable html = '';
@@ -17,9 +24,9 @@ export class InteractFormCustomElement {
     this.element = element;
     this.interactHtml = '';
     this._tabIndicies = 0;
-    this._interactDefaults = {
+    this._defaulOpts = {
       dragOptions: { 
-        onend: e => this._emitInteractEvent(e.target)
+        onend: e => this._emitInteractEvent(e.target, EVENTS.move)
       }
     };
   }
@@ -27,21 +34,29 @@ export class InteractFormCustomElement {
   bind() {
     this.$form = this.element.querySelector('form');
     this.htmlChanged(this.html, null);
-    this.interactOptions = this.interactOptions || this._interactDefaults;
-
-    // if this property is not set, make sure the defaults are set so 
-    // this custom element can still emit an event
-    if (this.interactOptions.dragOptions) {
-      this.interactOptions.dragOptions.onend = e => this._emitInteractEvent(e.target);
-    } else {
-      this.interactOptions.dragOptions = this._interactDefaults.dragOptions;
-    }
+    this._setDefaults();
   }
 
   htmlChanged(newValue, oldValue) {
     this.interactHtml = this.$form.innerHTML = newValue;
 
-    this._recurseChildren(this.$form);
+    for (let i = 0; i < this.$form.children.length; i++) {
+      const child = this.$form.children[i];
+      if (!child.ondblclick) this._addEvents(child);
+      if (!child.getAttribute(DRAGGABLE)) this._makeInteractable(child);
+    }
+  }
+
+  _setDefaults() {
+    this.interactOptions = this.interactOptions || this._defaulOpts;
+
+    // if this property is not set, make sure the defaults are set so 
+    // this custom element can still emit an event
+    if (this.interactOptions.dragOptions) {
+      this.interactOptions.dragOptions.onend = this._defaulOpts.dragOptions.onend;
+    } else {
+      this.interactOptions.dragOptions = this._defaulOpts.dragOptions;
+    }
   }
 
   _makeInteractable($elem) {
@@ -51,52 +66,33 @@ export class InteractFormCustomElement {
   }
 
   _addEvents($elem) {
-    $elem.onchange = e => setDefaultVal(e.target);
-    $elem.onkeydown = e => this._deleteElement(e);
+    $elem.onchange = e => {
+      setDefaultVal(e.target);
+      this._emitInteractEvent(e.target, EVENTS.valset);
+    }
+    $elem.onkeydown = e => this._deleteElement(e.keyCode, $elem);
     $elem.onclick = e => {
       e.preventDefault();
       $elem.focus();
     };
-    $elem.ondblclick = e => this._emitActivateElem($elem);
+    $elem.ondblclick = e => this._emitInteractEvent($elem, EVENTS.dblclick);
   }
 
-  _deleteElement(e) {
-    if (e.target.getAttribute(DRAGGABLE) && (e.keyCode === 8 || e.keyCode == 46)) {
+  _deleteElement(keycode, $interactable) {
+    if (keycode === 8 || keycode == 46) {
 
-      e.target.parentNode.removeChild(e.target);
+      $interactable.parentNode.removeChild($interactable);
 
-      this._emitInteractEvent(e.target);
+      this._emitInteractEvent($interactable, EVENTS.delete);
     }
   }
 
-  _emitActivateElem($elem) {
-    const editing = new CustomEvent('onactivate', {
+  _emitInteractEvent($elem, type) {
+    const interactEvent = new CustomEvent('oninteract', {
       bubbles: true,
-      detail: { $elem }
+      detail: { type, $elem, $form: this.$form }
     });
 
-    this.element.dispatchEvent(editing);
-  }
-
-  _emitInteractEvent($elem) {
-    const editing = new CustomEvent('oninteract', {
-      bubbles: true,
-      detail: {
-        formHtml: this.$form.outerHTML,
-        elementHtml: $elem.outerHTML,
-        elementId: $elem.id
-      }
-    });
-
-    this.element.dispatchEvent(editing);
-  }
-
-  _recurseChildren($elem) {
-    for (let i = 0; i < $elem.children.length; i++) {
-      const child = $elem.children[i];
-      if (!child.ondblclick) this._addEvents(child);
-      if (!child.getAttribute(DRAGGABLE)) this._makeInteractable(child);
-      this._addEvents(child);
-    }
+    this.element.dispatchEvent(interactEvent);
   }
 }
