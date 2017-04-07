@@ -1,10 +1,9 @@
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { importFetch } from '../utils';
 
-
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
-export const baseUrl = 'form-data'
+export const baseUrl = 'form-data';
 
 /**
  * @summary RESTFUL api for interact with the form data backend

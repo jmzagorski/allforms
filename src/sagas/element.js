@@ -1,5 +1,5 @@
 import { put, takeLatest, call } from 'redux-saga/effects';
-import * as actions from '../domain/element/actions'
+import * as actions from '../domain/element/actions';
 import { EDIT_FORM_TEMPLATE } from '../domain';
 
 /**
@@ -10,16 +10,13 @@ import { EDIT_FORM_TEMPLATE } from '../domain';
  */
 export function* getElement(api, action) {
   try {
-
     if (action.payload.id) {
       const element = yield call([api, api.get], action.payload.id);
       const hasError = !element;
 
       yield put(actions.receivedElement(element, hasError));
     }
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.receivedElement(e, true));
   }
 }
@@ -32,13 +29,10 @@ export function* getElement(api, action) {
  */
 export function* addElement(api, action) {
   try {
-
     const element = yield call([api, api.save], action.payload);
 
     yield put(actions.elementAdded(element));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.elementAdded(e, true));
   }
 }
@@ -51,26 +45,20 @@ export function* addElement(api, action) {
  */
 export function* editElement(api, action) {
   try {
-
     const element = yield call([api, api.save], action.payload);
 
     yield put(actions.elementEdited(element));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.elementEdited(e, true));
   }
 }
 
 export function* editTemplate(api, action) {
   try {
-
     const element = yield call([api, api.saveTemplate], action.payload.element);
 
     yield put(actions.elementEdited(element));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.elementEdited(e, true));
   }
 }

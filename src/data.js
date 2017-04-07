@@ -1,6 +1,5 @@
 import { Router } from 'aurelia-router';
 import { FormDataApi } from './api/index';
-import { getFormData } from './domain/index';
 
 /**
  * @summary Displays the list of data forms associated with a form template

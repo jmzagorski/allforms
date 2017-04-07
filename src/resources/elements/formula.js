@@ -42,11 +42,11 @@ export class FormulaCustomElement {
         name: v,
         value: ''
       });
-    };
+    }
   }
 
   async verify() {
-    for(let v of this.variables) {
+    for (let v of this.variables) {
       this._xl.setVariable(v.name, v.value);
     }
 

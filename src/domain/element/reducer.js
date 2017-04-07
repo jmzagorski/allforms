@@ -14,7 +14,7 @@ export default function elementReducer(state = null, action) {
     case actions.ELEMENT_EDITED:
       if (action.error) return state;
 
-      return action.payload
+      return action.payload;
 
     default:
       return state;

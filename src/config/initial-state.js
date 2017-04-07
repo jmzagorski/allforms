@@ -1,12 +1,10 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from 'aurelia-redux-plugin';
-import { FormApi } from '../api/form-api';
 import { MemberActions, requestForm } from '../domain/index';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app
  * started
- *
  */
 export default class {
 

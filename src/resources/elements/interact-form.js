@@ -25,7 +25,7 @@ export class InteractFormCustomElement {
     this.interactHtml = '';
     this._tabIndicies = 0;
     this._defaulOpts = {
-      dragOptions: { 
+      dragOptions: {
         onend: e => this._emitInteractEvent(e.target, EVENTS.move)
       }
     };
@@ -50,7 +50,7 @@ export class InteractFormCustomElement {
   _setDefaults() {
     this.interactOptions = this.interactOptions || this._defaulOpts;
 
-    // if this property is not set, make sure the defaults are set so 
+    // if this property is not set, make sure the defaults are set so
     // this custom element can still emit an event
     if (this.interactOptions.dragOptions) {
       this.interactOptions.dragOptions.onend = this._defaulOpts.dragOptions.onend;
@@ -69,7 +69,7 @@ export class InteractFormCustomElement {
     $elem.onchange = e => {
       setDefaultVal(e.target);
       this._emitInteractEvent(e.target, EVENTS.valset);
-    }
+    };
     $elem.onkeydown = e => this._deleteElement(e.keyCode, $elem);
     $elem.onclick = e => {
       e.preventDefault();
@@ -79,8 +79,7 @@ export class InteractFormCustomElement {
   }
 
   _deleteElement(keycode, $interactable) {
-    if (keycode === 8 || keycode == 46) {
-
+    if (keycode === 8 || keycode === 46) {
       $interactable.parentNode.removeChild($interactable);
 
       this._emitInteractEvent($interactable, EVENTS.delete);

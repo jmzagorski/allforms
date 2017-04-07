@@ -16,7 +16,7 @@ export class EnhanceHtmlCustomAttribute {
   }
 
   valueChanged() {
-    this._recurseChildren(this.element)
+    this._recurseChildren(this.element);
   }
 
   _recurseChildren($elem) {
@@ -32,6 +32,6 @@ export class EnhanceHtmlCustomAttribute {
 
         this._enhanced.push(child);
       }
-    };
+    }
   }
 }

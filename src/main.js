@@ -32,7 +32,7 @@ export async function configure(aurelia) {
     .plugin('aurelia-dialog')
     .plugin('aurelia-value-converters')
     .plugin('aurelia-redux-plugin', {
-      store: createStore(rootReducer,applyMiddleware(sagaMiddleware, signalerMiddleware.listen))
+      store: createStore(rootReducer, applyMiddleware(sagaMiddleware, signalerMiddleware.listen))
     });
 
   configureHttp(http, getBaseUrl(PLATFORM.location));

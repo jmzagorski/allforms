@@ -28,7 +28,7 @@ const elements = {
   checkbox,
   radio,
   formula
-}
+};
 
 export default function create(style, type) {
   style = style.toLowerCase();
@@ -36,6 +36,6 @@ export default function create(style, type) {
   const creator = elements[type];
 
   if (style && creator[style]) return creator[style]();
-  
+
   return creator.standard();
 }

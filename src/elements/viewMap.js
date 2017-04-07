@@ -1,7 +1,7 @@
 //make it easier to reference the element views
 
-function toViewPath(view){
-  return `${view}.html`
+function toViewPath(view) {
+  return `${view}.html`;
 }
 
 const viewMap = {
@@ -19,6 +19,6 @@ const viewMap = {
   text: toViewPath('text'),
   textarea: toViewPath('textarea'),
   contexts: toViewPath('contexts')
-}
+};
 
 export default viewMap;

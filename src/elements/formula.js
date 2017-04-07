@@ -21,7 +21,7 @@ const metadata = stampit()
 
 export const bootstrap = stampit()
   .init(function() {
-    this.contexts = [ '', 'info', 'success', 'danger', 'warning' ]; 
+    this.contexts = [ '', 'info', 'success', 'danger', 'warning' ];
   })
   .methods({
     create($element) {
@@ -34,7 +34,7 @@ export const bootstrap = stampit()
 
       if (this.context) {
         $output.className += `alert alert-${this.context}`.trim();
-        $output.setAttribute('onchange', function() { this.value ? this.hidden = false : this.hidden = true });
+        $output.setAttribute('onchange', function() { this.value ? this.hidden = false : this.hidden = true; });
       }
 
       $output.name = this.name;

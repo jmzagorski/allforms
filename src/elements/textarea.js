@@ -12,7 +12,7 @@ const defaults = stampit()
 
 const metadata = stampit()
   .props({
-    schema: [ map.text, map.name, map.input, map.textarea ] 
+    schema: [ map.text, map.name, map.input, map.textarea ]
   });
 
 export const bootstrap = stampit()
@@ -25,7 +25,7 @@ export const bootstrap = stampit()
       const $label = DOM.createElement('label');
       const $text = DOM.createElement('textarea');
 
-      $formgroup.className = "form-group"
+      $formgroup.className = 'form-group';
       $text.className = 'form-control';
 
       $formgroup.appendChild($label);

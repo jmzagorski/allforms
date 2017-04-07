@@ -8,15 +8,14 @@ import * as actions from './actions';
  * @return {Object} the new state
  */
 export default function formData(state = null, action) {
-
-  switch(action.type) {
+  switch (action.type) {
     case actions.RECEIVED_FORM_DATA:
     case actions.FORM_DATA_CREATED:
     case actions.FORM_DATA_EDITED:
 
       if (action.error) return state;
 
-      return action.payload
+      return action.payload;
 
     default:
       return state;

@@ -1,6 +1,5 @@
-import { put, takeLatest, call, select } from 'redux-saga/effects';
+import { put, takeLatest, call } from 'redux-saga/effects';
 import * as actions from '../domain/form/actions';
-import { getActiveForm } from '../domain/form/selectors';
 
 /**
  * @summary calls to get a single IForm object
@@ -10,16 +9,13 @@ import { getActiveForm } from '../domain/form/selectors';
  */
 export function* getForm(api, action) {
   try {
-
     if (action.payload.id) {
       const form = yield call([api, api.get], action.payload.id);
       const hasError = !form;
 
       yield put(actions.receivedForm(form, hasError));
     }
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.receivedForm(e, true));
   }
 }
@@ -32,13 +28,10 @@ export function* getForm(api, action) {
  */
 export function* addForm(api, action) {
   try {
-
     const form = yield call([api, api.save], action.payload);
 
     yield put(actions.formAdded(form));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.formAdded(e, true));
   }
 }
@@ -51,26 +44,20 @@ export function* addForm(api, action) {
  */
 export function* editForm(api, action) {
   try {
-
     const form = yield call([api, api.save], action.payload);
 
     yield put(actions.formEdited(form));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.formEdited(e, true));
   }
 }
 
 export function* editTemplate(api, action) {
   try {
-
     const form = yield call([api, api.saveTemplate], action.payload.form);
 
     yield put(actions.formEdited(form));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.formEdited(e, true));
   }
 }

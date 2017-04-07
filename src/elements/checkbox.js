@@ -20,6 +20,6 @@ export const bootstrap = stampit()
 
     this.create = function create($element) {
       return $element ? updateOptions($element, this) : createOptions(Object.assign({}, this, { type }));
-    }
+    };
   })
   .compose(defaults, metadata);

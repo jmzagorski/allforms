@@ -41,7 +41,7 @@ export function createForm(form) {
   return {
     type: CREATE_FORM,
     payload: form
-  }
+  };
 }
 
 /**
@@ -55,7 +55,7 @@ export function formAdded(data, hasError) {
     type: FORM_CREATED,
     payload: data,
     error: hasError
-  }
+  };
 }
 
 /**
@@ -67,7 +67,7 @@ export function editForm(form) {
   return {
     type: EDIT_FORM,
     payload: form
-  }
+  };
 }
 
 /**
@@ -84,7 +84,7 @@ export function editFormTemplate(template) {
   return {
     type: EDIT_FORM_TEMPLATE,
     payload: template
-  }
+  };
 }
 
 /**
@@ -98,5 +98,5 @@ export function formEdited(data, hasError) {
     type: FORM_EDITED,
     payload: data,
     error: hasError
-  }
+  };
 }

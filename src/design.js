@@ -44,9 +44,9 @@ export class Design {
    * @param {Object} params the request parameters
    */
   activate(params) {
-    this._unsubscribe = this._store.subscribe(this._update.bind(this))
-    this._store.dispatch(requestElementTypes())
-    this._store.dispatch(requestForm(params.form))
+    this._unsubscribe = this._store.subscribe(this._update.bind(this));
+    this._store.dispatch(requestElementTypes());
+    this._store.dispatch(requestForm(params.form));
   }
 
   /**
@@ -63,7 +63,6 @@ export class Design {
     });
 
     if (!result.wasCancelled) {
-      debugger;
       this._saveLayout({
         formHtml: event.$form ? event.$form.outerHTML : this.html + result.output.outerHTML,
         $elem: result.output
@@ -79,7 +78,7 @@ export class Design {
       default:
         this._saveLayout({
           formHtml: event.detail.$form.outerHTML,
-          $elem: event.detail.$elem,
+          $elem: event.detail.$elem
         });
     }
   }
@@ -100,7 +99,7 @@ export class Design {
       }
     }));
 
-    this._store.dispatch(requestForm(this.formId))
+    this._store.dispatch(requestForm(this.formId));
   }
 
   _update() {

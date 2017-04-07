@@ -41,7 +41,7 @@ export function updateOptions($element, options) {
   const $boxes = $element.querySelectorAll(options.type);
   const boxes = options.options.split(',');
   // replace so i don't blow away the <br />
-  $element.innerText = `${options.text}\n`
+  $element.innerText = `${options.text}\n`;
 
   for (let i = boxes.length; i < $boxes.length; i++) {
     $boxes[0].parentNode.removeChild($boxes[i]);
@@ -75,11 +75,11 @@ export function updateOptions($element, options) {
 }
 
 // to prevent inifinit loop
-function _createOption(options){
+function _createOption(options) {
   const $label = DOM.createElement('label');
   const $input = DOM.createElement('input');
 
-  $input.name = options.name
+  $input.name = options.name;
   $input.type = options.type;
   $label.className = `${options.type}-inline`;
 

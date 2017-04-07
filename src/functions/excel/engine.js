@@ -68,7 +68,7 @@ export class ExcelEngine {
     const replaces = [];
     for (let mi of macroIndexes) {
       const macroEndPos = getEndingCharPos(formula, mi.index, '(');
-      const macroStr = formula.substring(mi.index, macroEndPos +1);
+      const macroStr = formula.substring(mi.index, macroEndPos + 1);
       const variables = this.getVariables(macroStr);
       const variableValues = variables.map(v => this._parser.getVariable(v));
       const func = await mi.macro.transform(variableValues);
@@ -77,7 +77,7 @@ export class ExcelEngine {
     }
 
     for (let replace of replaces) {
-      formula = formula.replace(replace.original, replace.replace)
+      formula = formula.replace(replace.original, replace.replace);
     }
 
     return formula;
@@ -85,10 +85,10 @@ export class ExcelEngine {
 
   getVariables(formula) {
     const variables = [];
-    const variableRegex = /\b[A-Za-z]+\b(?!\(|")/g
+    const variableRegex = /\b[A-Za-z]+\b(?!\(|")/g;
     let match = null;
 
-    while(match = variableRegex.exec(formula)) {
+    while (match = variableRegex.exec(formula)) { // eslint-disable-line no-cond-assign
       variables.push(match[0]);
     }
 

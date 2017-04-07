@@ -25,6 +25,6 @@ export const bootstrap = stampit()
       $formGroup.$input.setAttribute('pattern', `.{${this.min},${this.max || ''}}`);
       $formGroup.$input.title = `${this.min} to ${this.max || 'infinite'} characters`;
       return $formGroup.$element;
-    }
+    };
   })
   .compose(defaults, metadata);

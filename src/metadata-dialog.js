@@ -17,7 +17,7 @@ export class MetadataDialog {
     this.schemas = [];
 
     this._dialog = dialog;
-    this._store = store; 
+    this._store = store;
     this._$elem = null;
     this._unsubscribes = [];
   }
@@ -42,7 +42,7 @@ export class MetadataDialog {
       this._$elem = $elem;
       this._unsubscribes.push(this._store.subscribe(this._update.bind(this)));
       this._store.dispatch(requestElement($elem.id));
-    } 
+    }
   }
 
   submit() {
@@ -83,8 +83,8 @@ export class MetadataDialog {
 
   _update() {
     // wait for the element to get on the state
-    debugger;
-    if (this._element.id == this._$elem.id) {
+    // use == because id will be number and element id is a string
+    if (this._element.id == this._$elem.id) { // eslint-disable-line eqeqeq
       this.model = creator(this._element.style, this._element.builder);
       Object.assign(this.model, this._element);
       this._generateSchemas();

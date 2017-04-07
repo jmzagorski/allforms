@@ -10,8 +10,8 @@ export function defaultNewElement(element) {
   return {
     type: DEFAULT_NEW_ELEMENT,
     payload: element
-  }
-};
+  };
+}
 
 /**
  * @summary creates the action for requesting a single element

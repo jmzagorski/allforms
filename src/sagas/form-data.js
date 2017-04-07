@@ -1,18 +1,15 @@
 import { put, takeLatest, call } from 'redux-saga/effects';
-import * as actions from '../domain/form-data/actions'
+import * as actions from '../domain/form-data/actions';
 
 /**
  * @summary calls the api to get the IFormData and dispatches return message
  */
 export function* getFormDataAsync(api, action) {
   try {
-
     const formData = yield call([ api, api.get ], action.payload.formDataId);
 
     yield put(actions.receivedFormData(formData));
-
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.receivedFormData(e, true));
   }
 }
@@ -23,12 +20,10 @@ export function* getFormDataAsync(api, action) {
  */
 export function* createFormDataAsync(api, action) {
   try {
-
     const formData = yield call([ api, api.save ], action.payload);
 
     yield put(actions.formDataCreated(formData));
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.formDataCreated(e, true));
   }
 }
@@ -39,12 +34,10 @@ export function* createFormDataAsync(api, action) {
  */
 export function* editFormDataAsync(api, action) {
   try {
-
     const formData = yield call([ api, api.save ], action.payload);
 
     yield put(actions.formDataEdited(formData));
-  } catch(e) {
-
+  } catch (e) {
     yield put(actions.formDataEdited(e, true));
   }
 }

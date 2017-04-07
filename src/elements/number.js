@@ -25,6 +25,6 @@ export const bootstrap = stampit()
       $formGroup.$input.setAttribute('max', this.max);
       $formGroup.$input.setAttribute('min', this.min);
       return $formGroup.$element;
-    }
+    };
   })
   .compose(defaults, metadata);

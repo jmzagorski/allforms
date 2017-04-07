@@ -74,7 +74,7 @@ export const bootstrap = stampit()
         const newHeader = _createBootstrapHeader(optHeader, $element.id, this.context);
 
         // short circut
-        if ($liHeader && $liHeader.textContent === optHeader) continue
+        if ($liHeader && $liHeader.textContent === optHeader) continue;
 
         if ($liHeader) {
           const href = $liHeader.querySelector('a').href;
@@ -86,7 +86,6 @@ export const bootstrap = stampit()
           if (i === 0) {
             newHeader.item.classList.add('active');
           }
-
         } else {
           contentWrapper.appendChild(newHeader.content);
           list.appendChild(newHeader.item);

@@ -15,9 +15,10 @@ const metadata = stampit()
 
 export const bootstrap = stampit()
   .init(function() {
-    let type = 'file'
+    let type = 'file';
 
     this.create = function create($element) {
+      // TODO: name attribute really shouldn't be set on file types
       const $formGroup = $element ? updateInput($element, this) : createInput(Object.assign({}, this, { type }));
 
       if (this.multiple) {
@@ -27,6 +28,6 @@ export const bootstrap = stampit()
       }
 
       return $formGroup.$element;
-    }
+    };
   })
   .compose(defaults, metadata);

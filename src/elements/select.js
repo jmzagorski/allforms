@@ -8,7 +8,7 @@ const defaults = stampit()
     required: false,
     name: '',
     text: '',
-    optionSrc: null 
+    optionSrc: null
   });
 
 const metadata = stampit()

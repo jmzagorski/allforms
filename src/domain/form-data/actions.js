@@ -14,7 +14,7 @@ export function requestFormData(formDataId) {
   return {
     type: REQUEST_FORM_DATA,
     payload: { formDataId }
-  }
+  };
 }
 
 /**
@@ -28,14 +28,14 @@ export function receivedFormData(formData, hasError) {
     type: RECEIVED_FORM_DATA,
     payload: formData,
     error: hasError
-  }
+  };
 }
 
 export function createFormData(data) {
   return {
     type: CREATE_FORM_DATA,
     payload: data
-  }
+  };
 }
 
 export function formDataCreated(data, hasError) {
@@ -43,14 +43,14 @@ export function formDataCreated(data, hasError) {
     type: FORM_DATA_CREATED,
     payload: data,
     error: hasError
-  }
+  };
 }
 
 export function editFormData(data) {
   return {
     type: EDIT_FORM_DATA,
     payload: data
-  }
+  };
 }
 
 export function formDataEdited(data, hasError) {
@@ -58,5 +58,5 @@ export function formDataEdited(data, hasError) {
     type: FORM_DATA_EDITED,
     payload: data,
     error: hasError
-  }
+  };
 }

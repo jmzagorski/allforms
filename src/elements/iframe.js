@@ -22,6 +22,6 @@ export const standard = stampit()
       $iframe.width = this.width;
       $iframe.height = this.height;
       return $iframe;
-   }
+    }
   })
   .compose(defaults, metadata);

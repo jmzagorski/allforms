@@ -24,7 +24,7 @@ export class DraggableCustomAttribute {
       enabled: true,
       restriction: 'body',
       onend: null,
-      onstart: null,
+      onstart: null
     };
     this._interact = interact;
     this._interactable = null;

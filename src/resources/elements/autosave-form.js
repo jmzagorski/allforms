@@ -37,7 +37,7 @@ export class AutosaveFormCustomAttribute {
     this._bindEvents();
   }
 
-  valueChanged(){
+  valueChanged() {
     this.bind();
   }
 
@@ -57,7 +57,7 @@ export class AutosaveFormCustomAttribute {
     }
 
     // solve outputs last to ensure all other values are ready
-    if($formulas.length) await this._solveFormulas($formulas, valueObj);
+    if ($formulas.length) await this._solveFormulas($formulas, valueObj);
 
     return valueObj;
   }
@@ -70,7 +70,8 @@ export class AutosaveFormCustomAttribute {
       const val = await this._xlEngine.parse(fx, variableObj);
       variableObj[$formula.name] = this.$form.elements[$formula.name].value = val.result;
 
-      $formula.hidden = val.result == null ? true : false;
+      // use == to get null and undefined
+      $formula.hidden = val.result == null ? true : false; // eslint-disable-line no-eq-null, eqeqeq
     }
   }
 
@@ -88,6 +89,6 @@ export class AutosaveFormCustomAttribute {
         method: this.value.action,
         body: json({ data })
       }).then(response => response.json());
-    }
+    };
   }
 }

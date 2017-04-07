@@ -31,7 +31,7 @@ export class Settings  {
 
   configure() {
     this._store.dispatch(this._action(this.model));
-    
+
     if (this.model.id) {
       this._router.navigateToRoute('dir', { form: this.model.id });
     } else {
@@ -44,7 +44,7 @@ export class Settings  {
   }
 
   _update() {
-    const form = getActiveForm(this._store.getState()); 
+    const form = getActiveForm(this._store.getState());
     // copy state to keep it immutable
     Object.assign(this.model, form);
   }

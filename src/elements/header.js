@@ -20,6 +20,6 @@ export const standard = stampit()
       const $header = DOM.createElement(`h${this.size}`);
       $header.textContent = this.text;
       return $header;
-   }
+    }
   })
   .compose(defaults, metadata);

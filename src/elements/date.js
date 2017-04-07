@@ -26,11 +26,11 @@ export const bootstrap = stampit()
       $formGroup.$input.setAttribute('max', this.max);
       $formGroup.$input.setAttribute('min', this.min);
       return $formGroup.$element;
-    }
+    };
   })
   .compose(defaults, metadata);
 
-function formatDate(date){
+function formatDate(date) {
   let monthPadded = '0' + date.getMonth();
   let dayPadded = '0' + date.getDate();
   let year = date.getFullYear();
