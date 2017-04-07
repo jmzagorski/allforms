@@ -26,6 +26,32 @@ export interface IAction {
 }
 
 /**
+ * @summary The type describing the ISnapShot
+ *
+ */
+export interface ISnapShot {
+  /**
+   * @property {number} id the unique id for the snap shot
+   */
+  id: number;
+
+  /**
+   * @property {date} saved the date and time the snapshot was saved
+   */
+  saved: date;
+
+  /**
+   * @property {Object} data the key/value representation of the data
+   */
+  data: Object;
+
+  /**
+   * @property {number} formId the unique id of the form data
+   */
+  formDataId: number;
+}
+
+/**
  * @summary The type describing the IElement
  *
  */
