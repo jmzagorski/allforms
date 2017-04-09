@@ -37,13 +37,6 @@ describe('the utility functions', () => {
     expect(actual).toBeFalsy();
   });
 
-  it('returns a random Id between 1 and 1000', () => {
-    const actual = utils.randomId();
-
-    expect(actual).toBeGreaterThan(0);
-    expect(actual).toBeLessThan(1000);
-  });
-
   it('sets the default value for an element (not an option)', () => {
     const el = document.createElement('input');
     el.type = 'input';
@@ -126,4 +119,30 @@ describe('the utility functions', () => {
     });
   });
 
+  using ([
+    { val: [], expect: true },
+    { val: {}, expect: false },
+    { val: 'a', expect: false },
+    { val: null, expect: false },
+    { val: undefined, expect: false }
+  ], data => {
+    it('returns true when value is an object', () => {
+      const result = utils.isArray(data.val);
+
+      expect(result).toEqual(data.expect);
+    });
+  });
+
+  using ([
+    { val: [], expect: '[object Array]' },
+    { val: {}, expect: '[object Object]' },
+    { val: 'a', expect: '[object String]' },
+    { val: 1, expect: '[object Number]' }
+  ], data => {
+    it('returns true when value is an object', () => {
+      const result = utils.getPrototypeString(data.val);
+
+      expect(result).toEqual(data.expect);
+    });
+  });
 });

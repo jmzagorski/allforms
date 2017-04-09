@@ -32,10 +32,6 @@ export function hasDuplicates(array) {
   return false;
 }
 
-export function randomId() {
-  return Math.floor((Math.random() * 1000) + 1);
-}
-
 /**
  * @desc sets the value of an element, be it the value attribute or innerhtml
  * @param {Element} el the element
@@ -122,6 +118,14 @@ export function getIndicesOf(searchStr, str) {
   return indices;
 }
 
-export function isObject(val) {
-  return Object.prototype.toString.call(val) === '[object Object]';
+export function isObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+export function isArray(obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+export function getPrototypeString(obj) {
+  return Object.prototype.toString.call(obj);
 }
