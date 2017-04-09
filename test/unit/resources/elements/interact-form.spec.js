@@ -8,8 +8,8 @@ describe('the interact form custom element', () => {
   let sut;
 
   beforeEach(() => {
-    // FIXME: i cannot figure out a way to mock the attributes so mock the
-    // interactable dependency so we get less potential side affects
+    // FIXME: how can i get rid of these mocks. the interact form requires these
+    // in the html and all tests will throw if not setup to spy
     const interactFunc = jasmine.createSpy('interactFunc');
     const interactSpy = new InteractStub();
     interactFunc.and.returnValue(interactSpy);
@@ -20,7 +20,6 @@ describe('the interact form custom element', () => {
       aurelia.use.standardConfiguration();
       aurelia.container.registerInstance(Interact, interactFunc);
     };
-
   });
 
   afterEach(() => sut.dispose());
@@ -41,6 +40,25 @@ describe('the interact form custom element', () => {
     expect(form.method).toEqual('post');
     expect(form.action).toContain('/act');
     done();
+  });
+
+  it('add multipart formdata when a file is on the form', async done => {
+    const context = { id: 1, action: 'act', html: '<input type="text">' };
+
+    sut.inView(`<interact-form html.bind="html" id.bind="id" action.bind="action"></interact-form>`)
+      .boundTo(context);
+
+    await sut.create(bootstrap);
+
+    const form = sut.element.querySelector('form');
+    expect(form.enctype).toEqual('application/x-www-form-urlencoded');
+
+    context.html = '<input type="file">';
+
+    setTimeout(() => {
+      expect(form.enctype).toEqual('multipart/form-data');
+      done();
+    });
   });
 
   it('makes all form children interactable', async done => {
@@ -150,8 +168,8 @@ describe('the interact form custom element', () => {
       .boundTo(context);
 
     await sut.create(bootstrap);
-    const $input = sut.element.querySelector('input');
 
+    const $input = sut.element.querySelector('input');
     $input.onkeydown({ keyCode: 47 });
 
     expect(event).toEqual(null);

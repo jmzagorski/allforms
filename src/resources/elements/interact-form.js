@@ -21,6 +21,7 @@ export class InteractFormCustomElement {
   static inject = [ Element ];
 
   constructor(element) {
+    this.enctype = '';
     this.element = element;
     this.interactHtml = '';
     this._tabIndicies = 0;
@@ -39,6 +40,14 @@ export class InteractFormCustomElement {
 
   htmlChanged(newValue, oldValue) {
     this.interactHtml = this.$form.innerHTML = newValue;
+
+    const $files = this.element.querySelector('input[type="file"]');
+
+    if ($files) {
+      this.enctype = 'multipart/form-data';
+    } else {
+      this.enctype = '';
+    }
 
     for (let i = 0; i < this.$form.children.length; i++) {
       const child = this.$form.children[i];
