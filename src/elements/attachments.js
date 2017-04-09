@@ -10,7 +10,7 @@ const defaults = stampit()
 
 const metadata = stampit()
   .props({
-    schema: [ map.text, map.attachment ]
+    schema: [ map.text, map.name, map.attachment ]
   });
 
 export const bootstrap = stampit()
