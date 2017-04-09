@@ -4,6 +4,7 @@ var nocontent = require('./nocontent-middleware');
 var delProps = require('./delete-props');
 var formApi = require('./add-form-api');
 var formDataParent = require('./add-formdata-parent');
+var formData= require('./get-multipart-formdata');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
 var server = jsonServer.create();
@@ -20,6 +21,7 @@ server.use(jsonServer.bodyParser);
 server.use(autoid);
 server.use(delProps);
 server.use(formApi);
+server.use(formData);
 server.use(formDataParent(router));
 server.use(snapshot(router));
 

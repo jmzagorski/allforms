@@ -10,6 +10,7 @@ import { getBaseUrl } from './env';
 import { PLATFORM } from 'aurelia-pal';
 import { BindingMiddleware } from './binding-middleware';
 import { BindingSignaler } from 'aurelia-templating-resources';
+import { FormulaService } from './elements/services/formula-service';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from './root-reducer';
 import setupSaga from './root-saga';
@@ -42,6 +43,7 @@ export async function configure(aurelia) {
   aurelia.container.registerInstance(Interact, Interact);
   aurelia.container.registerInstance(HttpClient, http);
   aurelia.container.registerInstance(BindingSignaler, signaler);
+  aurelia.container.registerSingleton('FormServices', FormulaService);
 
   for (let macro in macros) {
     const type = Object.prototype.toString.call(macros[macro]);
