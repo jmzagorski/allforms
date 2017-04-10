@@ -17,7 +17,6 @@ export class FormulaService {
   }
 
   async collect($form) {
-    const valueObj = {};
     const $formulas = [];
 
     for (let i = 0; i < $form.elements.length; i++) {
@@ -27,14 +26,14 @@ export class FormulaService {
         $formulas.push($elem);
       }
 
-      valueObj[$elem.name] = $elem.value;
+      this._formulaParser.setVariable($elem.name, $elem.value);
     }
 
     // solve outputs last to ensure all other values are ready
     for (let i = 0; i < $formulas.length; i++) {
       const $formula = $formulas[i];
       const fx = $formula.getAttribute('data-formula');
-      const val = await this._formulaParser.parse(fx, valueObj);
+      const val = await this._formulaParser.parse(fx);
 
       $form.elements[$formula.name].value = val.result;
       // use == to get null and undefined

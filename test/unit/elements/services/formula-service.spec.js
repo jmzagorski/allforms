@@ -55,10 +55,8 @@ describe('the formula form service', () => {
     done();
   });
 
-  it('calls the formula parser with all the other element values', async done => {
-    xlSpy.parse.and.returnValues({ result: 1 },{ result: 2 },{ result: 0 },
-      { result: null }, { result: undefined });
-
+  it('adds every element as a variable', async done => {
+    xlSpy.parse.and.returnValue({ });
     const $formStr = `<form>
       <output name="a" data-formula="SUM(1)"></output>
       <input name="b" value="1">
@@ -66,11 +64,19 @@ describe('the formula form service', () => {
       </form>`;
     const $form = $($formStr).get(0);
 
+    xlSpy.setVariable.and.callFake(() => {
+      expect(xlSpy.parse).not.toHaveBeenCalled();
+    });
+
     await sut.collect($form);
 
     const $outputs = $form.querySelectorAll('output');
 
-    expect(xlSpy.parse).toHaveBeenCalledWith('SUM(1)', { a: '', b: '1', c: '2' });
+    expect(xlSpy.setVariable.calls.count()).toEqual(3);
+    expect(xlSpy.setVariable).toHaveBeenCalledWith('a', '');
+    expect(xlSpy.setVariable).toHaveBeenCalledWith('b', '1');
+    expect(xlSpy.setVariable).toHaveBeenCalledWith('c', '2');
+    expect(xlSpy.parse).toHaveBeenCalledWith('SUM(1)');
     done();
   });
 })

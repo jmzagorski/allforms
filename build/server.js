@@ -5,6 +5,7 @@ var delProps = require('./delete-props');
 var formApi = require('./add-form-api');
 var formDataParent = require('./add-formdata-parent');
 var formData= require('./get-multipart-formdata');
+var lookups = require('./return-lookups');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
 var server = jsonServer.create();
@@ -13,6 +14,7 @@ var middlewares = jsonServer.defaults();
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
+server.use(lookups);
 server.use(nocontent);
 
 // To handle POST, PUT and PATCH you need to use a body-parser

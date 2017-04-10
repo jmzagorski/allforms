@@ -1,4 +1,4 @@
 module.exports = {
   "/api/": "/",
-  "/api/:id": "/:id"
+  "/form-data/lookups/:id": "/lookups/:id"
 }

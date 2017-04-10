@@ -11,6 +11,31 @@ export const schema = {
       },
       "required": [ "loginName" ]
     },
+    "lookups": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "unique": true,
+            "faker": "lorem.word"
+          },
+          "value": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "string"
+              }
+            },
+            "required": [ "a" ]
+          }
+        },
+        "required": [ "id", "value" ]
+      }
+    },
     "elements": {
       "type": "array",
       "minItems": 1,
@@ -227,7 +252,7 @@ export const schema = {
       }
     }
   },
-  "required": [ "form-data", "forms", "member", "elements", "element-types", "snapshots" ],
+  "required": [ "lookups", "form-data", "forms", "member", "elements", "element-types", "snapshots" ],
   "definitions": {
     "name": {
       "type": "string",
