@@ -20,17 +20,11 @@ export const schema = {
         "properties": {
           "id": {
             "type": "string",
-            "unique": true,
-            "faker": "lorem.word"
+            "faker": "lorem.word",
+            "unique": true
           },
           "value": {
-            "type": "object",
-            "properties": {
-              "a": {
-                "type": "string"
-              }
-            },
-            "required": [ "a" ]
+            "type": "string"
           }
         },
         "required": [ "id", "value" ]

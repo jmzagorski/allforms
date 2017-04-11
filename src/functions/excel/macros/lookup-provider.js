@@ -23,6 +23,6 @@ export class LookupProvider {
     // form configuration
     this._http.configure(config => config.useStandardConfiguration());
 
-    return new Lookup(this._http, form.api + '/lookups/');
+    return new Lookup(this._http, form.api + '/lookups');
   }
 }
