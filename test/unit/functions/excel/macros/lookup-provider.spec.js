@@ -1,43 +1,54 @@
 import { HttpClient } from 'aurelia-fetch-client';
 import { Lookup }  from '../../../../../src/functions/excel/macros/lookup';
-import * as selectors from '../../../../../src/domain/form/selectors';
-import { setupSpy } from '../../../jasmine-helpers';
 import { LookupProvider } from '../../../../../src/functions/excel/macros/lookup-provider';
-import { Store } from 'aurelia-redux-plugin';
+import { setupSpy } from '../../../jasmine-helpers';
 
 describe('the lookup provider class', () => {
   let sut;
-  let httpSpy;
-  let selectorSpy;
-  let storeSpy;
+  let newHttpSpy;
+  let appHttpSpy;
 
   beforeEach(() => {
-    httpSpy = setupSpy('http', HttpClient.prototype);
-    storeSpy = setupSpy('store', Store.prototype);
-    sut = new LookupProvider(storeSpy, httpSpy);
-
-    selectorSpy = spyOn(selectors, 'getActiveForm').and.returnValue({ api: 'a' });
+    newHttpSpy = setupSpy('http', HttpClient.prototype);
+    appHttpSpy = setupSpy('http', HttpClient.prototype);
   });
 
   it('configures a new http client', () => {
     let isStandard = false;
+    let intercepted = false;
     let pFunc = null;
+    let defaultObj = null;
+    let baseUrl = null;
     let config = {
-      useStandardConfiguration: () => isStandard = true
+      useStandardConfiguration: () => {
+        isStandard = true;
+        return config
+      },
+      withDefaults: defaults => {
+        defaultObj = defaults;
+        return config;
+      },
+      withBaseUrl: url => {
+        baseUrl = url;
+        return config;
+      },
+      withInterceptor: interceptor => intercepted = true
     };
-    httpSpy.configure.and.callFake(func => pFunc = func);
+    newHttpSpy.configure.and.callFake(func => pFunc = func);
 
-    sut.provide();
+    sut = new LookupProvider(newHttpSpy, appHttpSpy);
     pFunc(config);
 
     expect(config).not.toEqual(null);
     expect(isStandard).toBeTruthy();
+    expect(appHttpSpy.configure).not.toHaveBeenCalled();
   });
 
-  // TODO - cannot test that i passed the right params to the ctor
   it('returns a new lookup class', () => {
     const actual = sut.provide();
 
     expect(actual).toEqual(jasmine.any(Lookup))
   });
+
+  // TODO - cannot test that i passed the right params to the ctor
 });

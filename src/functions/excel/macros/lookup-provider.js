@@ -1,28 +1,29 @@
 import { HttpClient } from 'aurelia-fetch-client';
 import { NewInstance } from 'aurelia-framework';
-import { Store } from 'aurelia-redux-plugin';
-import { getActiveForm } from '../../../domain';
 import { Lookup } from './lookup';
+import configure from '../../../config/http-client';
 
 export class LookupProvider {
 
-  static inject = [ Store, NewInstance.of(HttpClient) ];
+  static inject = [ NewInstance.of(HttpClient), HttpClient ];
 
-  constructor(store, http) {
-    this._store = store;
-    this._http = http;
+  /**
+   * @summary default ctor for the lookup provider
+   * @param {HttpClient} newHttp a new instance of the http client to be used in
+   * the construction of the Lookup object
+   * @param {HttpClient} appHttp the exiting http client within the application
+   */
+  constructor(newHttp, appHttp) {
+    this._newHttp = newHttp;
+    this._appHttp = appHttp;
+
+    configure(newHttp, '');
   }
 
   provide() {
-    const form = getActiveForm(this._store.getState());
-
-    // TODO do i configure base url here and do not send the api?
-    // then the api wont be configurable within a formula later on
-    // if i just use the api from the form then i really don't need this 
-    // configuration and i can set the base url to whatever their api is in the
-    // form configuration
-    this._http.configure(config => config.useStandardConfiguration());
-
-    return new Lookup(this._http, form.api + '/lookups');
+    // pass in a new Http so that the URL can be w/e the client wants,
+    // but pass in the default url as the app url. makes the lookup API more
+    // flexable
+    return new Lookup(this._newHttp, this._appHttp.baseUrl + 'lookups');
   }
 }
