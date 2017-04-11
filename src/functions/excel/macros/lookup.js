@@ -9,26 +9,18 @@ export class Lookup {
     this._api = defaultApi;
   }
 
-  // TODO move the caching into the parser
   async run(parser, formula) {
     const variableNames = parser.getVariables(formula) || [];
     const values = parser.getValues(formula) || [];
-    // the cacched formula needs to be all the variables and the values to make
-    // sure the caller is asking for the same value
     const lookupKey = variableNames[0];
     const lookupVal = parser.getVariableValue(lookupKey);
-    const cachedName = 'LOOKUP' + lookupKey + lookupVal + values.join('');
-    const cached = parser.getVariableValue(cachedName);
-
-    // Lookup(LookupVar, ReturnVal)
-
-    if (cached) return cached;
-
     const returnName = variableNames[1];
+
     this._api = values[0] || this._api;
+
     // the table variable should be the key and value since the entire record is
     // saved
-    const tableVarName = 'table' + cachedName;
+    const tableVarName = 'LOOKUPTable' + lookupKey + lookupVal;
 
     const data = await this._http.fetch(`${this._api}?${lookupKey}=${lookupVal}`)
       .then(response => response.json());
@@ -45,7 +37,6 @@ export class Lookup {
       i++;
     }
 
-    debugger;
     table.push(row);
     //parser.setVariable(tableVarName, table);
     // FIXME: temporary fix, the last row will be the one we want
@@ -53,11 +44,6 @@ export class Lookup {
 
     //const newFormula = `VLOOKUP(${lookupVal}, ${tableVarName}, ${index}, true)`;
     // FIXME: temporary until VLOOKUP is supported
-    const newFormula = `CONCATENATE(${tableVarName})`;
-
-    parser.setVariable(cachedName, newFormula);
-
-    debugger;
-    return newFormula;
+    return `CONCATENATE(${tableVarName})`;
   }
 }

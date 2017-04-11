@@ -37,18 +37,22 @@ describe('the excel engine', () => {
   });
 
   it('uses the cache if the result is calulcated', async done => {
-    const formula = 'a';
-    parserSpy.getVariable.and.returnValue(1);
+    const formula = 'SUM(IF(A,B,2),3)';
+    // even though this is called many time, the cached result uses this
+    // function, so just make sure it returned something
+    parserSpy.getVariable.and.returnValues(4, 5, 1);
 
     const result = await sut.parse(formula);
 
     expect(result).toEqual(1);
-    expect(parserSpy.getVariable).toHaveBeenCalledWith(formula);
+    expect(parserSpy.getVariable.calls.argsFor(0)).toEqual(['A'])
+    expect(parserSpy.getVariable.calls.argsFor(1)).toEqual(['B'])
+    expect(parserSpy.getVariable.calls.argsFor(2)).toEqual(['SUMIFAB2345'])
     expect(parserSpy.parse).not.toHaveBeenCalled();
     done();
   });
 
-  it('transforms any macros in order', async done => {
+  it('runs the macro factory', async done => {
     const formula = 'MACROSTUB2(C+D)+MACROSTUB1(A+B)+1+E';
     const expectFormula = 'D+C+1+E';
 
@@ -62,6 +66,7 @@ describe('the excel engine', () => {
     macroFactorySpy.and.returnValues('Z', 'Y');
 
     sut = new ExcelEngine(parserSpy, macroFactoryMock);
+
     const actualFormula = await sut.parse(formula);
 
     expect(indicesSpy.calls.count()).toEqual(2);
@@ -79,14 +84,17 @@ describe('the excel engine', () => {
   });
 
   it('caches the parsed result', async done => {
-    const formula = 'a';
+    const formula = 'SUM(IF(A,B,2),3)';
+
     parserSpy.parse.and.returnValue(1);
     // skip macro calls since i already loaded one macro in beforeEach
     indicesSpy.and.returnValue([]);
+    // make sure the 3rd call is null because that would be the cached result
+    parserSpy.getVariable.and.returnValues(4, 5, undefined);
 
     const result = await sut.parse(formula);
 
-    expect(parserSpy.setVariable).toHaveBeenCalledWith(formula, result);
+    expect(parserSpy.setVariable).toHaveBeenCalledWith('SUMIFAB2345', result);
     done();
   });
 
@@ -120,5 +128,13 @@ describe('the excel engine', () => {
     const values = sut.getValues(formula);
 
     expect(values).toEqual(['2', 'http://api.com', 'Hi'])
+  });
+
+  it('gets all the functions in the formula', () => {
+    const formula = 'IF(AB,SUM(AC,2),"http://api.com","Hi")';
+
+    const values = sut.getFunctions(formula);
+
+    expect(values).toEqual([ 'IF', 'SUM' ])
   });
 });

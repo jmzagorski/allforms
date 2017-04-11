@@ -16,21 +16,6 @@ describe('the excel lookup macro', () => {
     sut = new Lookup(httpStub, defaultApi);
   });
 
-  it('uses the cached result if available', async done => {
-    const expected = 'a';
-    parserSpy.getVariables.and.returnValue(['a','b']);
-    parserSpy.getValues.and.returnValue([1,2]);
-    parserSpy.getVariableValue.and.returnValues(3, expected);
-
-    const actual = await sut.run(parserSpy, 'formula')
-
-    expect(actual).toEqual(expected);
-    expect(parserSpy.getVariables).toHaveBeenCalledWith('formula');
-    expect(parserSpy.getValues).toHaveBeenCalledWith('formula');
-    expect(parserSpy.getVariableValue).toHaveBeenCalledWith('LOOKUPa312');
-    done();
-  });
-
   [ { default: null, returned: 'a', expected: 'a?c=1' },
     { default: undefined, returned: 'b', expected: 'b?c=1' },
     { default: '', returned: 'd' , expected: 'd?c=1'},
@@ -56,7 +41,7 @@ describe('the excel lookup macro', () => {
       const returnObj = { c: 4, b: 9 };
       const formula = 'formula';
 
-      parserSpy.getVariableValue.and.returnValues(1, null, data.table);
+      parserSpy.getVariableValue.and.returnValues(1, data.table);
       parserSpy.getVariables.and.returnValue(['a', 'b']);
       parserSpy.getValues.and.returnValue([4])
       httpStub.itemStub = returnObj;
@@ -64,13 +49,14 @@ describe('the excel lookup macro', () => {
       const newFormula = await sut.run(parserSpy, formula);
 
       // FIXME
-      expect(newFormula).toEqual(`CONCATENATE(tableLOOKUPa14)`);
-      //expect(newFormula).toEqual(`VLOOKUP(1, tableLOOKUPab1, 1, true)`);
+      expect(newFormula).toEqual(`CONCATENATE(LOOKUPTablea1)`);
+      ////expect(newFormula).toEqual(`VLOOKUP(1, tableLOOKUPab1, 1, true)`);
+      expect(parserSpy.getVariables.calls.argsFor(0)).toEqual([ formula ] );
+      expect(parserSpy.getValues.calls.argsFor(0)).toEqual([ formula ] );
       expect(parserSpy.getVariableValue.calls.argsFor(0)).toEqual([ 'a' ]);
-      expect(parserSpy.getVariableValue.calls.argsFor(2)).toEqual([ `tableLOOKUPa14` ]);
-      //expect(parserSpy.setVariable).toHaveBeenCalledWith('tableLOOKUPa1', data.newTable);
-      expect(parserSpy.setVariable.calls.argsFor(0)).toEqual(['tableLOOKUPa14', 9]);
-      expect(parserSpy.setVariable.calls.argsFor(1)).toEqual(['LOOKUPa14', newFormula]);
+      expect(parserSpy.getVariableValue.calls.argsFor(1)).toEqual([ 'LOOKUPTablea1' ]);
+      //expect(parserSpy.setVariable).toHaveBeenCalledWith('LOOKUPTablea1', data.newTable);
+      expect(parserSpy.setVariable.calls.argsFor(0)).toEqual(['LOOKUPTablea1', 9]);
       done();
     });
   });

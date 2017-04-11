@@ -8,8 +8,7 @@ export class ExcelEngine {
 
   constructor(parser, macroFactory) {
     this._parser = parser;
-    this._macroFactory = macroFactory;
-    this._macros = macroFactory.macros.map(m => m.toUpperCase());
+    this._macroFactory = macroFactory; this._macros = macroFactory.macros.map(m => m.toUpperCase());
     this._functions = SUPPORTED_FORMULAS.concat(this._macros);
   }
 
@@ -18,14 +17,16 @@ export class ExcelEngine {
   }
 
   async parse(formula) {
-    const cachedResult = this._parser.getVariable(formula);
+    const cachedResult = this._findInCache(formula);
 
-    if (cachedResult != null) return cachedResult;
+    if (typeof cachedResult.result !== 'undefined') return cachedResult.result;
 
     const cleanFormula = await this._runMacros(formula);
 
+    debugger;
+
     const result =  this._parser.parse(cleanFormula);
-    this.setVariable(formula, result);
+    this.setVariable(cachedResult.name, result);
 
     return result
   }
@@ -96,5 +97,45 @@ export class ExcelEngine {
     }
 
     return formula;
+  }
+
+  getFunctions(formula) {
+    const formulas = [];
+    // find everything between double quotes or numbers
+    const valueRegex = /[A-Za-z]{1,}[A-Za-z_0-9\.]+(?=[(])/g;
+    let match = null;
+
+    while (match = valueRegex.exec(formula)) { // eslint-disable-line no-cond-assign
+      formulas.push(match[0].replace(/"/g, '')); // do not include the actual quotes
+    }
+
+    return formulas;
+  }
+
+  /**
+   * @summary searches the parser cache to see if the result of the formula is
+   * somewhere in the cache
+   * @param {string} formula the formula to find
+   * @return {Object} and object with the result property and name of the cached
+   * object
+   */
+  _findInCache(formula) {
+    const formulaNames = this.getFunctions(formula) || [];
+    const variableNames = this.getVariables(formula) || [];
+    const values = this.getValues(formula) || [];
+    const variableValues = [];
+
+    for (let v of variableNames) {
+      variableValues.push(this.getVariableValue(v));
+    }
+
+    // try to make this a unique as possible
+    const cachedName = formulaNames.join('') + variableNames.join('') +
+      values.join('') + variableValues.join('');
+
+    return {
+      result: this.getVariableValue(cachedName),
+      name: cachedName
+    }
   }
 }
