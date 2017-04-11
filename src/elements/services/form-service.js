@@ -28,6 +28,10 @@ export class FormService {
     let valueObj = {};
     let fd = this._formDataProvider();
 
+    for (let other of this._otherServices) {
+      await other.collect(this._$form);
+    }
+
     // collect all the non formulas in the value object
     for (let i = 0; i < this._$form.elements.length; i++) {
       const $elem = this._$form.elements[i];
@@ -40,10 +44,6 @@ export class FormService {
       } else {
         fd.append($elem.name, this._$form.elements[i].value)
       }
-    }
-
-    for (let other of this._otherServices) {
-      await other.collect(this._$form);
     }
 
     return fd;

@@ -133,8 +133,12 @@ describe('the form service', () => {
 
     firstOther.and.callFake(() => {
       // only one call since there is one input
-      expect(appendSpy.calls.count()).toEqual(1)
+      expect(appendSpy).not.toHaveBeenCalled();
       expect(secondOther).not.toHaveBeenCalled();
+    });
+
+    secondOther.and.callFake(() => {
+      expect(appendSpy).not.toHaveBeenCalled();
     });
 
     await sut.submit();
