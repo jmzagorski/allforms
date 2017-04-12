@@ -47,4 +47,27 @@ describe('the text element', () => {
     expect($updated.children[1].getAttribute('pattern')).toEqual('.{2,4}');
     expect($updated.children[1].getAttribute('title')).toEqual('2 to 4 characters');
   });
+
+  it('adds the duplicate option for new elements', () => {
+    const sut = text.bootstrap();
+    const duplicatorSpy = spyOn(sut, 'duplicate');
+
+    const $elem = sut.create();
+
+    const $input = $elem.querySelector('input');
+
+    expect(duplicatorSpy).toHaveBeenCalledWith($input);
+    expect(duplicatorSpy.calls.count()).toEqual(1);
+  });
+
+  it('does not add the duplicate option for existing elements', () => {
+    const sut = text.bootstrap();
+    const duplicatorSpy = spyOn(sut, 'duplicate');
+    const $elem = sut.create();
+    duplicatorSpy.calls.reset();
+
+    sut.create($elem);
+
+    expect(duplicatorSpy).not.toHaveBeenCalledWith();
+  });
 });
