@@ -60,6 +60,16 @@ export class MetadataDialog {
     for (let u of this._unsubscribes) u();
   }
 
+  // FIXME need to better undderstand what aurelia is doing here. the views only
+  // refresh if I unset the model and then reset it
+  textChanged(model) {
+    if (!model.name) {
+      model.name = model.text.replace(/ /g, '');
+      this.model = {};
+      this.model = model;
+    }
+  }
+
   // the element needs an id before proceeding!
   async _ok() {
     if (this._element.id) {

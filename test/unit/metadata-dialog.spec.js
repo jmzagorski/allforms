@@ -187,4 +187,23 @@ describe('the element metadata dialog view model', () => {
       expect(subscriptions).toEqual(data.count);
     });
   });
+
+  it('updates the model name and resets the model', () => {
+    const newModel = { text: 'Here we go' };
+
+    sut.textChanged(newModel);
+  
+    expect(sut.model).toBe(newModel);
+    expect(sut.model.name).toEqual('Herewego');
+  });
+
+  it('does not update the model name if exists', () => {
+    sut.model.name = 'b'
+    const newModel = { text: 'Here we go', name: 'a' };
+
+    sut.textChanged(newModel);
+  
+    expect(sut.model).not.toBe(newModel);
+    expect(sut.model.name).toEqual('b');
+  });
 });

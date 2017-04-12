@@ -5,7 +5,7 @@
     <label for="form-schema-text">Display Text</label>
 
     <input type="text" class="form-control" id="form-schema-text" required
-    value.bind="model.text">
+    value.bind="model.text" change.delegate="textChanged(model)">
 
   </div>
 
