@@ -37,47 +37,6 @@ describe('the utility functions', () => {
     expect(actual).toBeFalsy();
   });
 
-  it('sets the default value for an element (not an option)', () => {
-    const el = document.createElement('input');
-    el.type = 'input';
-    el.value = 1;
-
-    utils.setDefaultVal(el);
-
-    expect(el.defaultValue).toEqual(el.value);
-  });
-
-  using([ true, false ], checked => {
-    it('sets the default value for a checkbox', () => {
-      const el = document.createElement('input');
-      el.type = 'checkbox';
-      el.value = 'on';
-      el.checked = checked;
-
-      utils.setDefaultVal(el);
-      const attr = el.getAttribute('checked') == null ? false : true;
-
-      expect(el.defaultValue).toEqual(el.value);
-      expect(el.checked).toEqual(checked);
-      expect(attr).toEqual(checked);
-    });
-  });
-
-  it('sets the default options for a select', () => {
-    const opt1 = new Option(1,2);
-    const opt2 = new Option(3,4);
-    const el = document.createElement('select');
-    el.options[0] = opt1;
-    el.options[1] = opt2;
-    el.selectedIndex = 1;
-
-    utils.setDefaultVal(el);
-
-    expect(el.defaultValue).toEqual('4');
-    expect(opt2.getAttribute('selected')).toBeTruthy();
-    expect(opt1.getAttribute('selected')).toEqual(null);
-  });
-
   it('parses a basic csv string', () => {
     const text = 't,a,b\nb,v,y';
 

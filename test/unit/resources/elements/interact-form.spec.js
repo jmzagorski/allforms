@@ -1,5 +1,5 @@
 import * as Interact from 'interact.js';
-import * as utils from '../../../../src/utils';
+import * as domServices from '../../../../src/elements/services/dom-service';
 import { InteractStub } from '../../stubs';
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
@@ -109,7 +109,7 @@ describe('the interact form custom element', () => {
   it('sets default value on change', async done => {
     let event = null;
     const context = { html: '<input id="1">', listener: e => event = e };
-    const setDefaultSpy = spyOn(utils, 'setDefaultVal');
+    const setDefaultSpy = spyOn(domServices, 'setDefaultVal');
 
     sut.inView(`<interact-form html.bind="html"
       oninteract.delegate="listener($event)"></interact-form>`).boundTo(context);
@@ -129,40 +129,43 @@ describe('the interact form custom element', () => {
     done();
   });
 
-  [ { code: 8, removed: true },
-    { code: 46, removed: true }
-  ].forEach(data => {
-    it('removes the element on delete or backspace key', async done => {
-      let event = null;
-      const context = { html: '<input id="1">', listener: e => event = e };
-
-      sut.inView(`<interact-form oninteract.delegate="listener($event)" html.bind="html"></interact-form>`)
-        .boundTo(context);
-
-      await sut.create(bootstrap);
-
-      const $input = sut.element.querySelector('input');
-      const $form = sut.element.querySelector('form');
-      const keyEvent = { target: $input, keyCode: data.code };
-
-      expect(document.getElementById("1")).toBeTruthy();
-
-      $input.onkeydown(keyEvent);
-
-      expect(event).not.toEqual(null);
-      expect(event.detail).not.toEqual(null);
-      expect(event.bubbles).toBeTruthy();
-      expect(event.detail.type).toEqual('delete');
-      expect(event.detail.$elem).toBe($input);
-      expect(event.detail.$form).toBe($form);
-      expect(!document.getElementById("1")).toEqual(data.removed);
-      done();
-    });
-  });
-
-  it('does not remove the element any other key press', async done => {
+  // TODO how to test that the interactable was deleted and not the element
+  // that bubbled the event
+  it('removes the element on delete', async done => {
     let event = null;
     const context = { html: '<input id="1">', listener: e => event = e };
+    const deleteSpy = spyOn(domServices, 'deleteTarget').and.returnValue(true);
+
+    sut.inView(`<interact-form oninteract.delegate="listener($event)" html.bind="html"></interact-form>`)
+      .boundTo(context);
+
+    await sut.create(bootstrap);
+
+    const $input = sut.element.querySelector('input');
+    const $form = sut.element.querySelector('form');
+    const keyEvent = { target: $input, keyCode: 46 };
+
+    $input.onkeydown(keyEvent);
+
+    expect(deleteSpy).toHaveBeenCalledWith({
+      keyCode: 46,
+      target: $input
+    });
+    expect(deleteSpy.calls.argsFor(0)[0].target).toBe($input);
+    expect(deleteSpy.calls.count()).toEqual(1);
+    expect(event).not.toEqual(null);
+    expect(event.detail).not.toEqual(null);
+    expect(event.bubbles).toBeTruthy();
+    expect(event.detail.type).toEqual('delete');
+    expect(event.detail.$elem).toBe($input);
+    expect(event.detail.$form).toBe($form);
+    done();
+  });
+
+  it('does not remove the element when delete fails', async done => {
+    let event = null;
+    const context = { html: '<input id="1">', listener: e => event = e };
+    const deleteSpy = spyOn(domServices, 'deleteTarget').and.returnValue(false);
 
     sut.inView(`<interact-form oninteract.delegate="listener($event)" html.bind="html"></interact-form>`)
       .boundTo(context);
@@ -173,11 +176,10 @@ describe('the interact form custom element', () => {
     $input.onkeydown({ keyCode: 47 });
 
     expect(event).toEqual(null);
-    expect(document.getElementById("1")).toBeTruthy();
     done();
   });
 
-  it('prevents default and focuses the element on click', async done => {
+  it('prevents default on the element on click', async done => {
     const context = { html: '<input id="1">'  };
     const event = {
       preventDefault: jasmine.createSpy('prevent')
@@ -192,7 +194,6 @@ describe('the interact form custom element', () => {
     $input.onclick(event);
 
     expect(event.preventDefault.calls.count()).toEqual(1);
-    expect(document.activeElement).toBe($input);
     done();
   });
 

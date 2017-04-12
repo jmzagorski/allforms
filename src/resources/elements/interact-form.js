@@ -1,4 +1,4 @@
-import { setDefaultVal } from '../../utils';
+import { setDefaultVal, deleteTarget } from '../../elements/services/dom-service';
 import { bindable } from 'aurelia-framework';
 
 const DRAGGABLE = 'draggable.bind';
@@ -79,20 +79,21 @@ export class InteractFormCustomElement {
       setDefaultVal(e.target);
       this._emitInteractEvent(e.target, EVENTS.valset);
     };
-    $elem.onkeydown = e => this._deleteElement(e.keyCode, $elem);
-    $elem.onclick = e => {
-      e.preventDefault();
-      $elem.focus();
-    };
+    $elem.onkeydown = e => this._deleteInteractable(e, $elem);
+    $elem.onclick = e => e.preventDefault();
     $elem.ondblclick = e => this._emitInteractEvent($elem, EVENTS.dblclick);
   }
 
-  _deleteElement(keycode, $interactable) {
-    if (keycode === 8 || keycode === 46) {
-      $interactable.parentNode.removeChild($interactable);
+  _deleteInteractable(event, $interactable) {
+    // create a syntethic event since we do not want the target to be deleted,
+    // but the interactable
+    // FIXME there has to be a better way
+    const deleted = deleteTarget({
+      keyCode: event.keyCode,
+      target: $interactable
+    });
 
-      this._emitInteractEvent($interactable, EVENTS.delete);
-    }
+    if (deleted) this._emitInteractEvent($interactable, EVENTS.delete);
   }
 
   _emitInteractEvent($elem, type) {

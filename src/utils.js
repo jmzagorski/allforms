@@ -32,33 +32,6 @@ export function hasDuplicates(array) {
   return false;
 }
 
-/**
- * @desc sets the value of an element, be it the value attribute or innerhtml
- * @param {Element} el the element
- */
-// TODO make value renderers
-// make dom renderers
-export function setDefaultVal(el) {
-  const canCheck = el.type === 'checkbox' || el.type === 'radio';
-  const canSelect = el.type === 'select-one';
-  el.defaultValue = el.value;
-
-  if (canCheck) {
-    if (el.checked) {
-      el.setAttribute('checked', el.checked);
-    } else {
-      el.removeAttribute('checked');
-    }
-  }
-
-  if (canSelect) {
-    for (let i = 0; i < el.options.length; i++) {
-      el.options[i].removeAttribute('selected');
-    }
-    el.options[el.options.selectedIndex].setAttribute('selected', true);
-  }
-}
-
 export function parseCsv(text, lineTerminator, cellTerminator) {
   const lines = text.split(lineTerminator);
   const data = [];
@@ -128,4 +101,10 @@ export function isArray(obj) {
 
 export function getPrototypeString(obj) {
   return Object.prototype.toString.call(obj);
+}
+
+export function getFunctionBody(func) {
+  const funcAsString = func.toString();
+  return funcAsString
+    .substring(funcAsString.indexOf('{') + 1, funcAsString.lastIndexOf('}'));
 }
