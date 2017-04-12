@@ -8,7 +8,6 @@ export class HttpRequest {
   }
 
   async send(method, api, data) {
-    debugger;
     const xhr = this._provider();
     xhr.open(method, api);
     await xhr.send(data);

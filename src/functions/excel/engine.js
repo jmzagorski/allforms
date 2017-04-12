@@ -23,8 +23,6 @@ export class ExcelEngine {
 
     const cleanFormula = await this._runMacros(formula);
 
-    debugger;
-
     const result =  this._parser.parse(cleanFormula);
     this.setVariable(cachedResult.name, result);
 
