@@ -1,4 +1,6 @@
 <template>
+  <require from="./resources/elements/grid"></require>
+
   <section class="au-animate col-md-offset-2 col-md-8" >
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -6,26 +8,27 @@
           <i class="fa fa-asterisk" aria-hidden="true"></i>
         </a>
       </div>
-      <table>
-        <tbody>
-          <tr repeat.for="d of dataList">
-            <td>
-              <button title="Capture Data" class="btn btn-xs btn-default"
-                click.delegate="capture(d.id)">
-                <i class="fa fa-camera-retro" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <a class="btn btn-xs btn-default" href="${d.copyUrl}">
-                <i class="fa fa-files-o" aria-hidden="true"></i>
-              </a>
-            </td>
-            <td><a href="${d.url}">${d.name}</a></td>
-            <td>${d.lastEdit | dateFormat}</td>
-            <td>${d.memberName}</td>
-          </tr>
-        </tbody>
-      </table>
+      <grid id="name" data.bind="dataList"></grid>
+      <!--<table>-->
+        <!--<tbody>-->
+          <!--<tr repeat.for="d of dataList">-->
+            <!--<td>-->
+              <!--<button title="Capture Data" class="btn btn-xs btn-default"-->
+                <!--click.delegate="capture(d.id)">-->
+                <!--<i class="fa fa-camera-retro" aria-hidden="true"></i>-->
+                <!--</button>-->
+              <!--</td>-->
+            <!--<td>-->
+              <!--<a class="btn btn-xs btn-default" href="${d.copyUrl}">-->
+                <!--<i class="fa fa-files-o" aria-hidden="true"></i>-->
+                <!--</a>-->
+              <!--</td>-->
+            <!--<td><a href="${d.url}">${d.name}</a></td>-->
+            <!--<td>${d.lastEdit | dateFormat}</td>-->
+            <!--<td>${d.memberName}</td>-->
+            <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
     </div>
 
     <div class="text-muted" show.bind="!dataList.length">

@@ -58,7 +58,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(less|css)$/, // <--- This was /\.css$/ for only css
+        test: /\.(less|css)$/,
         use: [
           {
             loader: 'style-loader',
@@ -71,7 +71,11 @@ module.exports = {
             query: {
               minimize: !DEBUG // <--- Enable style minification if production
             }
+          },
+          {
+            loader: 'less-loader'
           }
+          //'postcss-loader' TODO and extracttext
         ]
       },
       {
