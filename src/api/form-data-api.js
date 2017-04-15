@@ -59,16 +59,17 @@ export class FormDataApi {
   }
 
   snapshot(id) {
-    return this._http.fetch(`${baseUrl}/${id}/snapshots`, {
+    return this._http.fetch(`${baseUrl}/snapshots`, {
       method: 'POST',
-      body: json({ formDataId: id })
+      body: json({ originalId: id })
     }).then(response => response.json());
   }
 
+  // TODO - need memebe name
   copy(id) {
-    return this._http.fetch(`${baseUrl}/${id}/copy`, {
+    return this._http.fetch(`${baseUrl}/copy`, {
       method: 'POST',
-      body: json({ formDataId: id })
+      body: json({ parentId: id })
     }).then(response => response.json());
   }
 

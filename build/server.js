@@ -25,9 +25,9 @@ server.use(autoid);
 server.use(delProps);
 server.use(formApi);
 server.use(formData);
-server.use(formDataServerFields);
 server.use(formDataParent(router));
 server.use(snapshot(router));
+server.use(formDataServerFields(router));
 
 server.use(jsonServer.rewriter(routes));
 

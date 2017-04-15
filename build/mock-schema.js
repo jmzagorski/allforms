@@ -193,6 +193,10 @@ export const schema = {
           },
           "formId": {
             "type": "string"
+          },
+          "parentId": {
+            "type": "number",
+            "minimum": 0
           }
         },
         "required": [ "id", "name", "lastEdit", "memberName", "formId" ]
@@ -240,6 +244,9 @@ export const schema = {
           "api": {
             "type": "string",
             "enum": [ "http://localhost:9001/api/form-data" ]
+          },
+          "autoname": {
+            "type": "string"
           }
         },
         "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api" ]
