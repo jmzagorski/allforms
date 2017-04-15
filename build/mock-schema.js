@@ -183,7 +183,7 @@ export const schema = {
             "faker": "lorem.word",
             "unique": true
           },
-          "lastEdit": {
+          "saved": {
             "type": "string",
             "faker": "date.past"
           },

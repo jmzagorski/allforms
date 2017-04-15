@@ -5,6 +5,7 @@ var delProps = require('./delete-props');
 var formApi = require('./add-form-api');
 var formDataParent = require('./copy-parent-formdata');
 var formData= require('./get-multipart-formdata');
+var formDataServerFields = require('./add-formdata-serverfields');
 var lookups = require('./return-lookups');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
@@ -24,6 +25,7 @@ server.use(autoid);
 server.use(delProps);
 server.use(formApi);
 server.use(formData);
+server.use(formDataServerFields);
 server.use(formDataParent(router));
 server.use(snapshot(router));
 
