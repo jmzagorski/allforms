@@ -1,14 +1,35 @@
 <template>
   <require from="./resources/elements/grid"></require>
+  <require from="./resources/elements/grid-column"></require>
 
   <section class="au-animate col-md-offset-2 col-md-8" >
     <div class="panel panel-default">
       <div class="panel-heading">
-        <a title="New" href.bind="routeToNew" class="btn btn-xs btn-default">
-          <i class="fa fa-asterisk" aria-hidden="true"></i>
-        </a>
+        <div class="btn-toolbar" role="toolbar" aria-label="...">
+          <div class="btn-group" role="group" aria-label="...">
+            <a title="New" href.bind="routeToNew" class="btn btn-xs btn-default">
+              <i class="fa fa-asterisk" aria-hidden="true"></i>
+            </a>
+            <button title="Capture Data" class="btn btn-xs btn-default"
+              click.delegate="snapshotSelected()">
+              <i class="fa fa-camera-retro" aria-hidden="true"></i>
+            </button>
+            <button title="Copy Data" class="btn btn-xs btn-default"
+              click.delegate="copySelected()">
+              <i class="fa fa-files-o" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      <grid id="name" data.bind="dataList"></grid>
+      <grid options.bind="gridOptions" pk="name" data.bind="dataList" >
+        <grid-column field="selected" name="✔" on-cell-change.bind="capture" tooltip="select
+          record" header-css-class="text-center" css-class="text-center"
+          formatter="Checkmark" editor="Checkbox" width="25">
+        </grid-column>
+        <grid-column field="url" name="name" formatter="Link"></grid-column>
+        <grid-column field="memberName" name="Member"></grid-column>
+        <grid-column field="saved"></grid-column>
+      </grid>
       <!--<table>-->
         <!--<tbody>-->
           <!--<tr repeat.for="d of dataList">-->

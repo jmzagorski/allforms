@@ -27,7 +27,7 @@ describe('the data view model', () => {
     apiSpy.getAll.and.returnValue(data);
 
     await sut.activate(params);
-  
+
     expect(sut.dataList).toBe(data);
     expect(apiSpy.getAll).toHaveBeenCalledWith(params.form);
     done();
@@ -38,52 +38,57 @@ describe('the data view model', () => {
     routerSpy.generate.and.returnValue(data);
 
     await sut.activate(params);
-  
+
     expect(sut.routeToNew).toBe(data);
     expect(routerSpy.generate.calls.argsFor(0)).toEqual([ 'newData', { form: params.form } ]);
     done();
   });
 
   it('generates a route for each existing data form', async done => {
-    const data = [ { id: 1}, { id: 2 } ];
-    routerSpy.generate.and.returnValues('new', 'a', 'b', 'c');
+    const data = [ { id: 1 }, { id: 2 } ];
+    routerSpy.generate.and.returnValues('new', 'a', 'b');
     apiSpy.getAll.and.returnValue(data);
 
     await sut.activate(params);
-  
+
     expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual(
       'formData', { form: params.form, formDataId: 1 }
     );
-    expect(routerSpy.generate.calls.argsFor(3)[0]).toEqual(
+    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual(
       'formData', { form: params.form, formDataId: 2 }
     );
     expect(sut.dataList[0].url).toEqual('a');
-    expect(sut.dataList[1].url).toEqual('c');
+    expect(sut.dataList[1].url).toEqual('b');
     done();
   });
 
-  it('generates a copy route for each existing data form', async done => {
-    const data = [ { id: 1}, { id: 2 } ];
-    routerSpy.generate.and.returnValues('new', 'a', 'b', 'c', 'd');
-    apiSpy.getAll.and.returnValue(data);
+  [ { method: 'snapshotSelected', api: 'snapshot' },
+    { method: 'copySelected', api: 'copy' },
+  ].forEach(data => {
+    it('calls an api for each selected record', async done => {
+      sut.capture({ id: 123 });
+      sut.capture({ id: 124 });
 
-    await sut.activate(params);
-  
-    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual(
-      'newData', { form: params.form, parentId: 1 }
-    );
-    expect(routerSpy.generate.calls.argsFor(4)[0]).toEqual(
-      'newData', { form: params.form, parentId: 2 }
-    );
-    expect(sut.dataList[0].copyUrl).toEqual('b');
-    expect(sut.dataList[1].copyUrl).toEqual('d');
-    done();
+      sut[data.method]();
+
+      expect(apiSpy[data.api].calls.argsFor(0)).toEqual([ 123 ]);
+      expect(apiSpy[data.api].calls.argsFor(1)).toEqual([ 124 ]);
+      done();
+    });
   });
 
-  it('calls the api to snapshot the data', async done => {
-    await sut.capture(123);
-  
-    expect(apiSpy.snapshot).toHaveBeenCalledWith(123);
-    done();
+  [ { method: 'snapshotSelected', api: 'snapshot' },
+    { method: 'copySelected', api: 'copy' },
+  ].forEach(data => {
+    it('does not call any api when record is captured twice', async done => {
+      const obj = { };
+      sut.capture(obj);
+      sut.capture(obj);
+
+      sut[data.method]();
+
+      expect(apiSpy[data.api]).not.toHaveBeenCalled();
+      done();
+    });
   });
 })

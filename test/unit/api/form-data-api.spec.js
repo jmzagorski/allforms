@@ -58,23 +58,27 @@ describe('the form data api', () => {
     });
   });
 
-  it('snapshots the form data', async done => {
-    const formData = { id: 123 };
-    const returnedData = {};
-    const fr = new FileReader();
+  [ { method: 'snapshot', api: 'snapshots'},
+    { method: 'copy', api: 'copy'}
+  ].forEach(data => {
+    it('uses the snapshot api', async done => {
+      const formData = { id: 123 };
+      const returnedData = {};
+      const fr = new FileReader();
 
-    httpStub.itemStub = returnedData;
+      httpStub.itemStub = returnedData;
 
-    fr.addEventListener('loadend', () => {
-      expect(fr.result).toEqual(JSON.stringify({ formDataId: formData.id}));
-      done();
+      fr.addEventListener('loadend', () => {
+        expect(fr.result).toEqual(JSON.stringify({ formDataId: formData.id}));
+        done();
+      });
+
+      const actual = await sut[data.method](formData.id);
+
+      expect(httpStub.url).toEqual(`form-data/123/${data.api}`);
+      expect(httpStub.blob.method).toEqual('POST');
+      expect(actual).toBe(returnedData);
+      fr.readAsText(httpStub.blob.body);
     });
-
-    const actual = await sut.snapshot(formData.id);
-
-    expect(httpStub.url).toEqual('form-data/123/snapshots');
-    expect(httpStub.blob.method).toEqual('POST');
-    expect(actual).toBe(returnedData);
-    fr.readAsText(httpStub.blob.body);
   });
 });

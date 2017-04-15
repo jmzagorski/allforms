@@ -10,8 +10,15 @@ export class Data {
   constructor(router, api) {
     this.dataList = [];
 
+    this.gridOptions = {
+      autoEdit: true,
+      editable: true,
+      forceFitColumns: true
+    };
+
     this._api = api;
     this._router = router;
+    this._selectedRecords = [];
   }
 
   async activate(params) {
@@ -21,12 +28,28 @@ export class Data {
     if (this.dataList) {
       this.dataList.forEach(d => {
         d.url = this._router.generate('formData', { form: params.form, formDataId: d.id });
-        d.copyUrl = this._router.generate('newData', { form: params.form, parentId: d.id });
       });
     }
   }
 
-  capture(formDataId) {
-    return this._api.snapshot(formDataId);
+  capture(record) {
+    const index = this._selectedRecords.indexOf(record) ;
+    if (index === -1) {
+      this._selectedRecords.push(record);
+    } else {
+      this._selectedRecords.splice(index, 1);
+    }
+  }
+
+  snapshotSelected() {
+    for (let record of this._selectedRecords) {
+      this._api.snapshot(record.id);
+    }
+  }
+
+  copySelected() {
+    for (let record of this._selectedRecords) {
+      this._api.copy(record.id);
+    }
   }
 }

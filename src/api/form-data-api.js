@@ -64,4 +64,12 @@ export class FormDataApi {
       body: json({ formDataId: id })
     }).then(response => response.json());
   }
+
+  copy(id) {
+    return this._http.fetch(`${baseUrl}/${id}/copy`, {
+      method: 'POST',
+      body: json({ formDataId: id })
+    }).then(response => response.json());
+  }
+
 }
