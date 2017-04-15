@@ -1,6 +1,6 @@
 import { Router } from 'aurelia-router';
 import { Store } from 'aurelia-redux-plugin';
-import { createFormData } from './domain';
+import { createFormData, getActiveMember } from './domain';
 
 export class DataNew {
 
@@ -18,6 +18,7 @@ export class DataNew {
   }
 
   create() {
+    this.model.memberName = getActiveMember(this._store.getState()).loginName;
     this._store.dispatch(createFormData(this.model));
 
     this._router.navigateToRoute('data', { form: this.model.formId });

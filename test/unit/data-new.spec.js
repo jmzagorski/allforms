@@ -2,17 +2,20 @@ import { Router } from 'aurelia-router';
 import { Store } from 'aurelia-redux-plugin';
 import { DataNew } from '../../src/data-new';
 import { setupSpy } from './jasmine-helpers';
-import { createFormData } from '../../src/domain/index';
+import { createFormData } from '../../src/domain';
+import * as memberSelectors from '../../src/domain/member/selectors';
 
 describe('the new data form view model', () => {
   let storeSpy;
   let routerSpy;
   let sut;
+  let getMemberSpy;
 
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
     sut = new DataNew(storeSpy, routerSpy);
+    getMemberSpy = spyOn(memberSelectors, 'getActiveMember');
   });
 
   it('initializes the view model with default property values', () => {
@@ -29,14 +32,18 @@ describe('the new data form view model', () => {
   });
 
   it('dispatches an event to create the new form', () => {
-    const params = { form: 1 };
+    getMemberSpy.and.returnValue({ loginName: 'a' })
+    sut.model.formId = 1
 
     sut.create();
 
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(createFormData(sut.model));
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(createFormData({
+      formId: 1, memberName: 'a'
+    }));
   });
 
   it('navigates back to the form data list after creating a new one', () => {
+    getMemberSpy.and.returnValue({ loginName: 'a' })
     sut.model.formId = 1;
 
     sut.create();
