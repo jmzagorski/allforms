@@ -31,18 +31,18 @@ describe('the grid custom element factory', () => {
     expect(ex).toThrow(new Error('No grid id was found'));
   })
 
-  it('adds the grid id', () => {
+  it('adds the grid container', () => {
     const grid = sut.create({ gridId });
 
     expect(grid.getContainerNode()).toBe($grid);
   });
 
-  it('creates columns from the data', () => {
+  it('creates basic columns from the data with no column options', () => {
     const record = { id: 'a' };
 
     const grid = sut.create({
       gridId,
-      data: [ record, record ]
+      data: [ record ]
     });
 
     expect(grid.getColumns()).toEqual([{
@@ -61,27 +61,12 @@ describe('the grid custom element factory', () => {
     }]);
   });
 
-  it('sets the unique key', () => {
-    const record = { anythingButId: 'a' };
-
-    const grid = sut.create({
-      gridId,
-      data: [ record ],
-      columnOptions: [ { id: 'anythingButId', pk: true } ]
-    });
-
-    expect(grid.getColumns().length).toEqual(1);
-    expect(grid.getColumns()[0].id).toEqual('anythingButId');
-    expect(grid.getColumns()[0].pk).toBeTruthy();
-  });
-
   it('adds column options', () => {
-    const gridOptions = { blah: true };
     const record = { id: 'a', another: 'b' };
     const columnOptions = [{
-      id: 'id', sortable: true, headerCssClass: 'someclass'
+      field: 'id', sortable: true, headerCssClass: 'someclass'
     }, {
-      id: 'another', anything: true
+      field: 'another', anything: true
     }];
 
     const grid = sut.create({
@@ -95,4 +80,15 @@ describe('the grid custom element factory', () => {
     expect(grid.getColumns()[1].anything).toBeTruthy();
   });
 
+  it('adds grid options', () => {
+    const gridOptions = { blah: true };
+
+    const grid = sut.create({
+      gridId,
+      gridOptions
+    });
+
+    // dont worry about the other default options
+    expect(grid.getOptions().blah).toBeTruthy();
+  });
 })

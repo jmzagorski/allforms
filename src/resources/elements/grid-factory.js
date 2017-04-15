@@ -10,23 +10,25 @@ export class GridFactory {
    * @summary creates a new slick grid
    * @param {string} options.gridId the html id of the grid
    * @param {Object[]} options.data the data to be used with the grid
-   * @param {Object[]} [options.columnOptions] the slick grid column options
-   * @param {Object[]} [options.columnOptions.pk] the primary key field
-   * @param {Object} [options.gridOptions] SlickGrid options 
-   *
+   * @param {string} [options.pk=id] unique field of the data set. does not need
+   * @param {Object[]} [options.columnOptions] the grid column options
+   * @param {Object} [options.gridOptions] the grid options 
    */
   create(options) {
     this.defaults = {
       data: [],
       metadata: [],
       gridOptions: {},
-      columnOptions: []
+      columnOptions: [],
+      pk: 'id'
     };
 
     Object.assign(this.defaults, options);
 
     if (!this.defaults.gridId) throw new Error('No grid id was found');
 
+    // if no columns are given see if we can create it for them
+    // or just make sure the column has a last an id, name and field
     for(let prop in this.defaults.data[0]) {
       const column = {
         id: prop,
@@ -34,21 +36,23 @@ export class GridFactory {
         field: prop
       };
 
-      const columnOpts = this.defaults.columnOptions.find(m => m.id === prop);
+      let columnOpts = this.defaults.columnOptions.find(m => m.field === prop);
 
-      if (columnOpts) Object.assign(column, columnOpts);
-
-      this.defaults.metadata.push(column);
+      if (columnOpts) columnOpts = Object.assign({}, column, columnOpts);
+      
+      // if no column options are present create a basic column
+      if (!this.defaults.columnOptions.length) {
+        this.defaults.columnOptions.push(column);
+      }
     }
 
     const dataView =  new Data.DataView()
-    const pk = this.defaults.columnOptions.find(m => m.pk) || {};
-    dataView.setItems(this.defaults.data, pk.id);
+    dataView.setItems(this.defaults.data, this.defaults.pk);
 
     return new Grid(
       this.defaults.gridId,
       dataView,
-      this.defaults.metadata,
+      this.defaults.columnOptions,
       this.defaults.gridOptions
     );
   }
