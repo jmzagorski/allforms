@@ -1,7 +1,8 @@
 module.exports = {
   "/api/": "/",
-  "/form-data/lookups": "/lookups",
-  "/form-data/copy": "/form-data",
-  "/form-data/snapshots": "/snapshots",
-  "/forms/:id/form-data": "/forms/:id/form-data?_embed=snapshots"
+  "/forms/data/lookups": "/lookups",
+  "/forms/data/copy": "/formData",
+  "/forms/data/snapshots": "/formData",
+  "/forms/:id/data": "/forms/:id/formData",
+  "/forms/data": "/formData"
 }

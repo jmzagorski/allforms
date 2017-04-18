@@ -4,17 +4,18 @@ var RandExp = require('randexp');
 module.exports = function(router) {
   return function (req, res, next) {
 
-    var watching = req.path.indexOf('/copy', 0) !== -1;
-    var parentId = req.body.parentId;
+    var watching = req.path.indexOf('forms/data/copy', 0) !== -1;
+    var originalId = req.body.originalId;
 
-    if (req.method === 'POST' && watching && parentId) {
-      var parent = router.db.get('form-data').getById(req.body.parentId).value();
-      req.body.parentId = parentId;
+    if (req.method === 'POST' && watching && originalId) {
+      var parent = router.db.get('formData').getById(originalId).value();
 
       for (var prop in parent) req.body[prop] = parent[prop];
 
       req.body.id = null;
+      req.body.originalId = null;
 
+      console.log(req.body.formId);
       var form = router.db.get('forms').getById(req.body.formId).value();
 
       if (form.autoname) {

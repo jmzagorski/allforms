@@ -3,8 +3,7 @@ import { importFetch } from '../utils';
 
 const fetch = importFetch(); // eslint-disable-line no-unused-vars
 
-export const baseUrl = 'form-data';
-
+export const baseUrl = 'forms/data';
 /**
  * @summary RESTFUL api for interact with the form data backend
  * @implements {IFormDataApi}
@@ -29,7 +28,7 @@ export class FormDataApi {
    * array
    */
   getAll(formId) {
-    return this._http.fetch(`forms/${formId}/${baseUrl}`)
+    return this._http.fetch(`forms/${formId}/data`)
       .then(response => response.json());
   }
 
@@ -69,7 +68,7 @@ export class FormDataApi {
   copy(id) {
     return this._http.fetch(`${baseUrl}/copy`, {
       method: 'POST',
-      body: json({ parentId: id })
+      body: json({ originalId: id })
     }).then(response => response.json());
   }
 

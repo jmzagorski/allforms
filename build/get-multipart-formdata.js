@@ -2,7 +2,7 @@ var multiparty = require('multiparty');
 
 module.exports = function (req, res, next) {
 
-  var watching = req.path.indexOf('form-data', 0) !== -1;
+  var watching = req.path.indexOf('forms/data', 0) !== -1;
 
   if (req.method === 'PATCH' && watching ) {
     var form = new multiparty.Form();

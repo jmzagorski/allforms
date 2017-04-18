@@ -139,34 +139,7 @@ export const schema = {
         ]
       }
     },
-    "snapshots": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "minimum": 0,
-            "unique": true
-          },
-          "saved": {
-            "type": "string",
-            "faker": "date.past"
-          },
-          "data": {
-            "type": "object"
-          },
-          "formDataId": {
-            "type": "number",
-            "minimum": 0
-          }
-        },
-        "required": [ "id", "saved", "formDataId" ]
-      }
-    },
-    "form-data": {
+    "formData": {
       "type": "array",
       "minItems": 1,
       "maxItems": 1,
@@ -194,12 +167,13 @@ export const schema = {
           "formId": {
             "type": "string"
           },
-          "parentId": {
+          "originalId": {
             "type": "number",
-            "minimum": 0
+            "minimum": 0,
+            "enum": [ null ]
           }
         },
-        "required": [ "id", "name", "lastEdit", "memberName", "formId" ]
+        "required": [ "id", "name", "saved", "memberName", "formId", "originalId" ]
       }
     },
     "forms": {
@@ -243,7 +217,7 @@ export const schema = {
           },
           "api": {
             "type": "string",
-            "enum": [ "http://localhost:9001/api/form-data" ]
+            "enum": [ "http://localhost:9001/api/forms/data" ]
           },
           "autoname": {
             "type": "string"
@@ -253,7 +227,7 @@ export const schema = {
       }
     }
   },
-  "required": [ "lookups", "form-data", "forms", "member", "elements", "element-types", "snapshots" ],
+  "required": [ "lookups", "formData", "forms", "member", "elements", "element-types" ],
   "definitions": {
     "name": {
       "type": "string",
