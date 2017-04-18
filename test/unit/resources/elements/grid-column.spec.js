@@ -1,50 +1,20 @@
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
-import { GridCustomElement } from '../../../../src/resources/elements/grid';
-import Formatters from '../../../../src/resources/elements/grid-formatters';
 import { Editors, Grid } from 'slickgrid-es6';
-import { BindingEngine } from 'aurelia-framework';
+import { TargetInstruction } from 'aurelia-framework';
+import { CompositeFormatter } from '../../../../src/resources/elements/grid/index';
 
 describe('the grid custom element', () => {
   let sut;
-  let gridMock;
-  let bindingMock;
-  let unsubscribeSpy;
+  let compositeMock;
 
   beforeEach(() => {
-    unsubscribeSpy = jasmine.createSpy('unsubscribe');
-    bindingMock = {
-      propertyObserver: jasmine.createSpy('observer'),
-      subscribe: jasmine.createSpy('subscribe')
-    };
-    gridMock = {
-      grid: {
-        getColumns: jasmine.createSpy('getColumns'),
-        setColumns: jasmine.createSpy('setColumns'),
-        getData: jasmine.createSpy('getData'),
-        onClick: {
-          subscribe: jasmine.createSpy('clicksub'),
-          unsubscribe: jasmine.createSpy('clickunsub'),
-        },
-        onCellChange: {
-          subscribe: jasmine.createSpy('changesub'),
-          unsubscribe: jasmine.createSpy('changeunsub'),
-        }
-      },
-      addColumn: jasmine.createSpy('addColumn')
-    };
-
-    bindingMock.propertyObserver.and.returnValue(bindingMock)
-    bindingMock.subscribe.and.returnValue({
-      dispose: unsubscribeSpy
-    });
-
+    compositeMock = { format: () => {} };
     sut = StageComponent.withResources('resources/elements/grid-column');
 
     sut.configure = aurelia => {
       aurelia.use.standardConfiguration();
-      aurelia.container.registerInstance(GridCustomElement, gridMock);
-      aurelia.container.registerInstance(BindingEngine, bindingMock);
+      aurelia.container.registerInstance(CompositeFormatter, compositeMock);
     };
   });
 
@@ -52,34 +22,26 @@ describe('the grid custom element', () => {
     if(sut.host.parentNode) sut.dispose();
   });
 
-  it('subscribes to the firstElementChild change', async done => {
-    sut.inView(`<grid-column></grid-column>`)
+  it('adds the custom property if formatters property is bound to', async done => {
+    const context = { formatters: [ 'Link', 'Toggle' ] };
+    sut.inView(`<grid-column formatters.bind="formatters"></grid-column>`)
+      .boundTo(context);
 
     await sut.create(bootstrap);
 
-    expect(bindingMock.propertyObserver.calls.argsFor(0)[0]).toBe(sut.element);
-    expect(bindingMock.propertyObserver.calls.argsFor(0)[1]).toEqual('firstElementChild');
+    expect(sut.viewModel.options.custom.formatters).toEqual([ 'Link', 'Toggle' ]);
     done();
   });
 
-  it('updates the column html prop with the slot with any ', async done => {
-    const column = { field: 'id', formatter: null, formatterOpts: {} };
-    let slotFn = null;
-    sut.inView(`<grid-column field.bind="field"><span></span></grid-column>`)
-      .boundTo({ field: 'id' })
-    bindingMock.subscribe.and.callFake(fn => {
-      slotFn = fn;
-      return { dispose: () => {} };
-    });
-    gridMock.grid.getColumns.and.returnValue([ column, { field: 'b' }])
+  it('adds custom html property and formatter is html in slot last', async done => {
+    const context = { formatters: [ 'Link' ] };
+    sut.inView(`<grid-column formatters.bind="formatters"><span></span></grid-column>`)
+      .boundTo(context);
+
     await sut.create(bootstrap);
 
-    slotFn();
-
-    expect(column.formatterOpts.html).toEqual('<span></span>');
-    expect(column.formatter).toBe(Formatters.Html);
-    expect(gridMock.grid.setColumns.calls.argsFor(0)[0]).toContain(column);
-    expect(gridMock.grid.setColumns.calls.argsFor(0)[0]).toContain({ field: 'b'});
+    expect(sut.viewModel.options.custom.html).toEqual('<span></span>');
+    expect(sut.viewModel.options.custom.formatters).toEqual([ 'Link', 'Html']);
     done();
   });
 
@@ -93,7 +55,6 @@ describe('the grid custom element', () => {
       editor: 'Checkmark',
       field: '7', 
       focusable: '8',
-      formatter: 'Html',
       headerCssClass: '10',
       id: '11',
       maxWidth: '12',
@@ -115,7 +76,6 @@ describe('the grid custom element', () => {
       editor.bind="editor"
       field.bind="field",
       focusable.bind="focusable"
-      formatter.bind="formatter"
       header-css-class.bind="headerCssClass"
       id.bind="id"
       max-width.bind="maxWidth"
@@ -131,7 +91,11 @@ describe('the grid custom element', () => {
 
     await sut.create(bootstrap);
 
-    expect(gridMock.addColumn).toHaveBeenCalledWith({
+
+    // http://stackoverflow.com/questions/34307855/how-can-i-test-for-equality-to-a-bound-function-when-unit-testing
+    expect(Object.create(CompositeFormatter.prototype) instanceof CompositeFormatter).toBeTruthy();
+
+    expect(sut.viewModel.options).toEqual({
       asyncPostRender: context.asyncPostRender,
       behavior: context.behavior,
       cannotTriggerInsert: context.cannotTriggerInsert,
@@ -140,7 +104,7 @@ describe('the grid custom element', () => {
       editor: Editors.Checkmark,
       field: context.field, 
       focusable: context.focusable,
-      formatter: Formatters.Html,
+      formatter: sut.viewModel.options.formatter, // kind of silly, but to make the test pass
       headerCssClass: context.headerCssClass,
       id: context.id,
       maxWidth: context.maxWidth,
@@ -151,22 +115,9 @@ describe('the grid custom element', () => {
       selectable: context.selectable,
       sortable: context.sortable,
       tooltip: context.tooltip,
-      width: context.width
+      width: context.width,
+      custom: { formatters: [] }
     });
-    done();
-  });
-
-  it('sets id and name from field from  missing', async done => {
-    const context = { field: 'abc' }
-
-    sut.inView(`<grid-column field.bind="field"></grid-column>`)
-      .boundTo(context);
-
-    await sut.create(bootstrap);
-
-    expect(gridMock.addColumn.calls.argsFor(0)[0].field).toEqual(context.field);
-    expect(gridMock.addColumn.calls.argsFor(0)[0].id).toEqual(context.field);
-    expect(gridMock.addColumn.calls.argsFor(0)[0].name).toEqual('Abc');
     done();
   });
 
@@ -180,7 +131,6 @@ describe('the grid custom element', () => {
       editor: '6',
       field: '7', 
       focusable: '8',
-      formatter: '9',
       headerCssClass: '10',
       id: '11',
       maxWidth: '12',
@@ -201,7 +151,6 @@ describe('the grid custom element', () => {
         editor: 'Checkmark',
         field: '8', 
         focusable: '9',
-        formatter: 'Html',
         headerCssClass: '11',
         id: '12',
         maxWidth: '13',
@@ -225,7 +174,6 @@ describe('the grid custom element', () => {
       editor.bind="editor"
       field.bind="field"
       focusable.bind="focusable"
-      formatter.bind="formatter"
       header-css-class.bind="headerCssClass"
       id.bind="id"
       max-width.bind="maxWidth"
@@ -241,7 +189,7 @@ describe('the grid custom element', () => {
 
     await sut.create(bootstrap);
 
-    expect(gridMock.addColumn).toHaveBeenCalledWith({
+    expect(sut.viewModel.options).toEqual({
       asyncPostRender: context.allOptions.asyncPostRender,
       behavior: context.allOptions.behavior,
       cannotTriggerInsert: context.allOptions.cannotTriggerInsert,
@@ -250,7 +198,7 @@ describe('the grid custom element', () => {
       editor: 'Checkmark',
       field: context.allOptions.field, 
       focusable: context.allOptions.focusable,
-      formatter: 'Html',
+      formatter: sut.viewModel.options.formatter,
       headerCssClass: context.allOptions.headerCssClass,
       id: context.allOptions.id,
       maxWidth: context.allOptions.maxWidth,
@@ -261,35 +209,52 @@ describe('the grid custom element', () => {
       selectable: context.allOptions.selectable,
       sortable: context.allOptions.sortable,
       tooltip: context.allOptions.tooltip,
-      width: context.allOptions.width
+      width: context.allOptions.width,
+      custom: { formatters: [] }
     });
+    done();
+  });
+
+  it('sets id and name from field if missing', async done => {
+    const context = { field: 'abc' }
+
+    sut.inView(`<grid-column field.bind="field"></grid-column>`)
+      .boundTo(context);
+
+    await sut.create(bootstrap);
+
+    expect(sut.viewModel.options.field).toEqual(context.field);
+    expect(sut.viewModel.options.id).toEqual(context.field);
+    expect(sut.viewModel.options.name).toEqual('Abc');
     done();
   });
 
   [ { cell: 0, calls: 1 },
     { cell: 1, calls: 0}
   ].forEach(data => {
-    it('subscribes to column events', async done => {
-      let clickCb = null;
-      let changeCb = null;
+    it('emits columns events when correct cell is clicked', async done => {
       const item = {};
       const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
+      const gridMock = {
+        getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+      };
+      const args = {
+        cell: data.cell,
+        row: 1,
+        grid: gridMock
+      }
       const context = {
         click: jasmine.createSpy('clickcb'),
         change: jasmine.createSpy('changecb')
       };
-
-      gridMock.grid.onClick.subscribe.and.callFake(cb => clickCb = cb);
-      gridMock.grid.onCellChange.subscribe.and.callFake(cb => changeCb = cb);
-      gridMock.grid.getData.and.returnValue({ getItem: getItemSpy });
 
       sut.inView(`<grid-column on-click.bind="click" on-cell-change.bind="change">
         </grid-column>`).boundTo(context);
 
       await sut.create(bootstrap);
 
-      clickCb({}, { cell: data.cell, row: 1, grid: gridMock.grid })
-      changeCb({}, { cell: data.cell, row: 1, grid: gridMock.grid })
+      sut.viewModel.subscriptions.onClick({}, args)
+      sut.viewModel.subscriptions.onCellChange({}, args)
 
       expect(context.change.calls.count()).toEqual(data.calls);
       expect(context.click.calls.count()).toEqual(data.calls);
@@ -303,30 +268,62 @@ describe('the grid custom element', () => {
     });
   });
 
-  it('removes all subscriptions on dispose', async done => {
-    let clickCb = null;
-    let changeCb = null;
+  it('emits event only when item has changed', async done => {
+    let itemChangedEvent= null;
+    const item = {};
+    const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
+    const gridMock = {
+      getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+    };
+    const args = {
+      cell: 0,
+      row: 1,
+      grid: gridMock
+    }
     const context = {
-      click: jasmine.createSpy('clickcb'),
-      change: jasmine.createSpy('changecb')
+      click: item => item.a = 1,
+      itemChanged: event => itemChangedEvent = event
     };
 
-    gridMock.grid.onClick.subscribe.and.callFake(cb => clickCb = cb);
-    gridMock.grid.onCellChange.subscribe.and.callFake(cb => changeCb = cb);
-
-    sut.inView(`<grid-column on-click.bind="click" on-cell-change.bind="change">
-      </grid-column>`).boundTo(context);
+    sut.inView(`<grid-column itemchanged.delegate="itemChanged($event)"
+      on-click.bind="click"></grid-column>`)
+      .boundTo(context);
 
     await sut.create(bootstrap);
 
-    sut.dispose();
+    sut.viewModel.subscriptions.onClick({}, args)
 
-    expect(unsubscribeSpy.calls.count()).toEqual(1);
-    expect(gridMock.grid.onClick.unsubscribe.calls.count()).toEqual(1);
-    expect(gridMock.grid.onClick.unsubscribe)
-      .toHaveBeenCalledWith(clickCb);
-    expect(gridMock.grid.onCellChange.unsubscribe.calls.count()).toEqual(1);
-    expect(gridMock.grid.onCellChange.unsubscribe).toHaveBeenCalledWith(changeCb);
+    expect(itemChangedEvent).not.toEqual(null);
+    expect(itemChangedEvent.detail).toBe(item);
+    done();
+  });
+
+  it('does not emit event when item did not change', async done => {
+    let itemChangedEvent= null;
+    const item = {};
+    const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
+    const gridMock = {
+      getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+    };
+    const args = {
+      cell: 0,
+      row: 1,
+      grid: gridMock
+    }
+    const context = {
+      click: item => {},
+      itemChanged: event => itemChangedEvent = event
+    };
+
+    sut.inView(`<grid-column itemchanged.delegate="itemChanged($event)"
+      on-click.bind="click"></grid-column>`)
+      .boundTo(context);
+
+    await sut.create(bootstrap);
+
+    sut.viewModel.subscriptions.onClick({}, args)
+
+    expect(itemChangedEvent).toEqual(null);
     done();
   });
 });

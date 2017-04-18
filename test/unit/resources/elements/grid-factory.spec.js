@@ -1,9 +1,10 @@
 import { GridFactory } from '../../../../src/resources/elements/grid-factory';
-import { Grid } from 'slickgrid-es6';
+import { Grid, Data } from 'slickgrid-es6';
 
 describe('the grid custom element factory', () => {
   let sut;
   let gridId;
+  // slickgrid needs a document object or else it will throw
   let $grid;
 
   beforeEach(() => {
@@ -37,30 +38,6 @@ describe('the grid custom element factory', () => {
     expect(grid.getContainerNode()).toBe($grid);
   });
 
-  it('creates basic columns from the data with no column options', () => {
-    const record = { id: 'a' };
-
-    const grid = sut.create({
-      gridId,
-      data: [ record ]
-    });
-
-    expect(grid.getColumns()).toEqual([{
-      name: 'Id',
-      resizable: true,
-      sortable: false,
-      minWidth: 30,
-      rerenderOnResize: false,
-      headerCssClass: null,
-      defaultSortAsc: true,
-      focusable: true,
-      selectable: true,
-      width: 80,
-      id: 'id',
-      field: 'id'
-    }]);
-  });
-
   it('adds column options', () => {
     const record = { id: 'a', another: 'b' };
     const columnOptions = [{
@@ -90,5 +67,11 @@ describe('the grid custom element factory', () => {
 
     // dont worry about the other default options
     expect(grid.getOptions().blah).toBeTruthy();
+  });
+
+  it('adds the data view', () => {
+    const grid = sut.create({ gridId });
+
+    expect(grid.getData()).toEqual(jasmine.any(Data.DataView));
   });
 })

@@ -1,9 +1,15 @@
-import Formatters from './grid-formatters';
 import Editors from './grid-editors';
-import { GridCustomElement } from './grid';
-import { BindingEngine, bindable, inlineView } from 'aurelia-framework';
+import { CompositeFormatter } from './grid/index';
+import { processContent, TargetInstruction, bindable, inlineView } from 'aurelia-framework';
+
+// slots are not rendered until after the grid is initialzes, but i need the
+// html when the grid column is attached
+function getSlot(compile, resources, element, instruction) {
+  instruction.template = element.innerHTML;
+}
 
 @inlineView('<template><slot></slot></template>')
+@processContent(getSlot)
 export class GridColumnCustomElement {
 
   @bindable asyncPostRender = undefined;
@@ -14,7 +20,6 @@ export class GridColumnCustomElement {
   @bindable editor = undefined; 
   @bindable field = ''; 
   @bindable focusable = true;
-  @bindable formatter = undefined;
   @bindable headerCssClass = undefined;
   @bindable id = '';
   @bindable maxWidth = undefined;
@@ -26,32 +31,42 @@ export class GridColumnCustomElement {
   @bindable sortable = false;
   @bindable tooltip = '';
   @bindable width = undefined;
+  @bindable formatters = [];
   @bindable allOptions; // useful if data is saved in a object
   @bindable onClick;
   @bindable onCellChange;
 
-  static inject = [ Element, GridCustomElement, BindingEngine ];
+  static inject = [ Element, TargetInstruction, CompositeFormatter ];
 
-  constructor(element, grid, bindingEngine) {
+  constructor(element, instruction, compositeFormatter) {
     this.element = element;
-    this._options = {};
-    this._grid = grid;
-    this._subscriptions = [];
-    this._index = null;
+    this.subscriptions = [];
+    this.options = {};
 
-    this._subscription = bindingEngine
-      .propertyObserver(this.element, 'firstElementChild')
-      .subscribe(this._slotRendered.bind(this));
+    this._compositeFormatter = compositeFormatter;
+    this._index = null;
+    this._customOpts = { formatters: [] };
+    this._slot = instruction.elementInstruction.template;
   }
 
-  // must be called @ bind before grid is attached
   bind(bindingContext) {
+    for (let formatter of this.formatters) {
+      this._customOpts.formatters.push(formatter);
+    }
+
+    if (this._slot) {
+      this._customOpts.html = this._slot;
+      this._customOpts.formatters.push('Html')
+    }
+
     this._events = {
       onClick: this._onClick,
       onCellChange: this._onCellChange
     }
 
-    this._options = Object.assign({}, {
+    this._bindingContext = bindingContext;
+
+    this.options = Object.assign({}, {
       asyncPostRender: this.asyncPostRender,
       behavior: this.behavior,
       cannotTriggerInsert: this.cannotTriggerInsert,
@@ -60,7 +75,7 @@ export class GridColumnCustomElement {
       editor: Editors[this.editor],
       field: this.field, 
       focusable: this.focusable,
-      formatter: Formatters[this.formatter],
+      formatter: this._compositeFormatter.format.bind(this._compositeFormatter),
       headerCssClass: this.headerCssClass,
       id: this.id || this.field,
       maxWidth: this.maxWidth,
@@ -71,36 +86,34 @@ export class GridColumnCustomElement {
       selectable: this.selectable,
       sortable: this.sortable,
       tooltip: this.tooltip,
-      width: this.width
+      width: this.width,
+      custom: this._customOpts,
     }, this.allOptions);
-
-    this._grid.addColumn(this._options);
-    this._bindingContext = bindingContext;
-  }
+  } 
 
   attached() {
+    this._findColIndex();
+    this._subscribeToEvents();
+  }
+
+  propertyChanged(propName, newVal, oldVal) {
+    console.log('prop changed');
+  }
+
+  _findColIndex() {
     for (let i = 0; i < this.element.parentNode.children.length; i++) {
       if (this.element.parentNode.children[i] === this.element) {
         this._index = i;
         break;
       }
     }
-
-    for (let e in this._events) {
-      if (this[e]) {
-        const subscriptionFn = this._events[e].bind(this)
-        this._subscriptions.push({ [e]: subscriptionFn });
-        this._grid.grid[e].subscribe(subscriptionFn);
-      }
-    }
   }
 
-  detached() {
-    this._subscription.dispose();
-
-    for (let sub of this._subscriptions) {
-      const eventName = Object.keys(sub)[0];
-      this._grid.grid[eventName].unsubscribe(sub[eventName]);
+  _subscribeToEvents() {
+    for (let e in this._events) {
+      if (this[e]) {
+        this.subscriptions[e] = this._events[e].bind(this);
+      }
     }
   }
 
@@ -115,17 +128,16 @@ export class GridColumnCustomElement {
   _callHandler(e, args, handler) {
     if (args.cell === this._index) {
       const item = args.grid.getData().getItem(args.row)
+      const cached = JSON.stringify(item);
+
       this[handler].call(this._bindingContext, item);
+
+      if (cached !== JSON.stringify(item)) {
+        this.element.dispatchEvent(new CustomEvent('itemchanged', {
+          bubbles: true,
+          detail: item
+        }));
+      }
     }
-  }
-
-  _slotRendered() {
-    const child = this.element.firstElementChild;
-
-    const columns = this._grid.grid.getColumns();
-    const columnData = columns.find(c => c.field === this._options.field);
-    columnData.formatterOpts.html = child.outerHTML;
-    columnData.formatter = Formatters.Html;
-    this._grid.grid.setColumns(columns);
   }
 }
