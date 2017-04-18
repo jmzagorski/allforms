@@ -25,9 +25,32 @@ export class Data {
     this.dataList = await this._api.getAll(params.form);
     this.routeToNew = this._router.generate('newData', { form: params.form });
 
+    // make sure like records stay together
+    // TODO add grouping then sort so don't have to deal with this logic
+    this.dataList.sort((a,b) => {
+      if (a.id !== b.originalId) {
+        return 1;
+      }
+
+      if ((a.originalId === b.originalId) || !a.originalId && !b.originalId) {
+        if (a.saved > b.saved) {
+          return 1
+        } else {
+          return -1;
+        }
+      }
+
+      return 0;
+    });
+
     if (this.dataList) {
       this.dataList.forEach(d => {
-        d.url = this._router.generate('formData', { form: params.form, formDataId: d.id });
+        if (d.originalId) {
+          d.url = this._router.generate('snapshot', { formDataId: d.id });
+          d._indent = 1;
+        } else {
+          d.url = this._router.generate('formData', { form: params.form, formDataId: d.id });
+        }
       });
     }
   }
@@ -43,7 +66,10 @@ export class Data {
 
   snapshotSelected() {
     for (let record of this._selectedRecords) {
-      this._api.snapshot(record.id);
+      // cant snapshot a snapshot
+      if (!record.originalId) {
+        this._api.snapshot(record.id);
+      }
     }
   }
 
@@ -51,5 +77,21 @@ export class Data {
     for (let record of this._selectedRecords) {
       this._api.copy(record.id);
     }
+  }
+
+  showSnapshot(item) {
+    if (item.originalId) {
+      const parent = this.dataList.find(d => d.id === item.originalId);
+      while (parent) {
+        if (!parent._expanded) return false;
+
+        parent = this.dataList.find(d => d.id === parent.originalId);
+      }
+    }
+    return true;
+  }
+
+  setExpanded(item) {
+    item._expanded = !item._expanded;
   }
 }

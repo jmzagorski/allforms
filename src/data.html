@@ -21,12 +21,15 @@
           </div>
         </div>
       </div>
-      <grid options.bind="gridOptions" pk="name" data.bind="dataList" >
+      <grid height="500" filters.bind="[ showSnapshot ]" options.bind="gridOptions" pk="id" data.bind="dataList" >
         <grid-column field="selected" name="✔" on-cell-change.bind="capture" tooltip="select
           record" header-css-class="text-center" css-class="text-center"
-          formatter="Checkmark" editor="Checkbox" width="25">
+          formatters.bind="['Checkmark']" editor="Checkbox" width="15">
         </grid-column>
-        <grid-column field="url" name="name" formatter="Link"></grid-column>
+        <grid-column field="url" name="name"
+          formatters.bind="[ 'Link', 'Snapshot', 'Toggle' ]"
+          on-click.bind="setExpanded">
+        </grid-column>
         <grid-column field="memberName" name="Member"></grid-column>
         <grid-column field="saved"></grid-column>
       </grid>

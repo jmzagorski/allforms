@@ -41,6 +41,11 @@ export default class {
         moduleId: './settings',
         nav: false
       }, {
+        route: '/snapshots/:formDataId',
+        name: 'snapshot',
+        moduleId: './snapshot',
+        nav: false
+      }, {
     /*
      * EVERYTHING BELOW HERE SHOULD HAVE A SETTINGS AND BE ORDERED IN THE
      * ORDER YOU WANT THE USER TO SEE THE ICONS. THESE WILL APPEAR AS A LIST IN
