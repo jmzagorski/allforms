@@ -19,6 +19,13 @@ import setupSaga from './root-saga';
 import configureHttp from './config/http-client';
 import * as Interact from 'interact.js';
 import * as Bluebird from 'bluebird';
+import { Formatters } from 'slickgrid-es6';
+import {
+  HtmlFormatter,
+  LinkFormatter,
+  ToggleFormatter,
+  SnapshotFormatter
+} from './resources/elements/grid/index'
 
 Bluebird.config({ warnings: false });
 
@@ -46,6 +53,19 @@ export async function configure(aurelia) {
   aurelia.container.registerInstance(BindingSignaler, signaler);
   aurelia.container.registerSingleton('FormServices', FormulaService);
   aurelia.container.registerSingleton('MacroProviders', LookupProvider);
+  aurelia.container.registerSingleton('GridFormatters', HtmlFormatter);
+  aurelia.container.registerSingleton('GridFormatters', LinkFormatter);
+  aurelia.container.registerSingleton('GridFormatters', ToggleFormatter);
+  aurelia.container.registerSingleton('GridFormatters', SnapshotFormatter);
+
+  // register slick grid's and obey interface
+  for (let prop in Formatters) {
+    aurelia.container.registerHandler('GridFormatters', () => {
+      return {
+        format: Formatters[prop],
+        constructor: { name: prop + 'Formatter' }
+    }});
+  }
 
   await aurelia.start();
   aurelia.setRoot('app');
