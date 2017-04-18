@@ -25,7 +25,7 @@ describe('the form settings view model', () => {
 
   it('initializes the view model with a model', () => {
     expect(baseUrlSpy).toHaveBeenCalledWith('loc');
-    expect(sut.model).toEqual({ style: 'bootstrap', api: 'base/form-data' });
+    expect(sut.model).toEqual({ style: 'bootstrap', api: 'base/forms/data' });
   });
 
   it('dispatches a request for the form on activate', () => {
@@ -36,7 +36,7 @@ describe('the form settings view model', () => {
   });
 
   it('listens for the form to create the model', () => {
-    const form = { id: 'b', anything: 2, style: 'bootstrap', api: 'form-data' };
+    const form = { id: 'b', anything: 2, style: 'bootstrap', api: 'forms/data' };
     const getFormSpy = spyOn(selectors, 'getActiveForm').and.returnValue(form);
     const state = {};
     let updateFunc = null;
