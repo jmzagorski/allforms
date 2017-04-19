@@ -14,9 +14,9 @@ describe('the metadata api', () => {
   it('fetches all the metadata from the form api', async done => {
     httpStub.itemStub = [];
 
-    const response = await sut.get({ api: 'a', form: 1 });
+    const response = await sut.get('a', 1);
 
-    expect(httpStub.url).toEqual('a/metadata/1');
+    expect(httpStub.url).toEqual('a/1/metadata');
     expect(response).toBe(httpStub.itemStub);
     done();
   });

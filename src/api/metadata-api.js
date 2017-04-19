@@ -8,14 +8,15 @@ const fetch = importFetch(); // eslint-disable-line no-unused-vars
  * @implements {IMetadataApi}
  */
 export class MetadataApi {
-  static inject() { return [ NewInstance.of(HttpClient) ]; }
+
+  static inject = [ NewInstance.of(HttpClient) ];
 
   constructor(http) {
     this._http = http;
   }
 
-  get(form) {
-    return this._http.fetch(form.api + '/' + form.id + '/metadata')
+  get(api, formId) {
+    return this._http.fetch(api + '/' + formId + '/metadata')
       .then(response => response.json());
   }
 }
