@@ -221,7 +221,34 @@ export const schema = {
           },
           "autoname": {
             "type": "string"
-          }
+          }, 
+          "metadata": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 14,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "faker": "lorem.word",
+                  "unique": true
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "string",
+                    "boolean",
+                    "integer",
+                    "decimal",
+                    "date",
+                    "file"
+                  ]
+                },
+              },
+              "required": [ "name", "type" ]
+            }
+          },
         },
         "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api" ]
       }

@@ -7,6 +7,7 @@ var formDataParent = require('./copy-parent-formdata');
 var formData= require('./get-multipart-formdata');
 var formDataServerFields = require('./add-formdata-serverfields');
 var lookups = require('./return-lookups');
+var overrideRouterRender = require('./override-router-render');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
 var server = jsonServer.create();
@@ -28,6 +29,8 @@ server.use(formData);
 server.use(formDataParent(router));
 server.use(snapshot(router));
 server.use(formDataServerFields(router));
+
+overrideRouterRender(router);
 
 server.use(jsonServer.rewriter(routes));
 

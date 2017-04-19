@@ -4,5 +4,6 @@ module.exports = {
   "/forms/data/copy": "/formData",
   "/forms/data/snapshots": "/formData",
   "/forms/:id/data": "/forms/:id/formData",
-  "/forms/data": "/formData"
+  "/forms/data": "/formData",
+  "/forms/:id/metadata": "/forms/:id"
 }
