@@ -11,6 +11,16 @@ describe('the element api', () => {
     sut = new ElementApi(httpStub);
   });
 
+  it('fetches all the elements by form id', async done => {
+    httpStub.itemStub = [];
+
+    const actualElems = await sut.getAll(1);
+
+    expect(httpStub.url).toEqual('forms/1/elements');
+    expect(actualElems).toBe(httpStub.itemStub);
+    done();
+  });
+
   it('fetches the elements by id', async done => {
     httpStub.itemStub = [];
 

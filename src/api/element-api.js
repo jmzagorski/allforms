@@ -13,6 +13,11 @@ export class ElementApi {
     this._http = http;
   }
 
+  getAll(formId) {
+    return this._http.fetch(`forms/${formId}/elements`)
+      .then(response => response.json());
+  }
+
   get(id) {
     return this._http.fetch(`elements/${id}`)
       .then(response => response.json());
