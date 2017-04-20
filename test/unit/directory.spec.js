@@ -2,8 +2,9 @@ import { Store } from 'aurelia-redux-plugin';
 import { Directory } from '../../src/directory';
 import { Router } from 'aurelia-router';
 import { setupSpy } from './jasmine-helpers';
-import * as selectors from '../../src/domain/form/selectors';
-import { requestForm } from '../../src/domain/index';
+import * as formSelectors from '../../src/domain/form/selectors';
+import * as metadataSelectors from '../../src/domain/metadata/selectors';
+import { requestForm, requestMetadata } from '../../src/domain';
 
 describe('the directory view model', () => {
   let sut;
@@ -11,25 +12,28 @@ describe('the directory view model', () => {
   let storeSpy;
   let formStub;
   let getFormSpy;
+  let getStatusSpy;
   const params = { form: 'a' };
 
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
-    getFormSpy = spyOn(selectors, 'getActiveForm');
+    getFormSpy = spyOn(formSelectors, 'getActiveForm');
+    getStatusSpy = spyOn(metadataSelectors, 'getStatus');
 
     sut = new Directory(routerSpy, storeSpy);
   });
 
-  it('defines the routes', () => {
+  it('initializes the view mode public props', () => {
     expect(sut.routes).toEqual([]);
+    expect(sut.status).toEqual('muted');
   });
 
-  it('dispatches a request for the form on activate', () => {
+  it('dispatches requests to get the view model data', () => {
     sut.activate({ form: 'a' });
 
-    expect(storeSpy.dispatch.calls.count()).toEqual(1);
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('a'));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestForm('a'));
+    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(requestMetadata('a'));
   });
 
   it('listens for the form to update to get the routes', () => {
@@ -47,14 +51,18 @@ describe('the directory view model', () => {
 
     storeSpy.getState.and.returnValue(state);
     getFormSpy.and.returnValue({ id: 1});
-    routerSpy.generate.and.returnValues('/g', '/h');
-    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+    routerSpy.generate.and.returnValues('/interface', '/g', '/h');
+    // dont grab the second subscription for the status
+    storeSpy.subscribe.and.callFake(func => {
+      if (!updateFunc) updateFunc = func;
+    });
     sut.activate({ });
 
     updateFunc();
 
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
-    expect(routerSpy.generate.calls.count()).toEqual(2);
+    expect(routerSpy.generate.calls.count()).toEqual(3);
+    expect(routerSpy.generate).toHaveBeenCalledWith('interface', { form: 1 });
     expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 1 });
     expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 1 });
     expect(sut.routes).toEqual([{
@@ -64,6 +72,21 @@ describe('the directory view model', () => {
     }])
   });
 
+  it('listens for the metadata status', () => {
+    let updateFunc = null;
+    const state = {};
+
+    storeSpy.getState.and.returnValue(state);
+    getStatusSpy.and.returnValue('goodtogo');
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+    sut.activate({ });
+
+    updateFunc();
+
+    expect(getStatusSpy.calls.argsFor(0)[0]).toBe(state);
+    expect(sut.status).toEqual('goodtogo');
+  });
+
   // if you dont clear the routes any update may duplicate the routes
   it('refreshes the route array on each update', () => {
     let updateFunc = null;
@@ -71,7 +94,9 @@ describe('the directory view model', () => {
     routerSpy.routes = [];
 
     getFormSpy.and.returnValue({ });
-    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+    storeSpy.subscribe.and.callFake(func => {
+      if (!updateFunc) updateFunc = func;
+    });
     sut.activate({ });
 
     updateFunc();
@@ -92,14 +117,14 @@ describe('the directory view model', () => {
   });
 
   it('unsubscribes on deactivate', () => {
-    let unsubscribe = false;
-    const subscription = () => unsubscribe = true;
+    let unsubscribe = 0;
+    const subscription = () => ++unsubscribe;
 
-    storeSpy.subscribe.and.returnValue(subscription);
+    storeSpy.subscribe.and.returnValues(subscription, subscription);
     sut.activate({ });
 
     sut.deactivate();
 
-    expect(unsubscribe).toBeTruthy();
+    expect(unsubscribe).toEqual(2);
   });
 });

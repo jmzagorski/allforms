@@ -3,7 +3,12 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="btn-toolbar">
-          <button title="Copy" class="btn btn-xs btn-default" data-ng-click="addNew()">
+          <button title="Handhshake" class="btn btn-xs transparent">
+            <a href.bind="interfaceRoute" class="text-${status}">
+              <i class="fa fa-handshake-o fa-fw" aria-hidden="true"></i>
+            </a>
+          </button>
+          <button title="Copy" class="btn btn-xs btn-default" click.delegate="copy()">
             <i class="fa fa-files-o" aria-hidden="true"></i>
           </button>
         </div>
