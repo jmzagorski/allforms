@@ -1,5 +1,10 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
-import { receivedElement, elementAdded, elementEdited } from '../../../src/domain/index'
+import {
+  receivedAllElements, 
+  receivedElement,
+  elementAdded,
+  elementEdited
+} from '../../../src/domain/index'
 import * as saga from '../../../src/sagas/element';
 
 describe('the element saga', () => {
@@ -9,6 +14,9 @@ describe('the element saga', () => {
 
     const iterator = saga.default(api);
 
+    expect(iterator.next().value).toEqual(
+      takeLatest('REQUEST_METADATA', saga.getAllElements, api)
+    );
     expect(iterator.next().value).toEqual(
       takeLatest('REQUEST_ELEMENT', saga.getElement, api)
     );
@@ -72,6 +80,46 @@ describe('the element saga', () => {
 
     expect(iterator.throw(err).value).toEqual(
       put(receivedElement(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  [ { elements: undefined, error: true },
+    { elements: null, error: true },
+    { elements: [], error: false} 
+  ].forEach(rec => {
+    it('gets all the elements', () => {
+      const api = { getAll: () => { } };
+      const action= { payload: { formId: 1 } };
+
+      const iterator = saga.getAllElements(api, action);
+
+      expect(iterator.next().value).toEqual(
+        call([api, api.getAll], action.payload.formId)
+      );
+      expect(iterator.next(rec.elements).value).toEqual(
+        put(receivedAllElements(rec.elements, rec.error))
+      );
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
+    });
+  });
+
+  it('sends an error in the catch of getting all the elements', () => {
+    const api = { getAll: () => { } };
+    const action= { payload: { formId: 1 } };
+    const err = new Error();
+
+    const iterator = saga.getAllElements(api, action);
+    iterator.next();
+
+    expect(iterator.throw(err).value).toEqual(
+      put(receivedAllElements(err, true))
     );
     expect(iterator.next()).toEqual({
       done: true,
