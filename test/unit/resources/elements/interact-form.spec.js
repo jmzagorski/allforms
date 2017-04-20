@@ -38,7 +38,7 @@ describe('the interact form custom element', () => {
     expect(form.getAttribute('enhance-html.one-way')).toEqual('interactHtml');
     expect(form.id).toEqual('1');
     expect(form.method).toEqual('post');
-    expect(form.action).toContain('/act');
+    expect(form.action).toContain('/act/data');
     done();
   });
 

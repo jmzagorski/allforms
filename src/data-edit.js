@@ -13,13 +13,11 @@ export class DataEdit {
     this.html = '';
     this.autoSaveOpts = {};
 
-    this._formDataId = null;
     this._store = store;
     this._unsubscribe = () => {};
   }
 
   activate(params) {
-    this._formDataId = params.formDataId;
     this._unsubscribe = this._store.subscribe(() => this._update());
     this._store.dispatch(requestForm(params.form));
     this._store.dispatch(requestFormData(params.formDataId));
@@ -33,8 +31,8 @@ export class DataEdit {
     if (form && formData) {
       this.html = form.template;
       this.autoSaveOpts = {
-        action: 'PATCH',
-        api: form.api + '/' + this._formDataId,
+        method: 'PATCH',
+        dataId: formData.id,
         data: formData.data
       };
     }

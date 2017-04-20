@@ -38,7 +38,7 @@ describe('edit data view model', () => {
   it('sets up the view mode propertiers if the form and data exist on update', () => {
     const state = {};
     const form = { template: 'a', api: 'b' };
-    const formData = { data: 'c' };
+    const formData = { data: 'c', id: 1 };
     const getFormSpy = spyOn(formSelectors, 'getActiveForm').and.returnValue(form);
     const getDataSpy = spyOn(dataSelectors, 'getFormData').and.returnValue(formData);
     let updateFunc = null;
@@ -46,7 +46,7 @@ describe('edit data view model', () => {
     storeSpy.getState.and.returnValue(state);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
-    sut.activate({ formDataId: 1 });
+    sut.activate({ formDataId: formData.id });
     updateFunc();
 
     expect(getFormSpy.calls.count()).toEqual(1);
@@ -55,7 +55,7 @@ describe('edit data view model', () => {
     expect(getDataSpy.calls.argsFor(0)[0]).toBe(state);
     expect(sut.html).toEqual('a');
     expect(sut.autoSaveOpts).toEqual({
-      action: 'PATCH', api: 'b/1', data: 'c'
+      method: 'PATCH', dataId: 1, data: 'c'
     });
   });
 

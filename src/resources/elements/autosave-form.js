@@ -29,11 +29,11 @@ export class AutosaveFormCustomAttribute {
     this.$form.onsubmit = e => e.preventDefault();
 
     this.$form.onchange = async e => {
-      if (!this.value || !this.value.action || !this.value.api) {
-        throw new Error('the binding object must have an action and api property');
+      if (!this.value || !this.value.method || !this.value.dataId) {
+        throw new Error('the binding object must have an method and dataId property');
       }
 
-      this._formService.submit(this.value.action, this.value.api);
+      this._formService.submit(this.value.method, this.$form.action + '/' + this.value.dataId);
     };
   }
 }

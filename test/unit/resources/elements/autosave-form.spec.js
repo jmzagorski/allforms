@@ -82,13 +82,13 @@ describe('the auto save form attribute', () => {
   });
 
   it('rebinds on options value changing', async done => {
-    const context = { options: { api: 'a' } };
+    const context = { options: { dataId: 'a' } };
     sut.inView(`<form autosave-form.bind="options"></form>`)
       .boundTo(context);
 
     await sut.create(bootstrap);
 
-    context.options = { api: 'b' };
+    context.options = { dataId: 'b' };
 
     setTimeout(() => {
       expect(formServiceSpy.populate.calls.count()).toEqual(2);
@@ -97,7 +97,7 @@ describe('the auto save form attribute', () => {
   });
 
   it('prevents submission of form', async done => {
-    const context = { autoSaveOpts: { action: 'a', api: 'b' } };
+    const context = { autoSaveOpts: { method: 'a', dataId: 'b' } };
     const preventDefaultSpy = jasmine.createSpy('preventDefault');
     const event = { preventDefault: preventDefaultSpy }
 
@@ -112,7 +112,7 @@ describe('the auto save form attribute', () => {
     done();
   });
 
-  [ { }, { api: 'a' }, { action: 'p'} ].forEach(options => {
+  [ { }, { dataId: 'a' }, { method: 'p'} ].forEach(options => {
     it('throws when no value options exists', async done => {
       sut.inView(`<form autosave-form.bind="options"></form>`)
         .boundTo({ options });
@@ -122,22 +122,23 @@ describe('the auto save form attribute', () => {
       try {
         await sut.element.onchange();
       } catch(e) {
-        expect(e).toEqual(new Error('the binding object must have an action and api property'));
+        expect(e).toEqual(new Error('the binding object must have an method and dataId property'));
         done();
       }
     });
   });
 
   it('calls the form service to submit the data', async done => {
-    const options = { api: 'a', action: 'b' }
-    sut.inView(`<form autosave-form.bind="options"></form>`)
+    const options = { dataId: 'a', method: 'b' }
+    sut.inView(`<form action="c/b" autosave-form.bind="options"></form>`)
       .boundTo({ options });
 
     await sut.create(bootstrap);
 
     await sut.element.onchange();
 
-    expect(formServiceSpy.submit).toHaveBeenCalledWith('b', 'a');
+    expect(formServiceSpy.submit.calls.argsFor(0)[0]).toEqual('b');
+    expect(formServiceSpy.submit.calls.argsFor(0)[1]).toContain('c/b/a');
     done();
   });
 });

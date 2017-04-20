@@ -217,7 +217,7 @@ export const schema = {
           },
           "api": {
             "type": "string",
-            "enum": [ "http://localhost:9001/api/forms/data" ]
+            "enum": [ "http://localhost:9001/api/forms" ]
           },
           "autoname": {
             "type": "string"
@@ -250,7 +250,7 @@ export const schema = {
             }
           },
         },
-        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api" ]
+        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api", "metadata" ]
       }
     }
   },
