@@ -69,9 +69,15 @@ describe('the grid custom element factory', () => {
     expect(grid.getOptions().blah).toBeTruthy();
   });
 
-  it('adds the data view', () => {
+  it('adds the data view when there is no data', () => {
     const grid = sut.create({ gridId });
 
     expect(grid.getData()).toEqual(jasmine.any(Data.DataView));
+  });
+
+  it('does not add the data view when there is data', () => {
+    const grid = sut.create({ gridId, data: [] });
+
+    expect(grid.getData()).not.toEqual(jasmine.any(Data.DataView));
   });
 })

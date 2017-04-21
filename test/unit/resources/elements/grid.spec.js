@@ -1,3 +1,6 @@
+// IMPORTANT. don't mock TaskQueue unless you have to. I was having trouble
+// passing the dataChanged method when it was mocked.
+
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
 import { GridFactory } from '../../../../src/resources/elements/grid-factory';
@@ -15,6 +18,7 @@ describe('the grid custom element', () => {
   let subscribeSpy;
   // make a slickgrid spy, it is easier than mocking all functions
   let $grid;
+  let gridFactoryMock;
 
   beforeEach(() => {
     $grid = document.createElement('div')
@@ -27,13 +31,14 @@ describe('the grid custom element', () => {
     gridSpy = setupSpy('grid', sg);
     dataViewSpy = setupSpy('view', db);
     factorySpy = jasmine.createSpy('factory');
-    queueMock = { queueTask: jasmine.createSpy('queue') };
-    sut = StageComponent.withResources('resources/elements/grid')
+    queueMock = setupSpy('queue', TaskQueue.prototype)
+    gridFactoryMock = { create: factorySpy }
+    sut = StageComponent.withResources('resources/elements/grid');
 
     sut.configure = aurelia => {
       aurelia.use.standardConfiguration();
-      aurelia.container.registerInstance(GridFactory, { create: factorySpy });
-      aurelia.container.registerInstance(TaskQueue, queueMock);
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      //aurelia.container.registerInstance(TaskQueue, queueMock);
     };
 
     factorySpy.and.returnValue(gridSpy);
@@ -56,7 +61,7 @@ describe('the grid custom element', () => {
     sut.inView(`<grid></grid>`);
 
     // do nothing
-    queueMock.queueTask.and.callFake(init => {});
+    //queueMock.queueTask.and.callFake(init => {});
 
     await sut.create(bootstrap);
 
@@ -67,6 +72,13 @@ describe('the grid custom element', () => {
   });
 
   it('queues up an initialization task', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
+    let init = null
     sut.inView(`<grid></grid>`);
 
     // do nothing
@@ -78,28 +90,41 @@ describe('the grid custom element', () => {
     done();
   });
 
-  it('creates the grid when attached', async done => {
-    const options = {};
-    const context = { id: 1, options, pk: '2' };
+  [ { pk: '2', data: null},
+    { pk: null, data: [ { id: 1 }] },
+    { pk: undefined, data: [ { id: 1 }] },
+    { pk: '', data: [ { id: 1 }] }
+  ].forEach(rec => {
+    it('calls the grid factory on initialize', async done => {
+      const options = {};
+      const context = { data: rec.data, id: 1, options, pk: rec.pk };
 
-    sut.inView(`<grid id.bind="id" options.bind="options" pk.bind="pk"></grid>`)
-      .boundTo(context);
+      sut.inView(`<grid data.bind="data" id.bind="id" options.bind="options" pk.bind="pk"></grid>`)
+        .boundTo(context);
 
-    await sut.create(bootstrap);
+      await sut.create(bootstrap);
 
-    expect(factorySpy).toHaveBeenCalledWith({
-      gridId: '#1',
-      pk: '2',
-      columnOptions: [ ],
-      gridOptions: options
-    })
-    expect(factorySpy.calls.argsFor(0)[0].gridOptions).toBe(options);
-    done();
+      expect(factorySpy).toHaveBeenCalledWith({
+        gridId: '#1',
+        pk: rec.pk,
+        columnOptions: [ ],
+        gridOptions: options,
+        data: rec.data
+      })
+      expect(factorySpy.calls.argsFor(0)[0].gridOptions).toBe(options);
+      done();
+    });
   });
 
   // not sure how to test with @children. it was not wokrin
   // when icnluded <grid-column> in view
   it('creates the grid with grid-column children', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
     let init = null
     const $elem = document.createElement('div');
     sut.inView(`<grid></grid>`)
@@ -119,8 +144,6 @@ describe('the grid custom element', () => {
   it('sets the default grid height to 500px', async done => {
     sut.inView(`<grid></grid>`);
 
-    queueMock.queueTask.and.callFake(init => init());
-
     await sut.create(bootstrap);
 
     expect($grid.style.height).toEqual('500px');
@@ -130,8 +153,6 @@ describe('the grid custom element', () => {
   it('resizes the div to fit within the parent', async done => {
     sut.inView(`<grid height.bind="height"></grid>`)
       .boundTo({ height: 50 });
-
-    queueMock.queueTask.and.callFake(init => init());
 
     await sut.create(bootstrap);
 
@@ -143,7 +164,36 @@ describe('the grid custom element', () => {
     done();
   });
 
-  it('updates the dataView', async done => {
+  it('renders the grid when no pk is bound', async done => {
+    const context = { data: [ { blah: 1 } ] };
+
+    sut.inView(`<grid data.bind="data"></grid>`).boundTo(context);
+
+    await sut.create(bootstrap);
+
+    expect(gridSpy.setData).toHaveBeenCalledWith(context.data);
+    expect(gridSpy.render.calls.count()).toEqual(1);
+    expect(dataViewSpy.beginUpdate).not.toHaveBeenCalled();
+    done()
+  });
+
+  it('re-renders the grid on data changed', async done => {
+    const context = { data: { blah: 1 } };
+
+    sut.inView(`<grid data.bind="data"></grid>`).boundTo(context);
+
+    await sut.create(bootstrap);
+      
+    context.data = { blah: 2 };
+
+    setTimeout(() => {
+      expect(gridSpy.setData.calls.count()).toEqual(2);
+      expect(gridSpy.render.calls.count()).toEqual(2);
+      done()
+    });
+  });
+
+  it('updates the dataView if a pk is given', async done => {
     dataViewSpy.beginUpdate.and.callFake(() => {
       expect(dataViewSpy.setItems).not.toHaveBeenCalled();
       expect(dataViewSpy.setFilter).not.toHaveBeenCalled();
@@ -159,9 +209,7 @@ describe('the grid custom element', () => {
 
     const context = { data: [] };
 
-    sut.inView(`<grid data.bind="data"></grid>`).boundTo(context);
-
-    queueMock.queueTask.and.callFake(init => init());
+    sut.inView(`<grid pk="blah" data.bind="data"></grid>`).boundTo(context);
 
     await sut.create(bootstrap);
 
@@ -178,7 +226,7 @@ describe('the grid custom element', () => {
 
     dataViewSpy.onRowCountChanged.subscribe.and.callFake(h => handler = h);
 
-    sut.inView(`<grid></grid>`);
+    sut.inView(`<grid pk="blah"></grid>`);
 
     await sut.create(bootstrap);
     handler();
@@ -193,7 +241,7 @@ describe('the grid custom element', () => {
 
     dataViewSpy.onRowsChanged.subscribe.and.callFake(h => handler = h);
 
-    sut.inView(`<grid></grid>`);
+    sut.inView(`<grid pk="blah"></grid>`);
 
     await sut.create(bootstrap);
     handler(null, { rows: 2 });
@@ -205,6 +253,12 @@ describe('the grid custom element', () => {
   });
 
   it('listens for item changed event on the columns', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
     let init = null
     const item = { id: 1 };
     const $elem = document.createElement('div');
@@ -229,6 +283,12 @@ describe('the grid custom element', () => {
   });
 
   it('registers any grid events from the columns', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
     let init = null;
     const clickFn = () => {};
     const changeFn = () => {};
@@ -266,8 +326,14 @@ describe('the grid custom element', () => {
   });
 
   it('unsubscribes to all subscriptions', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
     let init = null;
-    sut.inView(`<grid></grid>`);
+    sut.inView(`<grid pk="blah"></grid>`);
 
     queueMock.queueTask.and.callFake(fn => init = fn);
 
@@ -289,6 +355,12 @@ describe('the grid custom element', () => {
   });
 
   it('removes the column itemchange listener on dispose', async done => {
+    sut.configure = aurelia => {
+      aurelia.use.standardConfiguration();
+      aurelia.container.registerInstance(GridFactory, gridFactoryMock);
+      aurelia.container.registerInstance(TaskQueue, queueMock);
+    };
+
     let init = null
     const $elem = document.createElement('div');
     sut.inView(`<grid pk="id"></grid>`)

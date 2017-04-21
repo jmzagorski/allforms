@@ -9,19 +9,19 @@ import { GridFactory } from './grid-factory';
 `)
 export class GridCustomElement {
   @bindable id = 'data-grid';
-  @bindable data;
+  @bindable data = [];
   @bindable height = 500;
   @bindable options;
   @bindable pk;
-  @bindable filters;
+  @bindable filters = [];
   @children('grid-column') columns = [];
 
   static inject = [ Element, GridFactory, TaskQueue ];
 
   constructor(element, gridFactory, taskQueue) {
     this.element = element;
-    this.grid = null;
 
+    this._grid = null;
     this._gridId = '';
     this._dataView = null
     this._gridFactory = gridFactory;
@@ -38,11 +38,15 @@ export class GridCustomElement {
   attached() {
     // FIXME use taskqueu because bug in Aurelia
     // https://github.com/aurelia/templating/issues/403
-    this._taskQueue.queueTask(this._initGrid.bind(this))
+    this._taskQueue.queueTask(this._initGrid.bind(this));
+  }
+
+  dataChanged() {
+    this._setupHeap();
   }
 
   detached() {
-    if (this.grid) this.grid.destroy();
+    if (this._grid) this._grid.destroy();
 
     for(let sub of this._subscriptions) sub[0](sub[1]);;
 
@@ -52,52 +56,66 @@ export class GridCustomElement {
   }
 
   _initGrid() {
-    this.grid = this._gridFactory.create({
+    this._grid = this._gridFactory.create({
       gridId: this._gridId,
       pk: this.pk,
       columnOptions: this.columns.map(c => c.options),
-      gridOptions: this.options
+      gridOptions: this.options,
+      data: !this.pk ? this.data : null
     });
 
-    this._dataView = this.grid.getData();
-    this._dataView.beginUpdate();
-    this._dataView.setItems(this.data);
-    this._dataView.setFilter(this._compositeFilter.bind(this));
-    this._dataView.endUpdate();
+    if (this.pk) {
+      this._setupDataView();
+    } else {
+      this._setupHeap();
+    }
 
     this._resize();
     this._subscribeEvents();
   }
 
-  _resize() {
-    const $container = this.grid.getContainerNode();
-    const parentWidth = this.element.parentNode.offsetWidth;
-    $container.style.width = parentWidth - 1 + 'px';
-    $container.style.height = this.height + 'px';
-    this.grid.resizeCanvas();
+  _setupHeap() {
+    this._grid.setData(this.data);
+    this._grid.render();
   }
 
-  _subscribeEvents() {
+  _setupDataView() {
+    this._dataView = this._grid.getData();
+    this._dataView.beginUpdate();
+    this._dataView.setItems(this.data);
+    this._dataView.setFilter(this._compositeFilter.bind(this));
+    this._dataView.endUpdate();
+
     const updateRowCount = ((e, args) => {
-      this.grid.updateRowCount();
-      this.grid.render();
+      this._grid.updateRowCount();
+      this._grid.render();
     }).bind(this)
 
     const invalidateRows = ((e, args) => {
-      this.grid.invalidateRows(args.rows);
-      this.grid.render();
+      this._grid.invalidateRows(args.rows);
+      this._grid.render();
     }).bind(this);
 
     this._registerEvent(this._dataView.onRowCountChanged, updateRowCount);
     this._registerEvent(this._dataView.onRowsChanged, invalidateRows);
+  }
 
+  _resize() {
+    const $container = this._grid.getContainerNode();
+    const parentWidth = this.element.parentNode.offsetWidth;
+    $container.style.width = parentWidth - 1 + 'px';
+    $container.style.height = this.height + 'px';
+    this._grid.resizeCanvas();
+  }
+
+  _subscribeEvents() {
     // column specific events
-    this._itemChangedListener = this._updateView.bind(this);
+    this._itemChangedListener = this._updateDataView.bind(this);
     for (let c of this.columns) {
       c.element.addEventListener('itemchanged', this._itemChangedListener);
       if (c.subscriptions) {
         for (let sub in c.subscriptions) {
-          this._registerEvent(this.grid[sub], c.subscriptions[sub]);
+          this._registerEvent(this._grid[sub], c.subscriptions[sub]);
         }
       }
     }
@@ -117,7 +135,7 @@ export class GridCustomElement {
     return show;
   }
 
-  _updateView(event) {
+  _updateDataView(event) {
     this._dataView.updateItem(event.detail[this.pk], event.detail);
   }
 }
