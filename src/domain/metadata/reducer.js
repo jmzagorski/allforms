@@ -1,50 +1,82 @@
 import * as actions from './actions';
 
+const WARNING = 'warning';
+const DANGER = 'danger';
+const SUCCESS = 'success';
+
 /**
  * @summary Listens and responds to element actions by creating or returning
  * the state
  */
-export default function metadataReducer(state = {}, action) {
+export default function metadataReducer(state = { status: '', elements: [], api: [], statuses: [] },
+  action) {
   switch (action.type) {
     case actions.RECEIVED_METADATA:
       if (action.error) return state;
 
-      return Object.assign(state, {
-        api: action.payload,
-        status: checkIfSynced(state.elements, action.payload)
-      });
-
+      const mState = Object.assign({}, state, { api: action.payload });
+      mState.statuses = calcAllStatuses(mState);
+      mState.status = calcOverallStatus(mState.statuses);
+      
+      return mState;
     case actions.RECEIVED_ALL_ELEMENTS:
       if (action.error) return state;
 
-      return Object.assign(state, {
-        elements: action.payload,
-        status: checkIfSynced(action.payload, state.api)
-      });
+      const eState = Object.assign({}, state, { elements: action.payload });
+      eState.statuses = calcAllStatuses(eState);
+      eState.status = calcOverallStatus(eState.statuses);
+      
+      return eState;
 
     default:
       return state;
   }
 }
 
-function checkIfSynced(elements, metadata) {
-  // if there is no metadata, then there is no external api. all elements will
-  // map
-  if (!metadata || !metadata.length) return 'success';
+function calcElemStatuses(state) {
+  let statuses = [ ];
 
-  // if there are elements without a metadata map, then that is bad because they
-  // are entering data not at the external api
-  if (elements) {
-    for (let e of elements) {
-      if (!metadata.find(m => e.name === m.name)) return 'danger';
+  for (let e of state.elements) {
+    const metadata = state.api.find(a => a.name === e.name);
+
+    if (!metadata) {
+      statuses.push({ element: e.name, metadata: '', status: DANGER });
+    } else {
+      statuses.push({ element: e.name, metadata: metadata.name, status: SUCCESS });
     }
   }
 
-  // if there is a metadata property but no element show a warning since no
-  // everything is mapped
-  for (let m of metadata) {
-    if (!elements.find(e => e.name === m.name)) return 'warning';
+  return statuses;
+}
+
+function calcAllStatuses(state) {
+  let statuses = [ ];
+
+  for (let a of state.api) {
+    const elem = state.elements.find(e => a.name === e.name);
+
+    if (!elem) {
+      statuses.push({ element: '', metadata: a.name, status: WARNING });
+    } else {
+      statuses.push({ element: elem.name, metadata: a.name, status: SUCCESS });
+    }
   }
 
-  return 'success';
+  for (let e of state.elements) {
+    const metadata = state.api.find(a => a.name === e.name);
+
+    if (!metadata) {
+      statuses.push({ element: e.name, metadata: '', status: DANGER });
+    }
+  }
+
+  return statuses;
+}
+
+function calcOverallStatus(statuses) {
+  const statusNames = statuses.map(s => s.status);
+
+  return statusNames.find(s => s === DANGER) ||
+    statusNames.find(s => s === WARNING) ||
+    SUCCESS;
 }
