@@ -15,7 +15,6 @@ module.exports = function(router) {
       req.body.id = null;
       req.body.originalId = null;
 
-      console.log(req.body.formId);
       var form = router.db.get('forms').getById(req.body.formId).value();
 
       if (form.autoname) {
