@@ -1,1 +1,17 @@
-<template></template>
+<template>
+  <require from="./resources/elements/grid"></require>
+  <require from="./resources/elements/grid-column"></require>
+
+  <section class="au-animate col-md-offset-2 col-md-8" >
+    <div class="panel panel-default">
+      <div class="panel-heading">
+      </div>
+      <grid height="500" options.one-way="gridOptions" data.one-way="statuses">
+        <grid-column field="element" name="Designer"></grid-column>
+        <grid-column field="metadata" name="Api"></grid-column>
+        <grid-column custom.bind="contextOptions" field="status"
+          formatters.one-way="[ 'BsIconContext' ]" name="Status"></grid-column>
+      </grid>
+    </div>
+  </section>
+</template>

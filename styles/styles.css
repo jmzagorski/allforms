@@ -112,6 +112,10 @@ div.au-stagger {
   }
 }
 
+button.transparent {
+  background: transparent;
+}
+
 /* Interact CSS */
 /*similar to pagehost*/
 .dropzone {

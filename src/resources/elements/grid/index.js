@@ -3,3 +3,4 @@ export * from './formatters/toggle-formatter';
 export * from './formatters/link-formatter';
 export * from './formatters/snapshot-formatter';
 export * from './formatters/composite-formatter';
+export * from './formatters/bs-icon-context-formatter';

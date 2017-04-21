@@ -46,6 +46,11 @@ export default class {
         moduleId: './snapshot',
         nav: false
       }, {
+        route: '/:form/interface',
+        name: 'interface',
+        moduleId: './interface',
+        nav: false
+      }, {
     /*
      * EVERYTHING BELOW HERE SHOULD HAVE A SETTINGS AND BE ORDERED IN THE
      * ORDER YOU WANT THE USER TO SEE THE ICONS. THESE WILL APPEAR AS A LIST IN
@@ -99,16 +104,6 @@ export default class {
           dirListing: true,
           icon: 'file-text-o',
           description: 'view changes to your form template'
-        }
-      }, {
-        route: '/:form/interface',
-        name: 'interface',
-        moduleId: './interface',
-        nav: false,
-        settings: {
-          dirListing: true,
-          icon: 'handshake-o',
-          description: 'create predefined fields'
         }
       }, {
         route: '/:form/settings',

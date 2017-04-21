@@ -73,8 +73,18 @@ describe('the router configuration', () => {
     });
   });
 
-  it('should have a data route', () => {
+  it('should have a interface route', () => {
     expect(sut.router.routes[6]).toEqual({
+      route: '/:form/interface',
+      name: 'interface',
+      moduleId: './interface',
+      nav: false
+    });
+  });
+
+
+  it('should have a data route', () => {
+    expect(sut.router.routes[7]).toEqual({
       route: '/:form/data',
       name: 'data',
       moduleId: './data',
@@ -88,7 +98,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a view route', () => {
-    expect(sut.router.routes[7]).toEqual({
+    expect(sut.router.routes[8]).toEqual({
       route: '/:form/view',
       name: 'view',
       moduleId: './view',
@@ -102,7 +112,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a design route', () => {
-    expect(sut.router.routes[8]).toEqual({
+    expect(sut.router.routes[9]).toEqual({
       route: '/:form/design',
       name: 'design',
       moduleId: './design',
@@ -116,7 +126,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a contributors route', () => {
-    expect(sut.router.routes[9]).toEqual({
+    expect(sut.router.routes[10]).toEqual({
       route: '/:form/contributors',
       name: 'contributors',
       moduleId: './contributors',
@@ -130,7 +140,7 @@ describe('the router configuration', () => {
   });
 
   it('should have a history route', () => {
-    expect(sut.router.routes[10]).toEqual({
+    expect(sut.router.routes[11]).toEqual({
       route: '/:form/history',
       name: 'history',
       moduleId: './history',
@@ -139,20 +149,6 @@ describe('the router configuration', () => {
         dirListing: true,
         icon: 'file-text-o',
         description: 'view changes to your form template'
-      }
-    });
-  });
-
-  it('should have a interface route', () => {
-    expect(sut.router.routes[11]).toEqual({
-      route: '/:form/interface',
-      name: 'interface',
-      moduleId: './interface',
-      nav: false,
-      settings: {
-        dirListing: true,
-        icon: 'handshake-o',
-        description: 'create predefined fields'
       }
     });
   });

@@ -24,7 +24,8 @@ import {
   HtmlFormatter,
   LinkFormatter,
   ToggleFormatter,
-  SnapshotFormatter
+  SnapshotFormatter,
+  BsIconContextFormatter
 } from './resources/elements/grid/index'
 
 Bluebird.config({ warnings: false });
@@ -57,7 +58,9 @@ export async function configure(aurelia) {
   aurelia.container.registerSingleton('GridFormatters', LinkFormatter);
   aurelia.container.registerSingleton('GridFormatters', ToggleFormatter);
   aurelia.container.registerSingleton('GridFormatters', SnapshotFormatter);
+  aurelia.container.registerSingleton('GridFormatters', BsIconContextFormatter);
 
+  
   // register slick grid's and obey interface
   for (let prop in Formatters) {
     aurelia.container.registerHandler('GridFormatters', () => {
