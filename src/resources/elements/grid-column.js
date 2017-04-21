@@ -35,6 +35,7 @@ export class GridColumnCustomElement {
   @bindable allOptions; // useful if data is saved in a object
   @bindable onClick;
   @bindable onCellChange;
+  @bindable custom = { formatters: [] };
 
   static inject = [ Element, TargetInstruction, CompositeFormatter ];
 
@@ -45,18 +46,19 @@ export class GridColumnCustomElement {
 
     this._compositeFormatter = compositeFormatter;
     this._index = null;
-    this._customOpts = { formatters: [] };
     this._slot = instruction.elementInstruction.template;
   }
 
   bind(bindingContext) {
+    this.custom.formatters = [];
+
     for (let formatter of this.formatters) {
-      this._customOpts.formatters.push(formatter);
+      this.custom.formatters.push(formatter);
     }
 
     if (this._slot) {
-      this._customOpts.html = this._slot;
-      this._customOpts.formatters.push('Html')
+      this.custom.html = this._slot;
+      this.custom.formatters.push('Html')
     }
 
     this._events = {
@@ -87,7 +89,7 @@ export class GridColumnCustomElement {
       sortable: this.sortable,
       tooltip: this.tooltip,
       width: this.width,
-      custom: this._customOpts,
+      custom: this.custom
     }, this.allOptions);
   } 
 

@@ -65,7 +65,8 @@ describe('the grid custom element', () => {
       selectable: '17',
       sortable: '18',
       tooltip: '19',
-      width: '20'
+      width: '20',
+      custom: { blah: 'a' }
     }
 
     sut.inView(`<grid-column async-post-render.bind="asyncPostRender"
@@ -87,6 +88,7 @@ describe('the grid custom element', () => {
       sortable.bind="sortable"
       tooltip.bind="tooltip"
       width.bind="width"
+      custom.bind="custom"
     ></grid-column>`).boundTo(context);
 
     await sut.create(bootstrap);
@@ -116,7 +118,7 @@ describe('the grid custom element', () => {
       sortable: context.sortable,
       tooltip: context.tooltip,
       width: context.width,
-      custom: { formatters: [] }
+      custom: { formatters: [], blah: 'a' }
     });
     done();
   });
@@ -142,6 +144,7 @@ describe('the grid custom element', () => {
       sortable: '18',
       tooltip: '19',
       width: '20',
+      custom: { blah: 'a' },
       allOptions: {
         asyncPostRender: '2',
         behavior: '3',
@@ -162,6 +165,7 @@ describe('the grid custom element', () => {
         sortable: '19',
         tooltip: '20',
         width: '21',
+        custom: { formatters: [], blah: 'b' },
       }
     }
 
@@ -185,6 +189,7 @@ describe('the grid custom element', () => {
       sortable.bind="sortable"
       tooltip.bind="tooltip"
       width.bind="width"
+      custom.bind="custom"
     ></grid-column>`).boundTo(context);
 
     await sut.create(bootstrap);
@@ -210,7 +215,7 @@ describe('the grid custom element', () => {
       sortable: context.allOptions.sortable,
       tooltip: context.allOptions.tooltip,
       width: context.allOptions.width,
-      custom: { formatters: [] }
+      custom: { formatters: [], blah: 'b' }
     });
     done();
   });

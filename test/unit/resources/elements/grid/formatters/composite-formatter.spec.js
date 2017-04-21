@@ -13,6 +13,16 @@ describe('the custom composite grid formatter', () => {
     sut = new CompositeFormatter(formatterMocks);
   });
 
+  [ {}, { custom: {} } ].forEach(def => {
+    it('returns the value when no formatters are found', () => {
+      const expectedVal = {};
+
+      const actualVal = sut.format(null, null, expectedVal, def, null);
+
+      expect(actualVal).toBe(expectedVal);
+    });
+  });
+
   it('throws if the formatter is not found', () => {
     const def = { custom: { formatters: [ 'C' ] } };
 

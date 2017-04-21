@@ -9,6 +9,8 @@ export class CompositeFormatter {
   }
 
   format(row, cell, value, columnDef, dataContext) {
+    if (!columnDef.custom || !columnDef.custom.formatters) return value;
+
     let formatted = value;
 
     for (let fname of columnDef.custom.formatters) {
