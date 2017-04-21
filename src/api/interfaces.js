@@ -1,17 +1,26 @@
 /* eslint-disable */
 import * as interfaces from '../domain/interfaces';
 
-interface ISnapShotApi {
+interface IMetadataApi {
+  
   /**
-   * @summary saves a new ISnapShot object
-   * @param {ISnapShot} snapShot the ISnapShot object
-   * @return {Promise<ISnapShot>} a promise for the saved ISnapShot object
+   * @summary gets the external metadata form a particular form
+   * @param {string} api the api where the metadata resides
+   * @param {string} formId the form id
+   * @return {Promise<IMetadata[]>} a promise for the IMetadata[] array
    */
-  save(snapShot: ISnapShot): Promise<ISnapShot>;
+  get(api: string, formId: string): Promise<IMetadata[]>;
 }
 
 interface IElementApi {
   
+  /**
+   * @summary gets all the elements for a particular form
+   * @param {string} id the id of the form
+   * @return {Promise<IElement[]>} a promise for the IElement[] array
+   */
+  getAll(formId: string): Promise<IElement[]>;
+
   /**
    * @summary gets the element by id
    * @param {number} id the id of the element
