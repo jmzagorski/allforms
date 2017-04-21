@@ -19,7 +19,7 @@ describe('the directory view model', () => {
     storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
     getFormSpy = spyOn(formSelectors, 'getActiveForm');
-    getStatusSpy = spyOn(metadataSelectors, 'getStatus');
+    getStatusSpy = spyOn(metadataSelectors, 'getOverallMetadataStatus');
 
     sut = new Directory(routerSpy, storeSpy);
   });

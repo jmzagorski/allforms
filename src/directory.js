@@ -1,4 +1,4 @@
-import { requestMetadata, getStatus, getActiveForm, requestForm } from './domain/index';
+import { requestMetadata, getOverallMetadataStatus, getActiveForm, requestForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
@@ -46,7 +46,7 @@ export class Directory {
   }
 
   _getStatus() {
-    this.status = getStatus(this._store.getState()) || this.status;
+    this.status = getOverallMetadataStatus(this._store.getState()) || this.status;
   }
 
   deactivate() {
