@@ -17,7 +17,6 @@ module.exports = function (req, res, next) {
   }
 
   if (req.path.match(/\/api\/forms\/[a-z]+\/data/i) && nocontent) {
-    console.log('data unset')
     res.locals.data = [];
   }
 
