@@ -93,12 +93,12 @@ describe('the element saga', () => {
   ].forEach(rec => {
     it('gets all the elements', () => {
       const api = { getAll: () => { } };
-      const action= { payload: { formId: 1 } };
+      const action= { payload: { id: 1 } };
 
       const iterator = saga.getAllElements(api, action);
 
       expect(iterator.next().value).toEqual(
-        call([api, api.getAll], action.payload.formId)
+        call([api, api.getAll], action.payload.id)
       );
       expect(iterator.next(rec.elements).value).toEqual(
         put(receivedAllElements(rec.elements, rec.error))
@@ -112,7 +112,7 @@ describe('the element saga', () => {
 
   it('sends an error in the catch of getting all the elements', () => {
     const api = { getAll: () => { } };
-    const action= { payload: { formId: 1 } };
+    const action= { payload: { id: 1 } };
     const err = new Error();
 
     const iterator = saga.getAllElements(api, action);

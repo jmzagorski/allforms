@@ -10,6 +10,9 @@ describe('the form saga', () => {
     const iterator = saga.default(api);
 
     expect(iterator.next().value).toEqual(
+      takeLatest('REQUEST_METADATA', saga.getForm, api)
+    );
+    expect(iterator.next().value).toEqual(
       takeLatest('REQUEST_FORM', saga.getForm, api)
     );
     expect(iterator.next().value).toEqual(

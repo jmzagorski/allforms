@@ -4,7 +4,7 @@ import { receivedAllElements, REQUEST_METADATA, EDIT_FORM_TEMPLATE } from '../do
 
 export function* getAllElements(api, action) {
   try {
-    const elements = yield call([api, api.getAll], action.payload.formId);
+    const elements = yield call([api, api.getAll], action.payload.id);
     const hasError = !elements;
 
     yield put(receivedAllElements(elements, hasError));

@@ -4,13 +4,13 @@ export const RECEIVED_ALL_ELEMENTS = 'RECEIVED_ALL_ELEMENTS';
 
 /**
  * @summary creates the action for requesting the metadata
- * @param {string} formId the id of the form
+ * @param {string} id the id of the form
  * @return {IAction} the action object
  */
 export function requestMetadata(formId) {
   return {
     type: REQUEST_METADATA,
-    payload: { formId }
+    payload: { id: formId }
   };
 }
 

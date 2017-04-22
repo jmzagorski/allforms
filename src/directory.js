@@ -1,4 +1,4 @@
-import { requestMetadata, getOverallMetadataStatus, getActiveForm, requestForm } from './domain/index';
+import { requestMetadata, getOverallMetadataStatus, getActiveForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
@@ -16,7 +16,6 @@ export class Directory {
   activate(params) {
     this._unsubscribes.push(this._store.subscribe(this._updateForm.bind(this)));
     this._unsubscribes.push(this._store.subscribe(this._getStatus.bind(this)));
-    this._store.dispatch(requestForm(params.form));
     this._store.dispatch(requestMetadata(params.form));
   }
 

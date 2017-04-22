@@ -4,7 +4,7 @@ import { Router } from 'aurelia-router';
 import { setupSpy } from './jasmine-helpers';
 import * as formSelectors from '../../src/domain/form/selectors';
 import * as metadataSelectors from '../../src/domain/metadata/selectors';
-import { requestForm, requestMetadata } from '../../src/domain';
+import { requestMetadata } from '../../src/domain';
 
 describe('the directory view model', () => {
   let sut;
@@ -32,8 +32,7 @@ describe('the directory view model', () => {
   it('dispatches requests to get the view model data', () => {
     sut.activate({ form: 'a' });
 
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestForm('a'));
-    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(requestMetadata('a'));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('a'));
   });
 
   it('listens for the form to update to get the routes', () => {

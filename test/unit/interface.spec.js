@@ -2,7 +2,7 @@ import { Store } from 'aurelia-redux-plugin';
 import { Interface } from '../../src/interface';
 import { setupSpy } from './jasmine-helpers';
 import * as metadataSelectors from '../../src/domain/metadata/selectors';
-import { requestForm, requestMetadata } from '../../src/domain';
+import { requestMetadata } from '../../src/domain';
 
 describe('the interface view model', () => {
   let sut;
@@ -25,8 +25,7 @@ describe('the interface view model', () => {
   it('dispatches requests to get the view model data', () => {
     sut.activate({ form: 'a' });
 
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestForm('a'));
-    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(requestMetadata('a'));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('a'));
   });
 
   it('subscribes to the store to get the metadata statuses', () => {

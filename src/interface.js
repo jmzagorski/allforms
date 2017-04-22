@@ -1,5 +1,5 @@
 import { Store } from 'aurelia-redux-plugin';
-import { getAllMetadataStatuses, requestForm, requestMetadata } from './domain';
+import { getAllMetadataStatuses, requestMetadata } from './domain';
 
 export class Interface {
 
@@ -20,9 +20,6 @@ export class Interface {
 
   async activate(params) {
     this._unsubscribe = this._store.subscribe(this._update.bind(this));
-    // FIXME: shouldnt have to request the form and metadata. request for
-    // metadatra should signal to make sure a form exists
-    this._store.dispatch(requestForm(params.form));
     this._store.dispatch(requestMetadata(params.form));
   }
 

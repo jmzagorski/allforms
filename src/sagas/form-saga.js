@@ -1,5 +1,6 @@
 import { put, takeLatest, call } from 'redux-saga/effects';
 import * as actions from '../domain/form/actions';
+import { REQUEST_METADATA } from '../domain';
 
 /**
  * @summary calls to get a single IForm object
@@ -9,6 +10,7 @@ import * as actions from '../domain/form/actions';
  */
 export function* getForm(api, action) {
   try {
+    console.dir(action);
     if (action.payload.id) {
       const form = yield call([api, api.get], action.payload.id);
       const hasError = !form;
@@ -67,6 +69,7 @@ export function* editTemplate(api, action) {
  * @param {IFormApi} api the IFormApi service
  */
 export default function* formSaga(api) {
+  yield takeLatest(REQUEST_METADATA, getForm, api);
   yield takeLatest(actions.REQUEST_FORM, getForm, api);
   yield takeLatest(actions.CREATE_FORM, addForm, api);
   yield takeLatest(actions.EDIT_FORM, editForm, api);
