@@ -1,15 +1,34 @@
 export const schema = {
   "type": "object",
   "properties": {
-    "member": {
-      "type": "object",
-      "properties": {
-        "loginName": {
-          "type": "string",
-          "faker": "name.firstName"
-        }
-      },
-      "required": [ "loginName" ]
+    "members": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "faker": "internet.userName"
+          },
+          "location": {
+            "type": "string",
+            "enum": [
+              "S6", "S7", "N1", "DB", "DA"
+            ]
+          },
+          "displayName": {
+            "type": "string",
+            "faker": "name.findName"
+          },
+          "department" : {
+            "type": "string",
+            "faker": "commerce.department"
+          }
+        },
+        "required": [ "id", "location", "displayName", "department" ]
+      }
     },
     "lookups": {
       "type": "array",
@@ -254,7 +273,7 @@ export const schema = {
       }
     }
   },
-  "required": [ "lookups", "formData", "forms", "member", "elements", "element-types" ],
+  "required": [ "lookups", "formData", "forms", "members", "elements", "element-types" ],
   "definitions": {
     "name": {
       "type": "string",

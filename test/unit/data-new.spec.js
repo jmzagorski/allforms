@@ -32,7 +32,7 @@ describe('the new data form view model', () => {
   });
 
   it('dispatches an event to create the new form', () => {
-    getMemberSpy.and.returnValue({ loginName: 'a' })
+    getMemberSpy.and.returnValue({ id: 'a' })
     sut.model.formId = 1
 
     sut.create();
@@ -43,7 +43,7 @@ describe('the new data form view model', () => {
   });
 
   it('navigates back to the form data list after creating a new one', () => {
-    getMemberSpy.and.returnValue({ loginName: 'a' })
+    getMemberSpy.and.returnValue({ id: 'a' })
     sut.model.formId = 1;
 
     sut.create();

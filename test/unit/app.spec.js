@@ -21,7 +21,7 @@ describe('the app view model', () => {
     );
 
     storeSpy.getState.and.returnValue({
-      member: { loginName: 'joe' }
+      member: { id: 'joe' }
     });
   });
 

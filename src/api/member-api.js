@@ -13,8 +13,13 @@ export class MemberApi {
     this._http = http;
   }
 
-  async getCurrent() {
-    return await this._http.fetch('member')
+  get(memberId) {
+    return this._http.fetch('members/' + memberId)
+      .then(response => response.json());
+  }
+
+  getCurrent() {
+    return this._http.fetch('members/active')
       .then(response => response.json());
   }
 }

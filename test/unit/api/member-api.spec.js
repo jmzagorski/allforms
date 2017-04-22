@@ -10,12 +10,23 @@ describe('the member api', () => {
     sut = new MemberApi(httpStub);
   });
 
+  it('fetches a given memeber', async done => {
+    const expectedMember = 'a';
+    httpStub.itemStub = [];
+
+    const actualMember = await sut.get(expectedMember);
+
+    expect(httpStub.url).toEqual('members/a');
+    expect(actualMember).toBe(httpStub.itemStub);
+    done();
+  });
+
   it('fetches the current member', async done => {
     httpStub.itemStub = {};
 
     const actualMember = await sut.getCurrent();
 
-    expect(httpStub.url).toEqual('member');
+    expect(httpStub.url).toEqual('members/active');
     expect(actualMember).toBe(httpStub.itemStub);
     done();
   });

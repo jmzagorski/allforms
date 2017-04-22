@@ -18,7 +18,7 @@ export class DataNew {
   }
 
   create() {
-    this.model.memberName = getActiveMember(this._store.getState()).loginName;
+    this.model.memberName = getActiveMember(this._store.getState()).id;
     this._store.dispatch(createFormData(this.model));
 
     this._router.navigateToRoute('data', { form: this.model.formId });

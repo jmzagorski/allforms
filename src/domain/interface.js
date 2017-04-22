@@ -177,9 +177,9 @@ export interface IFormFile {
  */
 export interface IMember {
   /**
-   * @property {string} loginName login name for the member;
+   * @property {string} id the unique identifier for the member
    */
-  loginName: string;
+  id: string;
 }
 
 /**
