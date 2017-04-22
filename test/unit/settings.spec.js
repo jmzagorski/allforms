@@ -3,29 +3,21 @@ import { Settings } from '../../src/settings';
 import { editForm, requestForm, createForm } from '../../src/domain/index';
 import { Router } from 'aurelia-router';
 import { setupSpy } from './jasmine-helpers';
-import { PLATFORM } from 'aurelia-pal';
 import * as selectors from '../../src/domain/form/selectors';
-import * as env from '../../src/env';
 
 describe('the form settings view model', () => {
   let sut;
   let storeSpy;
   let routerSpy;
-  let baseUrlSpy;
 
   beforeEach(() => {
     storeSpy = setupSpy('store', Store.prototype);
     routerSpy = setupSpy('router', Router.prototype);
-
-    PLATFORM.location = 'loc';
-    baseUrlSpy = spyOn(env, 'getBaseUrl').and.returnValue('base/');
-
     sut = new Settings(storeSpy, routerSpy);
   });
 
   it('initializes the view model with a model', () => {
-    expect(baseUrlSpy).toHaveBeenCalledWith('loc');
-    expect(sut.model).toEqual({ style: 'bootstrap', api: 'base/forms/data' });
+    expect(sut.model).toEqual({ style: 'bootstrap' });
   });
 
   it('dispatches a request for the form on activate', () => {

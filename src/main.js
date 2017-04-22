@@ -7,7 +7,7 @@ import '../styles/bootstrap-overrides.css';
 import 'bootstrap';
 import { createStore, applyMiddleware } from 'redux';
 import { HttpClient } from 'aurelia-fetch-client';
-import { getBaseUrl } from './env';
+import { EnvironmentService } from './env';
 import { PLATFORM } from 'aurelia-pal';
 import { BindingMiddleware } from './binding-middleware';
 import { BindingSignaler } from 'aurelia-templating-resources';
@@ -35,6 +35,7 @@ export async function configure(aurelia) {
   const http = new HttpClient();
   const signaler = new BindingSignaler();
   const signalerMiddleware = new BindingMiddleware(signaler);
+  const env = new EnvironmentService(PLATFORM);
 
   aurelia.use
     .standardConfiguration()
@@ -45,13 +46,14 @@ export async function configure(aurelia) {
       store: createStore(rootReducer, applyMiddleware(sagaMiddleware, signalerMiddleware.listen))
     });
 
-  configureHttp(http, getBaseUrl(PLATFORM.location));
+  configureHttp(http, env.generateBaseApi());
 
   sagaMiddleware.run(setupSaga(http));
 
   aurelia.container.registerInstance(Interact, Interact);
   aurelia.container.registerInstance(HttpClient, http);
   aurelia.container.registerInstance(BindingSignaler, signaler);
+  aurelia.container.registerInstance(EnvironmentService, env);
   aurelia.container.registerSingleton('FormServices', FormulaService);
   aurelia.container.registerSingleton('MacroProviders', LookupProvider);
   aurelia.container.registerSingleton('GridFormatters', HtmlFormatter);

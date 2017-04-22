@@ -1,9 +1,6 @@
-import { baseUrl } from './api/form-data-api';
-import { getBaseUrl } from './env';
 import { requestForm, getActiveForm, editForm, createForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
-import { PLATFORM } from 'aurelia-pal';
 
 export class Settings  {
 
@@ -12,8 +9,7 @@ export class Settings  {
   constructor(store, router) {
     // TODO: currently there is no configuration for style, everything is based on the
     // bootstrap style so there is no point in keeping values in the database
-    const defaultApi = getBaseUrl(PLATFORM.location);
-    this.model = { style: 'bootstrap', api: defaultApi + baseUrl };
+    this.model = { style: 'bootstrap' };
     this._store = store;
     this._router = router;
     this._unsubscribe = () => {};
