@@ -1,34 +1,38 @@
-import { member } from '../../../../src/domain/index';
+import * as domain from '../../../../src/domain';
 
 describe('the member reducer', () => {
-  var sut;
 
-  it('returns the action member on load success', () => {
-    const pMember = {};
+  it('returns the payload on received member', () => {
+    const payload = {};
+    const state ={};
     const action = {
-      type: 'LOAD_MEMBER_SUCCESS',
-      member: pMember
+      type: domain.RECEIVED_CURRENT_MEMBER,
+      payload
     };
 
-    const state = member(null, action);
+    const newState = domain.member(state, action);
 
-    expect(state).toBe(pMember);
+    expect(newState).toBe(payload);
   });
 
-  it('returns the original state when no action type matches', () => {
-    const state = {};
-    const action = { type: '' };
+  it('returns the original state on error', () => {
+    const state ={};
+    const action = {
+      type: domain.RECEIVED_CURRENT_MEMBER,
+      error: true
+    };
 
-    const newState = member(state, action);
+    const newState = domain.member(state, action);
 
     expect(newState).toBe(state);
   });
 
-  it('defaults the state to null', () => {
+  it('returns the default when no action type matched', () => {
+    const state ={};
     const action = { type: '' };
 
-    const newState = member(undefined, action);
+    const newState = domain.member(state, action);
 
-    expect(newState).toEqual(null);
+    expect(newState).toBe(state);
   });
 });

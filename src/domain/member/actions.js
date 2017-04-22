@@ -1,27 +1,27 @@
-import { MemberApi } from '../../api/member-api';
-import { Store } from 'aurelia-redux-plugin';
+export const REQUEST_CURRENT_MEMBER = 'REQUEST_CURRENT_MEMBER';
+export const RECEIVED_CURRENT_MEMBER = 'RECEIVED_CURRENT_MEMBER';
 
-export const LOAD_MEMBER_SUCCESS = 'LOAD_MEMBER_SUCCESS';
-
-function loadMemberSuccess(member) {
-  return { type: LOAD_MEMBER_SUCCESS, member };
+/**
+ * @summary action creator for requesting the logined in member
+ * @return {IAction} the action object
+ */
+export function requestCurrentMember() {
+  return {
+    type: REQUEST_CURRENT_MEMBER,
+    payload: null 
+  }
 }
 
-export class MemberActions {
-  static inject() { return [MemberApi, Store]; }
-
-  constructor(api, store) {
-    this._api = api;
-    this._store = store;
-  }
-
-  /**
-   * @desc Gets the member and dispatches that object in a success event
-   *
-   */
-  async loadMember() {
-    const member = await this._api.getCurrent();
-
-    this._store.dispatch(loadMemberSuccess(member));
-  }
+/**
+ * @summary action creator for when the currently loggged in member is received
+ * @param {IMember | Error} data the IForm object or Error object
+ * @param {Boolean} [hasError] a flag to indicate in the data arg is an error
+ * @return {IAction} the action object
+ */
+export function receivedCurrentMember(data, hasError) {
+  return {
+    type: RECEIVED_CURRENT_MEMBER,
+    payload: data,
+    error: hasError
+  };
 }

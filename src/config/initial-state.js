@@ -1,6 +1,6 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from 'aurelia-redux-plugin';
-import { MemberActions, requestForm } from '../domain/index';
+import { requestCurrentMember, requestForm } from '../domain';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app
@@ -8,16 +8,15 @@ import { MemberActions, requestForm } from '../domain/index';
  */
 export default class {
 
-  static inject() { return [ Store, MemberActions, EventAggregator ]; }
+  static inject() { return [ Store, EventAggregator ]; }
 
-  constructor(store, memberActions, eventAggregator) {
+  constructor(store, eventAggregator) {
     this._store = store;
-    this._memberActions = memberActions;
     this._eventAggregator = eventAggregator;
   }
 
-  async configure() {
-    await this._memberActions.loadMember();
+  configure() {
+    this._store.dispatch(requestCurrentMember());
 
     // subscribe for the lifetime of the app
     this._eventAggregator.subscribe(

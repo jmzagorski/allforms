@@ -4,6 +4,7 @@ import { default as elemSaga } from './sagas/element';
 import { default as formDataSaga } from './sagas/form-data';
 import { default as formSaga } from './sagas/form-saga';
 import { default as metadataSaga } from './sagas/metadata-saga';
+import { default as memberSaga } from './sagas/member-saga';
 import * as apis from './api/index';
 
 export default function setupRootSaga(http) {
@@ -21,7 +22,8 @@ export default function setupRootSaga(http) {
       elemSaga(elementApi),
       formDataSaga(formDataApi),
       formSaga(formApi),
-      metadataSaga(metadataApi)
+      metadataSaga(metadataApi),
+      memberSaga(memberApi)
     ];
   };
 }

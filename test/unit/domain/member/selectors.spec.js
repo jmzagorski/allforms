@@ -11,4 +11,17 @@ describe('the member selectors', () => {
 
     expect(active).toBe(member);
   });
+
+  [ { member: null, expect: '' },
+    { member: undefined, expect: '' },
+    { member: { id: 'a' }, expect: 'a' }
+  ].forEach(rec => {
+    it('returns the current login id', () => {
+      const state = { member: rec.member };
+
+      const login = selectors.getLoginId(state);
+
+      expect(login).toEqual(rec.expect);
+    });
+  });
 });

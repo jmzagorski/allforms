@@ -19,36 +19,32 @@ describe('the app view model', () => {
       { configure: initialStateFxSpy },
       storeSpy
     );
-
-    storeSpy.getState.and.returnValue({
-      member: { id: 'joe' }
-    });
   });
 
-  it('configures the router client', async done => {
-    await sut.activate();
+  it('configures the router client', () => {
+    sut.activate();
 
     expect(routerConfFxSpy.calls.count()).toEqual(1);
-    done();
   });
 
-  it('configures the initial state', async done => {
-    await sut.activate();
+  it('configures the initial state', () => {
+    sut.activate();
 
     expect(initialStateFxSpy.calls.count()).toEqual(1);
-    done();
   });
 
-  it('gets the member name', () => {
-    const selectorSpy = spyOn(selectors, 'getActiveMember');
+  it('gets the members login', () => {
+    const selectorSpy = spyOn(selectors, 'getLoginId');
     const state = {};
-    const member = {};
+    let func = null;
     storeSpy.getState.and.returnValue(state);
-    selectorSpy.and.returnValue(member);
+    storeSpy.subscribe.and.callFake(fn => func = fn);
+    selectorSpy.and.returnValue('a');
 
-    const actualMember = sut.member;
+    sut.activate();
+    func();
 
     expect(selectorSpy.calls.argsFor(0)[0]).toBe(state);
-    expect(sut.member).toBe(member);
+    expect(sut.login).toEqual('a');
   });
 });

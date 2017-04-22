@@ -1,38 +1,34 @@
 import InitialState from '../../../src/config/initial-state';
 import { Store } from 'aurelia-redux-plugin';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { requestForm, MemberActions } from '../../../src/domain/index';
+import { requestForm, requestCurrentMember } from '../../../src/domain';
 import { setupSpy } from '../jasmine-helpers';
 
 describe('the initial state configuration', () => {
   let sut;
-  let memberSpy;
   let eaSpy;
   let storeSpy;
 
   beforeEach(() => {
     storeSpy = setupSpy('storeSpy', Store.prototype);
     eaSpy = setupSpy('eventAggr', EventAggregator.prototype);
-    memberSpy = setupSpy('member', MemberActions.prototype);
-    sut = new InitialState(storeSpy, memberSpy, eaSpy);
+    sut = new InitialState(storeSpy, eaSpy);
   });
 
-  it('loads the initial data from the actions', async done => {
-    await sut.configure();
+  it('dispatches an action to get the current member', () => {
+    sut.configure();
 
-    expect(memberSpy.loadMember.calls.count()).toEqual(1);
-    done();
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestCurrentMember());
   });
 
-  it('subscribes to the router processing event', async done => {
-    await sut.configure();
+  it('subscribes to the router processing event', () => {
+    sut.configure();
 
     expect(eaSpy.subscribe.calls.count()).toEqual(1);
     expect(eaSpy.subscribe.calls.argsFor(0)[0]).toEqual('router:navigation:processing');
-    done();
   });
 
-  it('handles the route processing event', async done => {
+  it('handles the route processing event', () => {
     const form = 'formname'
     const event = {
       instruction: { params: { form }  }
@@ -43,14 +39,13 @@ describe('the initial state configuration', () => {
       return {};
     });
 
-    await sut.configure();
+    sut.configure();
 
-    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch.calls.count()).toEqual(2);
     expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('formname'));
-    done();
   });
 
-  it('does not handle the route processing event', async done => {
+  it('does not handle the route processing event', () => {
     const event = {
       instruction: { params: {}  }
     };
@@ -60,9 +55,8 @@ describe('the initial state configuration', () => {
       return {};
     });
 
-    await sut.configure();
+    sut.configure();
 
-    expect(storeSpy.dispatch).not.toHaveBeenCalled();
-    done();
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
   })
 });

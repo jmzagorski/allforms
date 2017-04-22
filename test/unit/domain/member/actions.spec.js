@@ -1,30 +1,31 @@
-import { MemberApi } from '../../../../src/api/member-api';
-import { MemberActions } from '../../../../src/domain/index';
-import { Store } from 'aurelia-redux-plugin';
-import { setupSpy } from '../../jasmine-helpers';
+import * as domain from '../../../../src/domain';
 
 describe('the member actions', () => {
-  var sut;
-  var storeSpy;
-  var apiSpy;
 
-  beforeEach(() => {
-    storeSpy = setupSpy('store', Store.prototype);
-    apiSpy = setupSpy('api', MemberApi.prototype);
-    sut = new MemberActions(apiSpy, storeSpy);
+  it('creates the action for requesting the current member', () => {
+    const expected = {
+      type: 'REQUEST_CURRENT_MEMBER',
+      payload: null
+    };
+
+    const actual = domain.requestCurrentMember();
+
+    expect(actual).toEqual(expected);
   });
 
-  it('loads the current member', async done => {
-    const member = {};
+  [ true, false ].forEach(hasError => {
+    it('creates the action for receiving the current member', () => {
+      const data = {};
+      const expected = {
+        type: 'RECEIVED_CURRENT_MEMBER',
+        payload: data,
+        error: hasError
+      };
 
-    apiSpy.getCurrent.and.returnValue(member);
+      const actual = domain.receivedCurrentMember(data, hasError);
 
-    await sut.loadMember();
-
-    expect(storeSpy.dispatch).toHaveBeenCalledWith({
-      type: 'LOAD_MEMBER_SUCCESS', member
+      expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(data);
     });
-    expect(storeSpy.dispatch.calls.argsFor(0)[0].member).toBe(member);
-    done();
   });
 });

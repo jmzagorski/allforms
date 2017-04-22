@@ -1,9 +1,11 @@
-import {LOAD_MEMBER_SUCCESS} from './actions';
+import * as actions from './actions';
 
 export default function memberReducer(state = null, action) {
   switch (action.type) {
-    case LOAD_MEMBER_SUCCESS:
-      return action.member;
+    case actions.RECEIVED_CURRENT_MEMBER:
+      if (action.error) return state;
+
+      return action.payload;
     default:
       return state;
   }
