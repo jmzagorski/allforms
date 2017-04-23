@@ -3,3 +3,8 @@
   padding: 0 15px;
   margin-bottom: 0;
 }
+
+/*to fix nav-bar-right last child appearing @ edge of screen*/
+.navbar-nav.navbar-right:last-child {
+    margin-right: 0;
+}

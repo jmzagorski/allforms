@@ -1,0 +1,80 @@
+<template>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" data-target="#activity-collapse"
+              aria-expanded="true" data-toggle="collapse">
+              Recent Activity
+            </a>
+          </div>
+        </div>
+        <div id="activity-collapse" class="panel-collapse collapse in"
+          aria-expanded="true">
+          <div class="panel-body">
+            <ul class="list-unstyled">
+              <li repeat.for="a of activity"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" data-target="#contributions-collapse"
+              aria-expanded="true" data-toggle="collapse">
+              Contributions
+            </a>
+          </div>
+        </div>
+        <div id="contributions-collapse" class="panel-collapse collapse in"
+          aria-expanded="true">
+          <div class="panel-body">
+            <ul class="list-unstyled">
+              <li repeat.for="c of contributions"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" data-target="#data-collapse" data-toggle="collapse"
+              aria-expanded="true">
+              Your Data
+            </a>
+          </div>
+        </div>
+        <div id="data-collapse" class="panel-collapse collapse in"
+          aria-expanded="true">
+          <div class="panel-body">
+            <ul class="list-unstyled">
+              <li repeat.for="d of datum"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a href="#" data-target="#forms-collapse" data-toggle="collapse"
+              aria-expanded="true">
+              Your Forms
+            </a>
+          </div>
+        </div>
+        <div id="forms-collapse" class="panel-collapse collapse in"
+          aria-expanded="true">
+          <div class="panel-body">
+            <ul class="list-unstyled">
+              <li repeat.for="f of forms"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
