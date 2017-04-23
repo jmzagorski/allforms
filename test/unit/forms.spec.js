@@ -1,6 +1,6 @@
 import { Forms } from '../../src/forms';
 import { Router } from 'aurelia-router';
-import { FormApi } from '../../src/api/form-api';
+import { MemberApi } from '../../src/api/member-api';
 import { setupSpy} from './jasmine-helpers';
 
 describe('the forms view model', () => {
@@ -10,26 +10,28 @@ describe('the forms view model', () => {
 
   beforeEach(() => {
     routerSpy = setupSpy('router', Router.prototype);
-    apiSpy = setupSpy('api', FormApi.prototype);
+    apiSpy = setupSpy('api', MemberApi.prototype);
     sut = new Forms(routerSpy, apiSpy);
   });
 
-  it('gets all the forms from the api', async done => {
+  it('gets all the forms from the member api', async done => {
     const expected = [ { id: 'b' } ];
+    const memberId = 'a';
 
-    apiSpy.get.and.returnValue(expected);
+    apiSpy.getForms.and.returnValue(expected);
 
-    await sut.activate();
+    await sut.activate({ memberId });
 
     expect(sut.forms).toBe(expected);
+    expect(apiSpy.getForms).toHaveBeenCalledWith(memberId);
     done();
   });
 
   it('generates a route for a new form', async done => {
-    apiSpy.get.and.returnValue([]);
+    apiSpy.getForms.and.returnValue([]);
     routerSpy.generate.and.returnValues(1);
 
-    await sut.activate();
+    await sut.activate({});
 
     expect(routerSpy.generate.calls.argsFor(0)).toEqual([ 'new-form' ]);
     expect(sut.routeToNew).toEqual(1);
@@ -37,15 +39,20 @@ describe('the forms view model', () => {
   });
 
   it('generates a route for each form', async done => {
-    const forms = [ { id: 'a' }, { id: 'b' }];
+    const forms = [ { name: 'a' }, { name: 'b' }];
+    const memberId = 'c';
 
-    apiSpy.get.and.returnValue(forms);
+    apiSpy.getForms.and.returnValue(forms);
     routerSpy.generate.and.returnValues(0,1,2);
 
-    await sut.activate();
+    await sut.activate({ memberId });
 
-    expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual('dir', { form: 'a' });
-    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual('dir', { form: 'a' });
+    expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual('dir', {
+      memberId, formName: 'a'
+    });
+    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual('dir', {
+      memberId, formName: 'b'
+    });
     expect(forms[0].url).toEqual(1);
     expect(forms[1].url).toEqual(2);
     done();

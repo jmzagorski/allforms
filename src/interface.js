@@ -20,7 +20,7 @@ export class Interface {
 
   async activate(params) {
     this._unsubscribe = this._store.subscribe(this._update.bind(this));
-    this._store.dispatch(requestMetadata(params.form));
+    this._store.dispatch(requestMetadata(params.memberId, params.formName));
   }
 
   _update() {

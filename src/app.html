@@ -2,14 +2,23 @@
   <require from="./resources/elements/directory-nav"></require>
   <require from="./resources/elements/nav-bar.html"></require>
 
-  <nav-bar router.bind="router"></nav-bar>
+  <nav-bar router.bind="router">
+    <li class="loader" if.bind="router.isNavigating">
+      <i class="fa fa-spinner fa-spin fa-2x"></i>
+    </li>
+    <li slot="navbar-right">
+      <a href="${profileUrl}">
+        <i class="fa fa-2x fa-user-circle" aria-hidden="true"></i>
+      </a>
+    </li>
+  </nav-bar>
 
   <div id="page-host">
     <section class="col-md-offset-2 col-md-8">
       <h4>
         <!--leave one time binding because of readonly property and dirty checking-->
         <!--with aurelia-->
-        <directory-nav root-name.one-way="login"></directory-nav>
+        <directory-nav></directory-nav>
       </h4>
     </section>
     <router-view></router-view>

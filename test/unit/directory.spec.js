@@ -30,9 +30,11 @@ describe('the directory view model', () => {
   });
 
   it('dispatches requests to get the view model data', () => {
-    sut.activate({ form: 'a' });
+    sut.activate({ formName: 'a', memberId: 'b' });
 
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('a'));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('b', 'a'));
+    expect(sut.formName).toEqual('a');
+    expect(sut.memberId).toEqual('b');
   });
 
   it('listens for the form to update to get the routes', () => {
@@ -55,15 +57,17 @@ describe('the directory view model', () => {
     storeSpy.subscribe.and.callFake(func => {
       if (!updateFunc) updateFunc = func;
     });
-    sut.activate({ });
+    sut.activate({ memberId: 'membera', formName: 'someformname' });
 
     updateFunc();
 
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
     expect(routerSpy.generate.calls.count()).toEqual(3);
-    expect(routerSpy.generate).toHaveBeenCalledWith('interface', { form: 1 });
-    expect(routerSpy.generate).toHaveBeenCalledWith('a', { form: 1 });
-    expect(routerSpy.generate).toHaveBeenCalledWith('b', { form: 1 });
+    expect(routerSpy.generate.calls.argsFor(0)[0]).toEqual('interface', {
+      memberName: 'membera', formName: 'someformname'
+    });
+    expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual('a', { form: 1 });
+    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual('b', { form: 1 });
     expect(sut.routes).toEqual([{
       url: '/g', description: 'd', icon: 'c', name: 'a'
     }, {

@@ -23,9 +23,9 @@ describe('the interface view model', () => {
   });
 
   it('dispatches requests to get the view model data', () => {
-    sut.activate({ form: 'a' });
+    sut.activate({ memberId: 'b', formName: 'a' });
 
-    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('a'));
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(requestMetadata('b', 'a'));
   });
 
   it('subscribes to the store to get the metadata statuses', () => {

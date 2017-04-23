@@ -8,24 +8,29 @@ export class App {
 
   constructor(routerConf, initialState, store) {
     this.login = null;
+    this.profileUrl = null;
     this.router = routerConf.router;
     this._routerConf = routerConf;
     this._initialState = initialState;
     this._store = store;
     this._unsubscribe = () => {};
+
+    // call this now. if you do in activate the profile route will not be recognized
+    // not sure why
+    this._routerConf.configure();
   }
 
   activate() {
-    this._store.subscribe(this._getMember.bind(this))
-    this._routerConf.configure();
+    this._unsubscribe = this._store.subscribe(this._getMember.bind(this))
     this._initialState.configure();
   }
 
   _getMember() {
     this.login = getLoginId(this._store.getState());
+    this.profileUrl = this.router.generate('member', { memberId: this.login });
   }
 
-  detached() {
+  deactivate() {
     this._unsubscribe();
   }
 }

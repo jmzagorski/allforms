@@ -10,14 +10,17 @@ import * as actions from '../domain/metadata/actions';
  */
 export function* getMetadata(api, action) {
   try {
-    const metadata = yield call([api, api.get],
-      action.payload.api,
-      action.payload.id
-    );
+    // FIXME: bug in generate. Generator reverses this logic?
+    if (!action.payload.metadata) {
+      const metadata = yield call([api, api.get],
+        action.payload.api,
+        action.payload.id
+      );
 
-    const hasError = !metadata;
+      const hasError = !metadata;
 
-    yield put(actions.receivedMetadata(metadata, hasError));
+      yield put(actions.receivedMetadata(metadata, hasError));
+    }
   } catch (e) {
     yield put(actions.receivedMetadata(e, true));
   }

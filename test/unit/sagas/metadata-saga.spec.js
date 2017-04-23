@@ -25,6 +25,20 @@ describe('the metadata saga', () => {
     );
   });
 
+  // see code bug
+  [ null, undefined ].forEach(metadata => {
+    xit('has no iterator when payload metadata is missing', () => {
+      const action= { payload: { metadata } };
+
+      const iterator = saga.getMetadata(null, action);
+
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
+    });
+  });
+
   [ { metadata: undefined, error: true },
     { metadata: null, error: true },
     { metadata: [], error: false} 

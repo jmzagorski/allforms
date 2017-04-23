@@ -8,7 +8,7 @@ describe('the metadata reducer', () => {
     expect(state).toEqual({ status: '', elements: [], api: [], statuses: []});
   });
 
-  [ domain.RECEIVED_METADATA, domain.RECEIVED_ALL_ELEMENTS ].forEach(type => {
+  [ domain.RECEIVED_METADATA, domain.RECEIVED_FORM ].forEach(type => {
     it('returns the original state on error for actions', () => {
       const state = {};
       const action = { type, error: true }
@@ -22,8 +22,8 @@ describe('the metadata reducer', () => {
   it('sets the status to danger if an element does not exist in the metadata', () => {
     const state = { api: [ { name: 'a' } ] };
     const action = {
-      type: domain.RECEIVED_ALL_ELEMENTS,
-      payload: [ { name: 'b' } ]
+      type: domain.RECEIVED_FORM,
+      payload: { elements: [ { name: 'b' } ] }
     }
 
     const newState = domain.metadata(state, action);
@@ -43,37 +43,45 @@ describe('the metadata reducer', () => {
     expect(newState.status).toEqual('warning');
   });
 
-  [ { type: domain.RECEIVED_METADATA, prop: 'elements' },
-    { type: domain.RECEIVED_ALL_ELEMENTS, prop: 'api' }
-  ].forEach(rec => {
-    it('sets the status to success if all elements and metadata match', () => {
-      const state = { [rec.prop]: [ { name: 'a' }, { name: 'b' } ] };
-      const action = {
-        type: rec.type,
-        payload: [ { name: 'a' }, { name: 'b' } ]
-      }
+  it('sets the status to success if all elements and metadata match on received metadata', () => {
+    const state = { elements: [ { name: 'a' }, { name: 'b' } ] };
+    const action = {
+      type: domain.RECEIVED_METADATA,
+      payload: [ { name: 'a' }, { name: 'b' } ]
+    }
 
-      const newState = domain.metadata(state, action);
+    const newState = domain.metadata(state, action);
 
-      expect(newState.status).toEqual('success');
-    });
+    expect(newState.status).toEqual('success');
+  });
+
+  it('sets the status to success if all elements and metadata match on received elements', () => {
+    const state = { api: [ { name: 'a' }, { name: 'b' } ] };
+    const action = {
+      type: domain.RECEIVED_FORM,
+      payload: { elements: [ { name: 'a' }, { name: 'b' } ] }
+    }
+
+    const newState = domain.metadata(state, action);
+
+    expect(newState.status).toEqual('success');
   });
 
   it('adds the elements to the state', () => {
     const state = { elements: [ { name: 'a' }, { name: 'b' } ], api: [] };
     const action = {
-      type: domain.RECEIVED_ALL_ELEMENTS,
-      payload: [ { name: 'a' }, { name: 'b' } ]
+      type: domain.RECEIVED_FORM,
+      payload: { elements: [ { name: 'a' }, { name: 'b' } ] }
     }
 
     const newState = domain.metadata(state, action);
 
     expect(newState).not.toBe(state);
     expect(newState.elements).not.toBe(state.elements);
-    expect(newState.elements).toEqual(action.payload);
+    expect(newState.elements).toEqual(action.payload.elements);
   });
 
-  it('adds the api metadataum to the state', () => {
+  it('adds the api metadatum to the state', () => {
     const state = { api: [ { name: 'a' }, { name: 'b' } ], elements: [] };
     const action = {
       type: domain.RECEIVED_METADATA,

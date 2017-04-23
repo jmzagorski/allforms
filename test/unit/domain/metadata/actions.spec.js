@@ -3,13 +3,14 @@ import * as domain from '../../../../src/domain/index';
 describe('the metadata actions', () => {
 
   it('creates the action for requesting metadata', () => {
-    const id = 1;
+    const formName = 'b';
+    const memberId = 'a'
     const expected = {
       type: 'REQUEST_METADATA',
-      payload: { id }
+      payload: { formName, memberId }
     };
 
-    const actual = domain.requestMetadata(id);
+    const actual = domain.requestMetadata(memberId, formName);
 
     expect(actual).toEqual(expected);
   });

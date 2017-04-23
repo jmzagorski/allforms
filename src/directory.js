@@ -14,9 +14,11 @@ export class Directory {
   }
 
   activate(params) {
+    this.memberId = params.memberId;
+    this.formName = params.formName;
     this._unsubscribes.push(this._store.subscribe(this._updateForm.bind(this)));
     this._unsubscribes.push(this._store.subscribe(this._getStatus.bind(this)));
-    this._store.dispatch(requestMetadata(params.form));
+    this._store.dispatch(requestMetadata(params.memberId, params.formName));
   }
 
   copy() {
@@ -29,7 +31,9 @@ export class Directory {
 
     if (!form) return;
 
-    this.interfaceRoute = this._router.generate('interface', { form: form.id });
+    this.interfaceRoute = this._router.generate('interface', {
+      memberId: this.memberId, formName: this.formName
+    });
 
     this._router.routes
       .filter(r => r.settings.dirListing)

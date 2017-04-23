@@ -8,9 +8,28 @@ import { REQUEST_METADATA } from '../domain';
  * @param {IAction} action the IAction that called the saga
  * @return {Iterator} an iterator that describes the transcation
  */
+export function* getProfile(api, action) {
+  try {
+    const form = yield call([api, api.getProfile],
+      action.payload.memberId, action.payload.formName);
+
+    const hasError = !form;
+
+    yield put(actions.receivedForm(form, hasError));
+  } catch (e) {
+    yield put(actions.receivedForm(e, true));
+  }
+}
+
+/**
+ * @summary calls to get a single IForm object
+ * @param {IFormApi} api the IFormApi service
+ * @param {IAction} action the IAction that called the saga
+ * @return {Iterator} an iterator that describes the transcation
+ */
 export function* getForm(api, action) {
   try {
-    console.dir(action);
+    // FIXME: bug in generate. Generator reverses this logic?
     if (action.payload.id) {
       const form = yield call([api, api.get], action.payload.id);
       const hasError = !form;
@@ -69,7 +88,7 @@ export function* editTemplate(api, action) {
  * @param {IFormApi} api the IFormApi service
  */
 export default function* formSaga(api) {
-  yield takeLatest(REQUEST_METADATA, getForm, api);
+  yield takeLatest(REQUEST_METADATA, getProfile, api);
   yield takeLatest(actions.REQUEST_FORM, getForm, api);
   yield takeLatest(actions.CREATE_FORM, addForm, api);
   yield takeLatest(actions.EDIT_FORM, editForm, api);

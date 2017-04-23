@@ -2,17 +2,6 @@ import { put, takeLatest, call } from 'redux-saga/effects';
 import * as actions from '../domain/element/actions';
 import { receivedAllElements, REQUEST_METADATA, EDIT_FORM_TEMPLATE } from '../domain';
 
-export function* getAllElements(api, action) {
-  try {
-    const elements = yield call([api, api.getAll], action.payload.id);
-    const hasError = !elements;
-
-    yield put(receivedAllElements(elements, hasError));
-  } catch (e) {
-    yield put(receivedAllElements(e, true));
-  }
-}
-
 /**
  * @summary calls to get a single IElement object
  * @param {IElementApi} api the IElementApi service
@@ -74,13 +63,11 @@ export function* editTemplate(api, action) {
   }
 }
 
-
 /**
  * @summary Watches for element actions
  * @param {IElementApi} api the IElementApi service
  */
 export default function* elementSaga(api) {
-  yield takeLatest(REQUEST_METADATA, getAllElements, api);
   yield takeLatest(actions.REQUEST_ELEMENT, getElement, api);
   yield takeLatest(actions.CREATE_ELEMENT, addElement, api);
   yield takeLatest(actions.EDIT_ELEMENT, editElement, api);

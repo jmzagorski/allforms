@@ -10,7 +10,7 @@ describe('the form saga', () => {
     const iterator = saga.default(api);
 
     expect(iterator.next().value).toEqual(
-      takeLatest('REQUEST_METADATA', saga.getForm, api)
+      takeLatest('REQUEST_METADATA', saga.getProfile, api)
     );
     expect(iterator.next().value).toEqual(
       takeLatest('REQUEST_FORM', saga.getForm, api)
@@ -26,6 +26,46 @@ describe('the form saga', () => {
     );
     expect(iterator.next()).toEqual({
       done: true, value: undefined
+    });
+  });
+
+  [ { form: undefined, error: true },
+    { form: null, error: true },
+    { form: {}, error: false} 
+  ].forEach(data => {
+    it('gets the form profile', () => {
+      const api = { getProfile: () => { } };
+      const action= { payload: { memberId: 'a', formName: 'b' } };
+
+      const iterator = saga.getProfile(api, action);
+
+      expect(iterator.next().value).toEqual(
+        call([api, api.getProfile], action.payload.memberId, action.payload.formName)
+      );
+      expect(iterator.next(data.form).value).toEqual(
+        put(receivedForm(data.form, data.error))
+      );
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
+    });
+  });
+
+  it('sends an error in the catch of getting the profile', () => {
+    const api = { getProfile: () => { } };
+    const action= { payload: { id: 1 } };
+    const err = new Error();
+
+    const iterator = saga.getProfile(api, action);
+    iterator.next();
+
+    expect(iterator.throw(err).value).toEqual(
+      put(receivedForm(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
     });
   });
 

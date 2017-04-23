@@ -6,6 +6,7 @@
           <i class="fa fa-asterisk" aria-hidden="true"></i>
         </a>
       </div>
+      <!--TODO change to grid-->
       <table class="table">
         <tbody>
           <!--since forms is a readonly property it is important to keep oneTime as-->
@@ -13,7 +14,7 @@
           <tr repeat.for="f of forms & oneTime">
             <td>
               <i class="fa fa-folder fa-fw" aria-hidden="true"></i>
-              <a href.bind="f.url">&nbsp; ${f.id}</a>
+              <a href.bind="f.url">&nbsp; ${f.name}</a>
             </td>
             <td class="text-muted">
               ${f.lastComment}

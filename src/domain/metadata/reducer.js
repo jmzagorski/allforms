@@ -1,4 +1,5 @@
 import * as actions from './actions';
+import { RECEIVED_FORM } from '../../domain';
 
 const WARNING = 'warning';
 const DANGER = 'danger';
@@ -19,10 +20,10 @@ export default function metadataReducer(state = { status: '', elements: [], api:
       mState.status = calcOverallStatus(mState.statuses);
       
       return mState;
-    case actions.RECEIVED_ALL_ELEMENTS:
+    case RECEIVED_FORM:
       if (action.error) return state;
 
-      const eState = Object.assign({}, state, { elements: action.payload });
+      const eState = Object.assign({}, state, { elements: action.payload.elements });
       eState.statuses = calcAllStatuses(eState);
       eState.status = calcOverallStatus(eState.statuses);
       

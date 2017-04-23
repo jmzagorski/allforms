@@ -16,12 +16,17 @@ export default class {
       c.title = 'AllForms';
 
       c.map([{
-        route: ['', '/allforms'],
-        name: 'allforms',
+        route: '',
+        name: 'home',
+        moduleId: './home',
+        nav: false
+      }, {
+        route: '/:memberId',
+        name: 'member',
         moduleId: './forms',
         nav: false
       }, {
-        route: '/:form',
+        route: '/:memberId/:formName',
         name: 'dir',
         moduleId: './directory',
         nav: false
@@ -46,7 +51,7 @@ export default class {
         moduleId: './snapshot',
         nav: false
       }, {
-        route: '/:form/interface',
+        route: '/:memberId/:formName/interface',
         name: 'interface',
         moduleId: './interface',
         nav: false

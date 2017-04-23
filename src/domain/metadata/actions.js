@@ -7,10 +7,10 @@ export const RECEIVED_ALL_ELEMENTS = 'RECEIVED_ALL_ELEMENTS';
  * @param {string} id the id of the form
  * @return {IAction} the action object
  */
-export function requestMetadata(formId) {
+export function requestMetadata(memberId, formName) {
   return {
     type: REQUEST_METADATA,
-    payload: { id: formId }
+    payload: { memberId, formName }
   };
 }
 
