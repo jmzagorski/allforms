@@ -30,4 +30,14 @@ describe('the member api', () => {
     expect(actualMember).toBe(httpStub.itemStub);
     done();
   });
+
+  it('fetches the forms for a member', async done => {
+    httpStub.itemStub = [];
+
+    const forms = await sut.getForms('a');
+
+    expect(httpStub.url).toEqual('members/a/forms');
+    expect(forms).toBe(httpStub.itemStub);
+    done();
+  });
 });

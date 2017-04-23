@@ -22,4 +22,9 @@ export class MemberApi {
     return this._http.fetch('members/active')
       .then(response => response.json());
   }
+
+  getForms(memberId) {
+    return this._http.fetch('members/' + memberId + '/forms')
+      .then(response => response.json());
+  }
 }
