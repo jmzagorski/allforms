@@ -32,6 +32,18 @@ describe('the form api', () => {
     done();
   });
 
+  it('fetches a the form profile for a member', async done => {
+    const name = 'a';
+    const memberId = 'b';
+    httpStub.itemStub = {};
+
+    const actualForms = await sut.getProfile(memberId, name);
+
+    expect(httpStub.url).toEqual('forms/profile/b/a');
+    expect(actualForms).toBe(httpStub.itemStub);
+    done();
+  });
+
   [ { id: null, method: 'POST', url: 'forms' },
     { id: undefined, method: 'POST', url: 'forms' },
     { id: '', method: 'POST', url: 'forms' },

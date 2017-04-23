@@ -20,6 +20,11 @@ export class FormApi {
       .then(response => response.json());
   }
 
+  getProfile(memberId, formName) {
+    return this._http.fetch(`forms/profile/${memberId}/${formName}`)
+      .then(response => response.json());
+  }
+
   save(form) {
     const url = form.id ? `forms/${form.id}` : 'forms';
     const method = form.id ? 'PUT' : 'POST';
