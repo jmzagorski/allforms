@@ -180,6 +180,21 @@ export interface IMember {
    * @property {string} id the unique identifier for the member
    */
   id: string;
+
+  /**
+   * @property {string} id the home location for the member
+   */
+  location: string;
+
+  /**
+   * @property {string} id the display name
+   */
+  displayName: string;
+
+  /**
+   * @property {string} id the home department
+   */
+  department: string;
 }
 
 /**
