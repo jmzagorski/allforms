@@ -26,7 +26,7 @@ describe('the member api', () => {
 
     const actualMember = await sut.getCurrent();
 
-    expect(httpStub.url).toEqual('members/active');
+    expect(httpStub.url).toEqual('members/current');
     expect(actualMember).toBe(httpStub.itemStub);
     done();
   });

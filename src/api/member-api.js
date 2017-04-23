@@ -19,7 +19,7 @@ export class MemberApi {
   }
 
   getCurrent() {
-    return this._http.fetch('members/active')
+    return this._http.fetch('members/current')
       .then(response => response.json());
   }
 
