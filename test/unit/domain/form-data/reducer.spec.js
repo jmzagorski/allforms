@@ -33,7 +33,7 @@ describe('the form data reducer', () => {
     });
   });
 
-  it('returns the by default', () => {
+  it('returns the default when no action type matched', () => {
     const state ={};
     const action = { type: 'Anyting' };
 

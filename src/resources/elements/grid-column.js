@@ -99,7 +99,7 @@ export class GridColumnCustomElement {
   }
 
   propertyChanged(propName, newVal, oldVal) {
-    console.log('prop changed');
+    // TODO
   }
 
   _findColIndex() {

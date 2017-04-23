@@ -60,9 +60,6 @@ describe('the grid custom element', () => {
   it('has a div with the grid id', async done => {
     sut.inView(`<grid></grid>`);
 
-    // do nothing
-    //queueMock.queueTask.and.callFake(init => {});
-
     await sut.create(bootstrap);
 
     const div = sut.element.querySelector('#data-grid');
