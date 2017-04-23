@@ -1,14 +1,14 @@
+var constants = require('./constants');
+
 /**
- * @desc if json-server cannot find any data at the resource it returns a 404.
- * The templates resource exists, but no-content should be returned as an empty
- * json body. I needed to do this because all forms will not have a template
- * initially because i am using json-schema faker to fake the forms
+ * @summary this is mainly for nested relationship since json-server does not
+ * support that, but since i am using json-schema-faker i need to guarentee that
+ * a user has forms. With faker I have no guarentee that a separate forms array
+ * with have a member id
  */
 module.exports = function (req, res, next) {
-  // not sure why baseUrl is empty
-  var isWatching = watching(req.path, '/api/templates') ||
-    watching('/api/form-settings');
-
+  var isWatching = watching('/api/form-settings');
+  var watchingArray = req.path.match(/\/api\/forms\/[a-z]+\/data/i);
   var nocontent = !res.locals.data;
 
   if (isWatching && nocontent) {
@@ -16,9 +16,7 @@ module.exports = function (req, res, next) {
     res.locals.data = {};
   }
 
-  if (req.path.match(/\/api\/forms\/[a-z]+\/data/i) && nocontent) {
-    res.locals.data = [];
-  }
+  if (watchingArray && nocontent) res.locals.data = [];
 
   next();
 }

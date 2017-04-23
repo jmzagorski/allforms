@@ -7,11 +7,33 @@
 /* eslint-disable no-console */
 
 import jsf from 'json-schema-faker';
-import {schema} from './mock-schema';
+import { schema } from './mock-schema';
 import fs from 'fs';
 import chalk from 'chalk';
+import faker from 'faker';
 
-const json = JSON.stringify(jsf(schema));
+const jsonObj = jsf(schema);
+
+for (var i = 0, len = jsonObj.members.length; i < len; i++) {
+  var member = jsonObj.members[i];
+  member.id = member.id.replace('_', '-').replace('.', '-');
+}
+
+for (var i = 0, len = jsonObj.forms.length; i < len; i++) {
+  var form = jsonObj.forms[i];
+  var randomMember = faker.random.number(jsonObj.members.length - 1);
+  var member = jsonObj.members[randomMember];
+  form.memberId = member.id;
+}
+
+for (var i = 0, len = jsonObj.metadata.length; i < len; i++) {
+  var metadata = jsonObj.metadata[i];
+  var randomForm = faker.random.number(jsonObj.forms.length - 1);
+  var form = jsonObj.forms[randomForm];
+  metadata.formId = form.id;
+}
+
+const json = JSON.stringify(jsonObj);
 
 fs.writeFile("./src/db.json", json, function (err) {
   if (err) {

@@ -4,13 +4,14 @@ export const schema = {
     "members": {
       "type": "array",
       "minItems": 5,
-      "maxItems": 10,
+      "maxItems": 5,
       "items": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "faker": "internet.userName"
+            "faker": "internet.userName",
+            "pattern": "[a-zA-z0-9\-]+"
           },
           "location": {
             "type": "string",
@@ -28,6 +29,93 @@ export const schema = {
           }
         },
         "required": [ "id", "location", "displayName", "department" ]
+      }
+    },
+    "forms": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          },
+          "name": {
+            "type": "string",
+            "unique": true,
+            "faker": "lorem.word",
+            "pattern": "\\S+",
+          },
+          "summary": {
+            "type": "string",
+            "faker": "lorem.sentence"
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "bootstrap"
+            ]
+          },
+          "lastComment": {
+            "type": "string",
+            "faker": "lorem.sentence"
+          },
+          "lastEditInDays": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90
+          },
+          "template": {
+            "type": "string",
+            "enum": [ null ]
+          },
+          "api": {
+            "type": "string",
+            "enum": [ "http://localhost:9001/api/forms" ]
+          },
+          "autoname": {
+            "type": "string"
+          }, 
+          "memberId": {
+            "type": "string",
+            "faker": "internet.userName"
+          } 
+        },
+        "required": [ "id", "template", "name", "summary", "style",
+          "lastEditInDays", "api", "memberId" ]
+      }
+    },
+    "metadata": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "faker": "lorem.word",
+            "unique": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "boolean",
+              "integer",
+              "decimal",
+              "date",
+              "file"
+            ]
+          },
+          "formId": {
+            "type": "string"
+          },
+        },
+        "required": [ "name", "type" ]
       }
     },
     "lookups": {
@@ -195,94 +283,9 @@ export const schema = {
         "required": [ "id", "name", "saved", "memberName", "formId", "originalId" ]
       }
     },
-    "forms": {
-      "type": "array",
-      "minItems": 5,
-      "maxItems": 10,
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "faker": "lorem.word",
-            "unique": true
-          },
-          "name": {
-            "type": "string",
-            "faker": "lorem.word",
-            "unique": true
-          },
-          "summary": {
-            "$ref": "#/definitions/summary"
-          },
-          "style": {
-            "type": "string",
-            "enum": [
-              "bootstrap"
-            ]
-          },
-          "lastComment": {
-            "type": "string",
-            "faker": "lorem.sentence"
-          },
-          "lastEditInDays": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 90
-          },
-          "template": {
-            "type": "string",
-            "enum": [ null ]
-          },
-          "api": {
-            "type": "string",
-            "enum": [ "http://localhost:9001/api/forms" ]
-          },
-          "autoname": {
-            "type": "string"
-          }, 
-          "metadata": {
-            "type": "array",
-            "minItems": 0,
-            "maxItems": 14,
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "faker": "lorem.word",
-                  "unique": true
-                },
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "string",
-                    "boolean",
-                    "integer",
-                    "decimal",
-                    "date",
-                    "file"
-                  ]
-                },
-              },
-              "required": [ "name", "type" ]
-            }
-          },
-        },
-        "required": ["id", "template", "name", "summary", "style", "lastEditInDays", "api", "metadata" ]
-      }
-    }
   },
-  "required": [ "lookups", "formData", "forms", "members", "elements", "element-types" ],
+  "required": [ "members", "forms", "metadata", "lookups", "formData", "elements", "element-types" ],
   "definitions": {
-    "name": {
-      "type": "string",
-      "faker": "lorem.word",
-      "unique": true
-    },
-    "active": {
-      "type": "boolean"
-    },
     "group": {
       "type": "string",
       //"pattern": "[a-zA-Z]+(\/[a-zA-Z]+)?",
@@ -292,15 +295,6 @@ export const schema = {
         "Molding",
         "Part"
       ]
-    },
-    "position": {
-      "type": "number",
-      "minimum": 80,
-      "maximum": 1920
-    },
-    "summary": {
-      "type": "string",
-      "faker": "lorem.sentence"
     }
   }
 };

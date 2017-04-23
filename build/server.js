@@ -11,13 +11,18 @@ var deleteNonApiFields = require('./delete-non-api-fields');
 var formDataParent = require('./copy-parent-formdata');
 var patchMultipartFormData= require('./patch-multipart-formdata');
 var getLookups = require('./get-lookups');
-var overrideRouterRender = require('./override-router-render');
+var getCurrentMember = require('./get-current-member');
+var getFormProfile = require('./get-form-profile');
+var routerRender = require('./composite-router-render');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
-overrideRouterRender(router);
+routerRender(router, [
+  getFormProfile,
+  getCurrentMember,
+]);
 server.use(getLookups);
 server.use(convert404ToNoContent);
 
@@ -31,7 +36,6 @@ server.use(patchMultipartFormData);
 server.use(formDataParent(router));
 server.use(snapshot(router));
 server.use(addApiFormDataFields(router));
-
 
 server.use(jsonServer.rewriter(routes));
 
