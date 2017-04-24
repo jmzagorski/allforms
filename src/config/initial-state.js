@@ -1,6 +1,6 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Store } from 'aurelia-redux-plugin';
-import { requestCurrentMember, requestForm } from '../domain';
+import { requestCurrentMember, requestMemberForm } from '../domain';
 
 /**
  * @desc Loads the initial store state by loading data needed to get the app
@@ -21,15 +21,16 @@ export default class {
     // subscribe for the lifetime of the app
     this._eventAggregator.subscribe(
       'router:navigation:processing',
-      this.setActiveForm.bind(this)
+      this._setForm.bind(this)
     );
   }
 
-  setActiveForm(event) {
-    const form = event.instruction.params.form;
+  _setForm(event) {
+    const formName = event.instruction.params.formName;
+    const memberId = event.instruction.params.memberId;
 
-    if (form) {
-      this._store.dispatch(requestForm(form));
+    if (formName && memberId) {
+      this._store.dispatch(requestMemberForm(memberId, formName));
     }
   }
 }

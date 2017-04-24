@@ -6,6 +6,19 @@ describe('the form actions', () => {
   let storeSpy;
   let apiSpy;
 
+  it('create an action to request a members form', () => {
+    const formName = 'a';
+    const memberId = 'b';
+    const expected = {
+      type: 'REQUEST_MEMBER_FORM',
+      payload: { memberId, formName }
+    }
+
+    const actual = domain.requestMemberForm(memberId, formName);
+
+    expect(actual).toEqual(expected);
+  });
+
   it('create an action to request a form', () => {
     const id = 1;
     const expected = {

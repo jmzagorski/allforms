@@ -66,7 +66,7 @@ describe('the router configuration', () => {
 
   it('should have a new form route', () => {
     expect(sut.router.routes[5]).toEqual({
-      route: '/new',
+      route: '/:memberId/new',
       name: 'new-form',
       moduleId: './settings',
       nav: false
@@ -94,7 +94,7 @@ describe('the router configuration', () => {
 
   it('should have a data route', () => {
     expect(sut.router.routes[8]).toEqual({
-      route: '/:form/data',
+      route: '/:memberId/:formName/data',
       name: 'data',
       moduleId: './data',
       nav: false,
@@ -108,7 +108,7 @@ describe('the router configuration', () => {
 
   it('should have a view route', () => {
     expect(sut.router.routes[9]).toEqual({
-      route: '/:form/view',
+      route: '/:memberId/:formName/view',
       name: 'view',
       moduleId: './view',
       nav: false,
@@ -122,7 +122,7 @@ describe('the router configuration', () => {
 
   it('should have a design route', () => {
     expect(sut.router.routes[10]).toEqual({
-      route: '/:form/design',
+      route: '/:memberId/:formName/design',
       name: 'design',
       moduleId: './design',
       nav: false,
@@ -136,7 +136,7 @@ describe('the router configuration', () => {
 
   it('should have a contributors route', () => {
     expect(sut.router.routes[11]).toEqual({
-      route: '/:form/contributors',
+      route: '/:memberId/:formName/contributors',
       name: 'contributors',
       moduleId: './contributors',
       nav: false,
@@ -150,7 +150,7 @@ describe('the router configuration', () => {
 
   it('should have a history route', () => {
     expect(sut.router.routes[12]).toEqual({
-      route: '/:form/history',
+      route: '/:memberId/:formName/history',
       name: 'history',
       moduleId: './history',
       nav: false,
@@ -164,7 +164,7 @@ describe('the router configuration', () => {
 
   it('should have a settings route', () => {
     expect(sut.router.routes[13]).toEqual({
-      route: '/:form/settings',
+      route: '/:memberId/:formName/settings',
       name: 'settings',
       moduleId: './settings',
       nav: false,

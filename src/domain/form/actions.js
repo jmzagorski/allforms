@@ -1,10 +1,18 @@
 export const REQUEST_FORM = 'REQUEST_FORM';
+export const REQUEST_MEMBER_FORM = 'REQUEST_MEMBER_FORM';
 export const RECEIVED_FORM = 'RECEIVED_FORM';
 export const CREATE_FORM = 'CREATE_FORM';
 export const FORM_CREATED = 'FORM_CREATED';
 export const EDIT_FORM = 'EDIT_FORM';
 export const FORM_EDITED = 'FORM_EDITED';
 export const EDIT_FORM_TEMPLATE = 'EDIT_FORM_TEMPLATE';
+
+export function requestMemberForm(memberId, formName) {
+  return {
+    type: REQUEST_MEMBER_FORM,
+    payload: { memberId, formName }
+  };
+}
 
 /**
  * @summary action creator for when a request is submitted to get a form

@@ -38,7 +38,9 @@ export class Directory {
     this._router.routes
       .filter(r => r.settings.dirListing)
       .forEach(route => {
-        const url = this._router.generate(route.name, { form: form.id });
+        const url = this._router.generate(route.name, {
+          memberId: this.memberId, formName: form.name
+        });
         this.routes.push({
           url,
           description: route.settings.description,

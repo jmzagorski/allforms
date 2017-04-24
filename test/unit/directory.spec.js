@@ -64,10 +64,14 @@ describe('the directory view model', () => {
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
     expect(routerSpy.generate.calls.count()).toEqual(3);
     expect(routerSpy.generate.calls.argsFor(0)[0]).toEqual('interface', {
-      memberName: 'membera', formName: 'someformname'
+      memberId: 'membera', formName: 'someformname'
     });
-    expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual('a', { form: 1 });
-    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual('b', { form: 1 });
+    expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual('a', {
+      memberId: 'membera', formName: 'someformname'
+    });
+    expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual('b', {
+      memberId: 'membera', formName: 'someformname'
+    });
     expect(sut.routes).toEqual([{
       url: '/g', description: 'd', icon: 'c', name: 'a'
     }, {

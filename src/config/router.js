@@ -41,7 +41,7 @@ export default class {
         moduleId: './data-new',
         nav: false
       }, {
-        route: '/new',
+        route: '/:memberId/new',
         name: 'new-form',
         moduleId: './settings',
         nav: false
@@ -61,7 +61,7 @@ export default class {
      * ORDER YOU WANT THE USER TO SEE THE ICONS. THESE WILL APPEAR AS A LIST IN
      * THE DIRECTORY ROUTE
      */
-        route: '/:form/data',
+        route: '/:memberId/:formName/data',
         name: 'data',
         moduleId: './data',
         nav: false,
@@ -71,7 +71,7 @@ export default class {
           description: 'data forms based on your template'
         }
       }, {
-        route: '/:form/view',
+        route: '/:memberId/:formName/view',
         name: 'view',
         moduleId: './view',
         nav: false,
@@ -81,7 +81,7 @@ export default class {
           description: 'design how your form will print'
         }
       }, {
-        route: '/:form/design',
+        route: '/:memberId/:formName/design',
         name: 'design',
         moduleId: './design',
         nav: false,
@@ -91,7 +91,7 @@ export default class {
           description: 'design the look of your form'
         }
       }, {
-        route: '/:form/contributors',
+        route: '/:memberId/:formName/contributors',
         name: 'contributors',
         moduleId: './contributors',
         nav: false,
@@ -101,7 +101,7 @@ export default class {
           description: 'maintain user security'
         }
       }, {
-        route: '/:form/history',
+        route: '/:memberId/:formName/history',
         name: 'history',
         moduleId: './history',
         nav: false,
@@ -111,7 +111,7 @@ export default class {
           description: 'view changes to your form template'
         }
       }, {
-        route: '/:form/settings',
+        route: '/:memberId/:formName/settings',
         name: 'settings',
         moduleId: './settings',
         nav: false,

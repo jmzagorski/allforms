@@ -31,9 +31,10 @@ describe('the forms view model', () => {
     apiSpy.getForms.and.returnValue([]);
     routerSpy.generate.and.returnValues(1);
 
-    await sut.activate({});
+    await sut.activate({ memberId: 'a' });
 
-    expect(routerSpy.generate.calls.argsFor(0)).toEqual([ 'new-form' ]);
+    expect(routerSpy.generate.calls.argsFor(0)[0]).toEqual('new-form');
+    expect(routerSpy.generate.calls.argsFor(0)[1]).toEqual({ memberId: 'a'});
     expect(sut.routeToNew).toEqual(1);
     done();
   });

@@ -12,15 +12,18 @@ export class Settings  {
     this.model = { style: 'bootstrap' };
     this._store = store;
     this._router = router;
-    this._unsubscribe = () => {};
     this._action = null;
+
+    this._unsubscribe = this._store.subscribe(this._update.bind(this));
   }
 
   activate(params) {
+    this.model.memberId = params.memberId;
+    this.model.name = params.formName;
     this._action = createForm;
-    if (params.form) {
-      this._unsubscribe = this._store.subscribe(this._update.bind(this));
-      this._store.dispatch(requestForm(params.form));
+
+    if (params.formName) {
+      this._update();
       this._action = editForm;
     }
   }
@@ -29,9 +32,13 @@ export class Settings  {
     this._store.dispatch(this._action(this.model));
 
     if (this.model.id) {
-      this._router.navigateToRoute('dir', { form: this.model.id });
+      this._router.navigateToRoute('dir', {
+        memberId: this.model.memberId, formName: this.model.name
+      });
     } else {
-      this._router.navigateToRoute('allforms');
+      this._router.navigateToRoute('member', {
+        memberId: this.model.memberId
+      });
     }
   }
 
@@ -42,6 +49,6 @@ export class Settings  {
   _update() {
     const form = getActiveForm(this._store.getState());
     // copy state to keep it immutable
-    Object.assign(this.model, form);
+    if (form) Object.assign(this.model, form);
   }
 }

@@ -21,7 +21,7 @@ export default function metadataReducer(state = { status: '', elements: [], api:
       
       return mState;
     case RECEIVED_FORM:
-      if (action.error) return state;
+      if (action.error || !action.payload.elements) return state;
 
       const eState = Object.assign({}, state, { elements: action.payload.elements });
       eState.statuses = calcAllStatuses(eState);

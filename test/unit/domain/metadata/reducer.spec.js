@@ -81,6 +81,20 @@ describe('the metadata reducer', () => {
     expect(newState.elements).toEqual(action.payload.elements);
   });
 
+  [ null, undefined ].forEach(elements => {
+    it('does not add the elements when does not exist on payload', () => {
+      const state = { elements: [ { name: 'a' }, { name: 'b' } ], api: [] };
+      const action = {
+        type: domain.RECEIVED_FORM,
+        payload: { elements }
+      }
+
+      const newState = domain.metadata(state, action);
+
+      expect(newState).toBe(state);
+    });
+  });
+
   it('adds the api metadatum to the state', () => {
     const state = { api: [ { name: 'a' }, { name: 'b' } ], elements: [] };
     const action = {
@@ -106,10 +120,10 @@ describe('the metadata reducer', () => {
     const newState = domain.metadata(state, action);
 
     expect(newState.statuses).toEqual([
-      { element: 'a', metadata: 'a', status: 'success' },
+    { element: 'a', metadata: 'a', status: 'success' },
       { element: '', metadata: 'c', status: 'warning' },
       { element: 'b', metadata: '', status: 'danger' }
-    ]);
+  ]);
   });
 
   it('returns the state if no action type matches', () => {

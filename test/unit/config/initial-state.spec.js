@@ -1,7 +1,7 @@
 import InitialState from '../../../src/config/initial-state';
 import { Store } from 'aurelia-redux-plugin';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { requestForm, requestCurrentMember } from '../../../src/domain';
+import { requestMemberForm, requestCurrentMember } from '../../../src/domain';
 import { setupSpy } from '../jasmine-helpers';
 
 describe('the initial state configuration', () => {
@@ -29,9 +29,10 @@ describe('the initial state configuration', () => {
   });
 
   it('handles the route processing event', () => {
-    const form = 'formname'
+    const formName = 'a'
+    const memberId = 'b'
     const event = {
-      instruction: { params: { form }  }
+      instruction: { params: { memberId, formName }  }
     };
 
     eaSpy.subscribe.and.callFake((name, handler) => {
@@ -42,21 +43,23 @@ describe('the initial state configuration', () => {
     sut.configure();
 
     expect(storeSpy.dispatch.calls.count()).toEqual(2);
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('formname'));
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestMemberForm('b', 'a'));
   });
 
-  it('does not handle the route processing event', () => {
-    const event = {
-      instruction: { params: {}  }
-    };
+  [ {}, { formName: 'a' }, { memberId: 'b' } ].forEach(params => {
+    it('does not handle the route processing event', () => {
+      const event = {
+        instruction: { params  }
+      };
 
-    eaSpy.subscribe.and.callFake((name, handler) => {
-      handler(event);
-      return {};
+      eaSpy.subscribe.and.callFake((name, handler) => {
+        handler(event);
+        return {};
+      });
+
+      sut.configure();
+
+      expect(storeSpy.dispatch.calls.count()).toEqual(1);
     });
-
-    sut.configure();
-
-    expect(storeSpy.dispatch.calls.count()).toEqual(1);
-  })
+  });
 });
