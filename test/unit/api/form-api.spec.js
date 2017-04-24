@@ -32,6 +32,19 @@ describe('the form api', () => {
     done();
   });
 
+  it('fetches a the form for a member', async done => {
+    const name = 'a';
+    const memberId = 'b';
+    const first = {};
+    httpStub.itemStub = [ first ];
+
+    const actualForms = await sut.getMemberForm(memberId, name);
+
+    expect(httpStub.url).toEqual('forms?name=a&memberId=b');
+    expect(actualForms).toBe(first);
+    done();
+  });
+
   it('fetches a the form profile for a member', async done => {
     const name = 'a';
     const memberId = 'b';

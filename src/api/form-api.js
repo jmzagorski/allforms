@@ -20,6 +20,12 @@ export class FormApi {
       .then(response => response.json());
   }
 
+  getMemberForm(memberId, formName) {
+    return this._http.fetch(`forms?name=${formName}&memberId=${memberId}`)
+      .then(response => response.json())
+      .then(data => (data || [])[0]);
+  }
+
   getProfile(memberId, formName) {
     return this._http.fetch(`forms/profile/${memberId}/${formName}`)
       .then(response => response.json());
