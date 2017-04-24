@@ -16,11 +16,12 @@
           <label for="name" class="control-label">
             Data Form Name
           </label>
-          <span show.if="settings & oneTime" class="text-muted">
+          <br>
+          <span show.one-way="hasAutoName" class="text-muted">
             This form is setup to auto generate your data form
           </span>
           <div>
-            <div class="input-group">
+            <div class="input-group" show.one-way="!hasAutoName">
               <span class="input-group-addon">
                 <i class="glyphicon glyphicon-list-alt"></i></span>
               <input disabled.one-time="settings" id="name" name="name"

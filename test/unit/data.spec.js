@@ -1,40 +1,64 @@
+import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 import { FormDataApi } from '../../src/api/index';
-import { getFormData } from '../../src//domain/index';
 import { setupSpy } from './jasmine-helpers';
 import { Data } from '../../src/data';
+import * as formSelectors from '../../src/domain/form/selectors';
 
 describe('the data view model', () => {
   let sut;
   let apiSpy;
   let routerSpy;
   let params;
+  let getActiveFormSpy;
+  let storeSpy;
 
   beforeEach(() => {
+    storeSpy = setupSpy('store', Store.prototype);
     apiSpy = setupSpy('api', FormDataApi.prototype);
     routerSpy = setupSpy('router', Router.prototype);
-    params = { form: 1 };
+    params = { formName: 'a', memberId: 'b' };
+    getActiveFormSpy = spyOn(formSelectors, 'getActiveForm');
 
-    sut = new Data(routerSpy, apiSpy);
+    sut = new Data(routerSpy, apiSpy, storeSpy);
   });
 
   it('initializes the view model with defaults', () => {
     expect(sut.dataList).toEqual([]);
+    expect(sut.memberId).toBeDefined();
     expect(sut.gridOptions).toEqual({
       autoEdit: true,
       editable: true,
       forceFitColumns: true
     });
+    expect(storeSpy.subscribe.calls.count()).toEqual(1);
   });
 
-  it('get the form data list from the api on activate', async done => {
-    const data= [];
+  it('initializes the memberId property on activate', async done => {
+    await sut.activate(params);
+
+    expect(sut.memberId).toEqual(params.memberId);
+    done()
+  });
+
+  it('does not update the list without a form', async done => {
+    await sut.activate(params);
+
+    expect(apiSpy.getAll).not.toHaveBeenCalled();
+    done()
+  });
+
+  it('get the form data list from the api on activate if a form exits', async done => {
+    // skip the forEach and sort with the empty array
+    const data = [];
+    const form = { id: 1 };
+    getActiveFormSpy.and.returnValue(form);
     apiSpy.getAll.and.returnValue(data);
 
     await sut.activate(params);
 
     expect(sut.dataList).toBe(data);
-    expect(apiSpy.getAll).toHaveBeenCalledWith(params.form);
+    expect(apiSpy.getAll).toHaveBeenCalledWith(1);
     done();
   });
 
@@ -44,7 +68,7 @@ describe('the data view model', () => {
     const saved3 = new Date(2013,1,1);
     const saved4 = new Date(2014,1,1);
 
-    const data= [
+    const data = [
       { id: 1, saved: saved1 },
       { id: 4, originalId: 2, saved: saved2 },
       { id: 5, originalId: 2, saved: saved4 },
@@ -52,6 +76,7 @@ describe('the data view model', () => {
       { id: 3, originalId: 1, saved: saved4 }
     ];
     apiSpy.getAll.and.returnValue(data);
+    getActiveFormSpy.and.returnValue({});
 
     await sut.activate(params);
 
@@ -63,34 +88,26 @@ describe('the data view model', () => {
     done();
   });
 
-  it('generates a route to create a new data form', async done => {
-    const data= [];
-    const newRoute = {};
-    apiSpy.getAll.and.returnValue(data);
-    routerSpy.generate.and.returnValue(newRoute)
-
-    await sut.activate(params);
-
-    expect(sut.routeToNew).toBe(newRoute);
-    expect(routerSpy.generate.calls.argsFor(0)).toEqual([ 'newData', { form: params.form } ]);
-    done();
-  });
-
-  [ { data: [ { id: 1}, { id: 2} ], route: 'formData' },
-    { data: [ { id: 1, originalId: 3 }, { id: 2, originalId: 3 } ], route: 'snapshot' }
+  [ { data: [ { id: 1, name: 'first' }, { id: 2, name: 'second'} ], route: 'formData' },
+    { data: [ { id: 1, name: 'first', originalId: 3 }, { id: 2, name: 'second', originalId: 3 } ], route: 'snapshot' }
   ].forEach(record => {
-    it('generates a formData route for each existing data form', async done => {
-      routerSpy.generate.and.returnValues('new', 'a', 'b');
+    it('generates a route for each existing data form', async done => {
+      routerSpy.generate.and.returnValues('a', 'b', 'new');
+      getActiveFormSpy.and.returnValue({ name: 'c' });
       apiSpy.getAll.and.returnValue(record.data);
 
       await sut.activate(params);
 
-      expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual(
-        record.route, { form: params.form, formDataId: 1 }
-      );
-      expect(routerSpy.generate.calls.argsFor(2)[0]).toEqual(
-        record.route, { form: params.form, formDataId: 2 }
-      );
+      // FIXME go through tests and make sure to test each arg or else this will
+      // pass even though the object arg fails
+      expect(routerSpy.generate.calls.argsFor(0)[0]).toEqual(record.route);
+      expect(routerSpy.generate.calls.argsFor(0)[1]).toEqual({
+        formName: 'c', formDataName: 'second', memberId: params.memberId
+      });
+      expect(routerSpy.generate.calls.argsFor(1)[0]).toEqual(record.route);
+      expect(routerSpy.generate.calls.argsFor(1)[1]).toEqual({
+        formName: 'c', formDataName: 'first', memberId: params.memberId
+      });
       expect(sut.dataList[0].url).toEqual('a');
       expect(sut.dataList[1].url).toEqual('b');
       expect(routerSpy.generate.calls.count()).toEqual(3);
@@ -101,11 +118,27 @@ describe('the data view model', () => {
   it('adds an indent property to help formatting children', async done => {
     const data = [ { originalId: 1 }, { id: 2 }];
     apiSpy.getAll.and.returnValue(data);
+    getActiveFormSpy.and.returnValue({});
 
     await sut.activate(params);
 
     expect(data[0]._indent).toEqual(1);
     expect(data[1]._indent).not.toBeDefined();
+    done();
+  });
+
+  it('generates a route to create a new data form', async done => {
+    const newRoute = {};
+    // skiip the form
+    getActiveFormSpy.and.returnValue(null);
+    routerSpy.generate.and.returnValue(newRoute)
+
+    await sut.activate(params);
+
+    expect(sut.routeToNew).toBe(newRoute);
+    expect(routerSpy.generate).toHaveBeenCalledWith('newData', {
+      memberId: params.memberId, formName: params.formName
+    });
     done();
   });
 
@@ -156,7 +189,7 @@ describe('the data view model', () => {
   });
 
   [ true, false ].forEach(expanded => {
-    it('returns based on parent expand property', () => {
+    it('returns true or false based on parent expand property when showing snapshot', () => {
       const parent = { id: 2, _expanded: expanded, originalId: null };
       const item = { id: 3, _expanded: true, originalId: 2 };
 
@@ -169,7 +202,7 @@ describe('the data view model', () => {
   });
 
   [ true, false ].forEach(expanded => {
-    it('returns based on grandparent expand property', () => {
+    it('returns true or flase based on grandparent expand property', () => {
       const grandparent = { id: 1, _expanded: expanded, originalId: null };
       const parent = { id: 2, _expanded: true, originalId: 1 };
       const item = { id: 3, _expanded: true, originalId: 2 };
@@ -183,7 +216,7 @@ describe('the data view model', () => {
   });
 
   [ true, false ].forEach(expanded => {
-    it('sets private _expanded field to the opposite', () => {
+    it('sets private _expanded field for the grid to the opposite value', () => {
       const item = { _expanded: expanded };
 
       sut.setExpanded(item);

@@ -31,12 +31,12 @@ export default class {
         moduleId: './directory',
         nav: false
       }, {
-        route: '/:form/data/:formDataId',
+        route: '/:memberId/:formName/:formDataName',
         name: 'formData',
         moduleId: './data-edit',
         nav: false
       }, {
-        route: '/:form/data/new',
+        route: '/:memberId/:formName/new',
         name: 'newData',
         moduleId: './data-new',
         nav: false
@@ -46,7 +46,7 @@ export default class {
         moduleId: './settings',
         nav: false
       }, {
-        route: '/snapshots/:formDataId',
+        route: '/:memberId/:formName/:formDataName/snapshot',
         name: 'snapshot',
         moduleId: './snapshot',
         nav: false

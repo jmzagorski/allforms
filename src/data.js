@@ -1,15 +1,17 @@
+import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 import { FormDataApi } from './api/index';
+import { getActiveForm } from './domain';
 
 /**
  * @summary Displays the list of data forms associated with a form template
  */
 export class Data {
-  static inject() { return [ Router, FormDataApi ]; }
+  static inject() { return [ Router, FormDataApi, Store ]; }
 
-  constructor(router, api) {
+  constructor(router, api, store) {
     this.dataList = [];
-
+    this.memberId = null;
     this.gridOptions = {
       autoEdit: true,
       editable: true,
@@ -19,40 +21,18 @@ export class Data {
     this._api = api;
     this._router = router;
     this._selectedRecords = [];
+    this._store = store;
+
+    this._unsubscribe = this._store.subscribe(this._updateList.bind(this));
   }
 
   async activate(params) {
-    this.dataList = await this._api.getAll(params.form);
-    this.routeToNew = this._router.generate('newData', { form: params.form });
+    this.memberId = params.memberId;
+    await this._updateList();
 
-    // make sure like records stay together
-    // TODO add grouping then sort so don't have to deal with this logic
-    this.dataList.sort((a,b) => {
-      if (a.id !== b.originalId) {
-        return 1;
-      }
-
-      if ((a.originalId === b.originalId) || !a.originalId && !b.originalId) {
-        if (a.saved > b.saved) {
-          return 1
-        } else {
-          return -1;
-        }
-      }
-
-      return 0;
+    this.routeToNew = this._router.generate('newData', {
+      memberId: params.memberId, formName: params.formName
     });
-
-    if (this.dataList) {
-      this.dataList.forEach(d => {
-        if (d.originalId) {
-          d.url = this._router.generate('snapshot', { formDataId: d.id });
-          d._indent = 1;
-        } else {
-          d.url = this._router.generate('formData', { form: params.form, formDataId: d.id });
-        }
-      });
-    }
   }
 
   capture(record) {
@@ -93,5 +73,45 @@ export class Data {
 
   setExpanded(item) {
     item._expanded = !item._expanded;
+  }
+
+  deactivate() {
+    this._unsubscribe();
+  }
+
+  async _updateList() {
+    const form = getActiveForm(this._store.getState());
+
+    if (form) {
+      this.dataList = await this._api.getAll(form.id);
+
+      // make sure like records stay together
+      // TODO add grouping then sort so don't have to deal with this logic
+      this.dataList.sort((a,b) => {
+        if (a.id !== b.originalId) {
+          return 1;
+        }
+
+        if ((a.originalId === b.originalId) || !a.originalId && !b.originalId) {
+          if (a.saved > b.saved) {
+            return 1
+          } else {
+            return -1;
+          }
+        }
+
+        return 0;
+      });
+
+      this.dataList.forEach(d => {
+        const routeName = d.originalId ? 'snapshot' : 'formData';
+
+        d.url = this._router.generate(routeName, {
+          formName: form.name, formDataName: d.name, memberId: this.memberId
+        });
+
+        if (d.originalId) d._indent = 1;
+      });
+    }
   }
 }

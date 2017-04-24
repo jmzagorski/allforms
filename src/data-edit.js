@@ -1,7 +1,6 @@
 import { Store } from 'aurelia-redux-plugin';
 import {
   getActiveForm,
-  requestForm,
   requestFormData,
   getFormData
 } from './domain';
@@ -14,13 +13,12 @@ export class DataEdit {
     this.autoSaveOpts = {};
 
     this._store = store;
-    this._unsubscribe = () => {};
+    this._unsubscribe = this._store.subscribe(() => this._update());
   }
 
   activate(params) {
-    this._unsubscribe = this._store.subscribe(() => this._update());
-    this._store.dispatch(requestForm(params.form));
-    this._store.dispatch(requestFormData(params.formDataId));
+    this._store.dispatch(requestFormData(params.formDataName));
+    this._update();
   }
 
   _update() {

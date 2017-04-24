@@ -5,10 +5,10 @@ describe('the form data actions', () => {
   it('creates the action for a request for form data', () => {
     const expected = {
       type: 'REQUEST_FORM_DATA',
-      payload: { formDataId: 1 }
+      payload: { name: 'a' }
     };
 
-    const actual = domain.requestFormData(1);
+    const actual = domain.requestFormData('a');
 
     expect(actual).toEqual(expected);
   });

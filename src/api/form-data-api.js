@@ -33,13 +33,15 @@ export class FormDataApi {
   }
 
   /**
-   * @summary Gets an single IFormData object
-   * @param {number} formDataId the id of the IFormData object
+   * @summary Gets a single IFormData object
+   * @param {string} name the unique name of the IFormData object
    * @return {Promise<IFormData>} a promise to return the IFormData object
    */
-  get(formDataId) {
-    return this._http.fetch(`${baseUrl}/${formDataId}`)
-      .then(response => response.json());
+  getByName(name) {
+    // TODO name should not have any spaces
+    return this._http.fetch(`${baseUrl}?name=${name}`)
+      .then(response => response.json())
+      .then(data => (data || [])[0]);
   }
 
   /**

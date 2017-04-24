@@ -48,7 +48,7 @@ describe('the router configuration', () => {
 
   it('should have a data form edit route', () => {
     expect(sut.router.routes[3]).toEqual({
-      route: '/:form/data/:formDataId',
+      route: '/:memberId/:formName/:formDataName',
       name: 'formData',
       moduleId: './data-edit',
       nav: false
@@ -57,7 +57,7 @@ describe('the router configuration', () => {
 
   it('should have a data new route', () => {
     expect(sut.router.routes[4]).toEqual({
-      route: '/:form/data/new',
+      route: '/:memberId/:formName/new',
       name: 'newData',
       moduleId: './data-new',
       nav: false
@@ -75,7 +75,7 @@ describe('the router configuration', () => {
 
   it('should have a snapshot route', () => {
     expect(sut.router.routes[6]).toEqual({
-      route: '/snapshots/:formDataId',
+      route: '/:memberId/:formName/:formDataName/snapshot',
       name: 'snapshot',
       moduleId: './snapshot',
       nav: false

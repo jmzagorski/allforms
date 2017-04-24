@@ -6,7 +6,7 @@ import * as actions from '../domain/form-data/actions';
  */
 export function* getFormDataAsync(api, action) {
   try {
-    const formData = yield call([ api, api.get ], action.payload.formDataId);
+    const formData = yield call([ api, api.getByName ], action.payload.name);
 
     yield put(actions.receivedFormData(formData));
   } catch (e) {

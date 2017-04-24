@@ -30,13 +30,13 @@ describe('the form data saga', () => {
 
   it('gets the form data', () => {
     const returnedData = { id: 1 };
-    const api = { get: () => { } };
-    const action= { payload: { formDataId: 1 } };
+    const api = { getByName: () => { } };
+    const action= { payload: { name: 1 } };
 
     const iterator = saga.getFormDataAsync(api, action);
 
     expect(iterator.next().value).toEqual(
-      call([api, api.get], action.payload.formDataId)
+      call([api, api.getByName], action.payload.name)
     );
     expect(iterator.next(returnedData).value).toEqual(
       put(receivedFormData(returnedData))
@@ -48,7 +48,7 @@ describe('the form data saga', () => {
   });
 
   it('sends an error in the catch of getting the form data', () => {
-    const api = { get: () => { } };
+    const api = { getByName: () => { } };
     const action= { payload: 1 };
     const err = new Error();
 

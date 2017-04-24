@@ -18,10 +18,14 @@ describe('edit data view model', () => {
   it('initialized default properties', () => {
     expect(sut.html).toEqual('');
     expect(sut.autoSaveOpts).toBeDefined();
+    expect(storeSpy.subscribe).toHaveBeenCalled();
   });
 
-  it('dispatches the request action after subscribing', () => {
-    const params = { form: 1, formDataId: 2 };
+  it('dispatches the request form data on activate', () => {
+    const params = { formDataName: 2 };
+
+    spyOn(formSelectors, 'getActiveForm').and.returnValue(null);
+    spyOn(dataSelectors, 'getFormData').and.returnValue(null);
 
     storeSpy.subscribe.and.callFake(arg => {
       expect(storeSpy.dispatch).not.toHaveBeenCalled();
@@ -29,16 +33,14 @@ describe('edit data view model', () => {
 
     sut.activate(params);
 
-    expect(storeSpy.subscribe).toHaveBeenCalled();
-    expect(storeSpy.dispatch.calls.count()).toEqual(2);
-    expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([ requestForm(params.form) ]);
-    expect(storeSpy.dispatch.calls.argsFor(1)).toEqual([ requestFormData(params.formDataId) ]);
+    expect(storeSpy.dispatch.calls.count()).toEqual(1);
+    expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([ requestFormData(params.formDataName) ]);
   });
 
-  it('sets up the view mode propertiers if the form and data exist on update', () => {
+  it('sets up the view mode properties if the form and data exist on update', () => {
     const state = {};
-    const form = { template: 'a', api: 'b' };
-    const formData = { data: 'c', id: 1 };
+    const form = { template: 'a' };
+    const formData = { data: 'c', id: 1, name: 'e' };
     const getFormSpy = spyOn(formSelectors, 'getActiveForm').and.returnValue(form);
     const getDataSpy = spyOn(dataSelectors, 'getFormData').and.returnValue(formData);
     let updateFunc = null;
@@ -46,11 +48,13 @@ describe('edit data view model', () => {
     storeSpy.getState.and.returnValue(state);
     storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
-    sut.activate({ formDataId: formData.id });
+    sut = new DataEdit(storeSpy);
+    sut.activate({ formDataName: formData.name });
+
     updateFunc();
 
-    expect(getFormSpy.calls.count()).toEqual(1);
-    expect(getDataSpy.calls.count()).toEqual(1);
+    expect(getFormSpy.calls.count()).toEqual(2);
+    expect(getDataSpy.calls.count()).toEqual(2);
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
     expect(getDataSpy.calls.argsFor(0)[0]).toBe(state);
     expect(sut.html).toEqual('a');
@@ -64,13 +68,14 @@ describe('edit data view model', () => {
     { form: {}, formData: null },
     { form: {}, formData: undefined },
   ].forEach(data => {
-    it('does not set view model properties without a form', () => {
+    it('does not set view model properties without a form or data', () => {
       spyOn(formSelectors, 'getActiveForm').and.returnValue(data.form);
       spyOn(dataSelectors, 'getFormData').and.returnValue(data.formData);
       let updateFunc = null;
 
       storeSpy.subscribe.and.callFake(func => updateFunc = func);
 
+      sut = new DataEdit(storeSpy);
       sut.activate({});
       updateFunc();
 
@@ -83,10 +88,10 @@ describe('edit data view model', () => {
     let unsubscribe = false;
     const subscription = () => unsubscribe = true;
     storeSpy.subscribe.and.returnValue(subscription);
-    sut.activate({ });
 
+    sut = new DataEdit(storeSpy);
     sut.deactivate();
 
     expect(unsubscribe).toBeTruthy();
   });
-})
+});

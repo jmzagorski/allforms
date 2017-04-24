@@ -10,10 +10,10 @@ export const FORM_DATA_EDITED = 'FORM_DATA_EDITED';
  * @param {Number} formDataId the unique id of the data form
  * @return {IAction} the IAction object
  */
-export function requestFormData(formDataId) {
+export function requestFormData(name) {
   return {
     type: REQUEST_FORM_DATA,
-    payload: { formDataId }
+    payload: { name }
   };
 }
 

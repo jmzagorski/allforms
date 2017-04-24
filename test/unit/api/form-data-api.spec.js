@@ -20,13 +20,24 @@ describe('the form data api', () => {
     done();
   });
 
-  it('fetches a single form data object by the id', async done => {
-    httpStub.itemStub = {};
+  it('fetches a single form data object by the name', async done => {
+    const expected = {};
+    httpStub.itemStub = [ expected ];
 
-    const actual = await sut.get(1);
+    const actual = await sut.getByName('a');
 
-    expect(httpStub.url).toEqual('forms/data/1');
-    expect(actual).toBe(httpStub.itemStub);
+    expect(httpStub.url).toEqual('forms/data?name=a');
+    expect(actual).toBe(expected);
+    done();
+  });
+
+  it('returns null if nothing found', async done => {
+    // to test a null or undefined array
+    httpStub.itemStub = null;
+
+    const actual = await sut.getByName('a');
+
+    expect(actual).not.toBeDefined();
     done();
   });
 
