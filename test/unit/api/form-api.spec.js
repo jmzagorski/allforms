@@ -45,6 +45,16 @@ describe('the form api', () => {
     done();
   });
 
+  it('returns null if nothing found for memeber form', async done => {
+    // to test a null or undefined array
+    httpStub.itemStub = null;
+
+    const actual = await sut.getMemberForm('a', 'b');
+
+    expect(actual).not.toBeDefined();
+    done();
+  });
+
   it('fetches a the form profile for a member', async done => {
     const name = 'a';
     const memberId = 'b';
