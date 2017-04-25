@@ -6,13 +6,29 @@ describe('the form actions', () => {
   let storeSpy;
   let apiSpy;
 
+  [ true, false ].forEach(error => {
+    it('create an action for all forms received', () => {
+      const payload = {};
+      const expected = {
+        type: 'RECEIVED_FORMS',
+        payload,
+        error
+      };
+
+      const actual = domain.receivedForms(payload, error);
+
+      expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(payload);
+    });
+  });
+
   it('create an action to request a members form', () => {
     const formName = 'a';
     const memberId = 'b';
     const expected = {
       type: 'REQUEST_MEMBER_FORM',
       payload: { memberId, formName }
-    }
+    };
 
     const actual = domain.requestMemberForm(memberId, formName);
 
@@ -24,7 +40,7 @@ describe('the form actions', () => {
     const expected = {
       type: 'REQUEST_FORM',
       payload: { id }
-    }
+    };
 
     const actual = domain.requestForm(id);
 
@@ -38,7 +54,7 @@ describe('the form actions', () => {
         type: 'RECEIVED_FORM',
         payload,
         error
-      }
+      };
 
       const actual = domain.receivedForm(payload, error);
 
@@ -52,7 +68,7 @@ describe('the form actions', () => {
     const expected = {
       type: 'CREATE_FORM',
       payload
-    }
+    };
 
     const actual = domain.createForm(payload);
 
@@ -67,7 +83,7 @@ describe('the form actions', () => {
         type: 'FORM_CREATED',
         payload,
         error
-      }
+      };
 
       const actual = domain.formAdded(payload, error);
 
@@ -81,7 +97,7 @@ describe('the form actions', () => {
     const expected = {
       type: 'EDIT_FORM_TEMPLATE',
       payload
-    }
+    };
 
     const actual = domain.editFormTemplate(payload);
 
@@ -94,7 +110,7 @@ describe('the form actions', () => {
     const expected = {
       type: 'EDIT_FORM',
       payload
-    }
+    };
 
     const actual = domain.editForm(payload);
 
@@ -109,7 +125,7 @@ describe('the form actions', () => {
         type: 'FORM_EDITED',
         payload,
         error
-      }
+      };
 
       const actual = domain.formEdited(payload, error);
 

@@ -10,7 +10,7 @@ describe('the member api', () => {
     sut = new MemberApi(httpStub);
   });
 
-  it('fetches a given memeber', async done => {
+  it('fetches a given member', async done => {
     const expectedMember = 'a';
     httpStub.itemStub = [];
 
@@ -37,6 +37,26 @@ describe('the member api', () => {
     const forms = await sut.getForms('a');
 
     expect(httpStub.url).toEqual('members/a/forms');
+    expect(forms).toBe(httpStub.itemStub);
+    done();
+  });
+
+  it('fetches the recent forms for a member', async done => {
+    httpStub.itemStub = [];
+
+    const forms = await sut.getRecentForms('a');
+
+    expect(httpStub.url).toEqual('members/a/forms/recent');
+    expect(forms).toBe(httpStub.itemStub);
+    done();
+  });
+
+  it('fetches the recent data forms for a member', async done => {
+    httpStub.itemStub = [];
+
+    const forms = await sut.getRecentDataForms('a');
+
+    expect(httpStub.url).toEqual('members/a/forms/data/recent');
     expect(forms).toBe(httpStub.itemStub);
     done();
   });

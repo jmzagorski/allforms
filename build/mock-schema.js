@@ -248,8 +248,8 @@ export const schema = {
     },
     "formData": {
       "type": "array",
-      "minItems": 1,
-      "maxItems": 1,
+      "minItems": 8,
+      "maxItems": 20,
       "items": {
         "type": "object",
         "properties": {
@@ -267,7 +267,7 @@ export const schema = {
             "type": "string",
             "faker": "date.past"
           },
-          "memberName": {
+          "memberId": {
             "type": "string",
             "faker": "name.firstName"
           },
@@ -280,7 +280,7 @@ export const schema = {
             "enum": [ null ]
           }
         },
-        "required": [ "id", "name", "saved", "memberName", "formId", "originalId" ]
+        "required": [ "id", "name", "saved", "memberId", "formId", "originalId" ]
       }
     },
   },

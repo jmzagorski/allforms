@@ -20,9 +20,9 @@ export class App {
     this._routerConf.configure();
   }
 
-  activate() {
+  async activate() {
     this._unsubscribe = this._store.subscribe(this._getMember.bind(this))
-    this._initialState.configure();
+    await this._initialState.configure();
   }
 
   _getMember() {

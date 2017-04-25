@@ -23,7 +23,6 @@ describe('the new data form view model', () => {
 
   it('initializes the view model with default property values', () => {
     expect(sut.model).not.toEqual(null);
-    expect(sut.formName).toBeDefined();
     expect(sut.memberId).toBeDefined();
     expect(sut.hasAutoName).toBeFalsy();
     expect(storeSpy.subscribe.calls.count()).toEqual(1);
@@ -35,7 +34,7 @@ describe('the new data form view model', () => {
     sut.activate(params);
 
     expect(sut.memberId).toEqual(params.memberId);
-    expect(sut.formName).toEqual(params.formName);
+    expect(sut.model.formName).toEqual(params.formName);
   });
 
   [ { autoname: null, expected: false },
@@ -75,7 +74,7 @@ describe('the new data form view model', () => {
 
   it('navigates back to the form data list after creating a new one', () => {
     sut.memberId = 'a';
-    sut.formName = 'b';
+    sut.model.formName = 'b';
 
     sut.create();
 

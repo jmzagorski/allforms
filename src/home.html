@@ -13,6 +13,7 @@
         <div id="activity-collapse" class="panel-collapse collapse in"
           aria-expanded="true">
           <div class="panel-body">
+            <i show.bind="!activity.length" class="fa fa-refresh fa-spin" aria-hidden="true;"></i>
             <ul class="list-unstyled">
               <li repeat.for="a of activity"></li>
             </ul>
@@ -31,6 +32,7 @@
         <div id="contributions-collapse" class="panel-collapse collapse in"
           aria-expanded="true">
           <div class="panel-body">
+            <i show.bind="!contributions.length" class="fa fa-refresh fa-spin" aria-hidden="true;"></i>
             <ul class="list-unstyled">
               <li repeat.for="c of contributions"></li>
             </ul>
@@ -51,8 +53,11 @@
         <div id="data-collapse" class="panel-collapse collapse in"
           aria-expanded="true">
           <div class="panel-body">
+            <i show.bind="!datum.length" class="fa fa-refresh fa-spin" aria-hidden="true;"></i>
             <ul class="list-unstyled">
-              <li repeat.for="d of datum"></li>
+              <li repeat.for="d of datum">
+                <a href="${d.url}">${d.display}</a></li>
+              </li>
             </ul>
           </div>
         </div>
@@ -69,8 +74,10 @@
         <div id="forms-collapse" class="panel-collapse collapse in"
           aria-expanded="true">
           <div class="panel-body">
+            <i show.bind="!forms.length" class="fa fa-refresh fa-spin" aria-hidden="true;"></i>
             <ul class="list-unstyled">
-              <li repeat.for="f of forms"></li>
+              <li repeat.for="f of forms">
+                <a href="${f.url}">${f.name}</a></li>
             </ul>
           </div>
         </div>

@@ -2,6 +2,22 @@ import * as domain from '../../../../src/domain/index';
 
 describe('the form data actions', () => {
 
+  [ true, false ].forEach(hasError => {
+    it('creates the action for all data forms received', () => {
+      const data = {};
+      const expected = {
+        type: 'RECEIVED_DATA_FORMS',
+        payload: data,
+        error: hasError
+      };
+
+      const actual = domain.receivedDataForms(data, hasError);
+
+      expect(actual).toEqual(expected);
+      expect(actual.payload).toBe(data);
+    });
+  });
+
   it('creates the action for a request for form data', () => {
     const expected = {
       type: 'REQUEST_FORM_DATA',

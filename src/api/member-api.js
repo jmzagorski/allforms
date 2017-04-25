@@ -27,4 +27,14 @@ export class MemberApi {
     return this._http.fetch('members/' + memberId + '/forms')
       .then(response => response.json());
   }
+
+  getRecentForms(memberId) {
+    return this._http.fetch('members/' + memberId + '/forms/recent')
+      .then(response => response.json());
+  }
+
+  getRecentDataForms(memberId) {
+    return this._http.fetch('members/' + memberId + '/forms/data/recent')
+      .then(response => response.json());
+  }
 }

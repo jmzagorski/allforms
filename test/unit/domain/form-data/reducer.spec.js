@@ -2,9 +2,21 @@ import { formData } from '../../../../src/domain/index';
 
 describe('the form data reducer', () => {
 
-  [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED'
-  ].forEach(type => {
-    it('returns the payload', () => {
+  it('received all the data forms', () => {
+    const payload = [];
+    const state ={};
+    const action = {
+      type: 'RECEIVED_DATA_FORMS',
+      payload
+    };
+
+    const newState = formData(state, action);
+
+    expect(newState.list).toBe(payload);
+  });
+
+  [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED' ].forEach(type => {
+    it('returns the payload on the current property', () => {
       const payload = {};
       const state ={};
       const action = {
@@ -14,11 +26,12 @@ describe('the form data reducer', () => {
 
       const newState = formData(state, action);
 
-      expect(newState).toBe(payload);
+      expect(newState.current).toBe(payload);
     });
   });
 
-  [ 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED', 'FORM_DATA_EDITED'
+  [ 'RECEIVED_DATA_FORMS', 'RECEIVED_FORM_DATA', 'FORM_DATA_CREATED',
+    'FORM_DATA_EDITED'
   ].forEach(type => {
     it('returns the original state on error', () => {
       const state ={};
@@ -33,7 +46,7 @@ describe('the form data reducer', () => {
     });
   });
 
-  it('returns the default when no action type matched', () => {
+  it('returns the original state when no action type matched', () => {
     const state ={};
     const action = { type: 'Anyting' };
 

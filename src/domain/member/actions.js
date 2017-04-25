@@ -1,5 +1,13 @@
 export const REQUEST_CURRENT_MEMBER = 'REQUEST_CURRENT_MEMBER';
 export const RECEIVED_CURRENT_MEMBER = 'RECEIVED_CURRENT_MEMBER';
+export const REQUEST_MEMBER_ACTIVITY = 'REQUEST_MEMBER_ACTIVITY';
+
+export function requestMemberActivity(memberId) {
+  return {
+    type: REQUEST_MEMBER_ACTIVITY,
+    payload: { memberId }
+  }
+}
 
 /**
  * @summary action creator for requesting the logined in member

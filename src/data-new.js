@@ -8,7 +8,6 @@ export class DataNew {
 
   constructor(store, router) {
     this.model = {};
-    this.formName = null;
     this.memberId = null;
     this.hasAutoName = false;
 
@@ -18,7 +17,7 @@ export class DataNew {
   }
 
   activate(params) {
-    this.formName = params.formName;
+    this.model.formName = params.formName;
     this.memberId = params.memberId;
     this._update();
   }
@@ -27,7 +26,7 @@ export class DataNew {
     this._store.dispatch(createFormData(this.model));
 
     this._router.navigateToRoute('data', {
-      memberId: this.memberId, formName: this.formName
+      memberId: this.memberId, formName: this.model.formName
     });
   }
 

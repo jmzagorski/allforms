@@ -26,6 +26,17 @@ for (var i = 0, len = jsonObj.forms.length; i < len; i++) {
   form.memberId = member.id;
 }
 
+for (var i = 0, len = jsonObj.formData.length; i < len; i++) {
+  var data = jsonObj.formData[i];
+  var randomMember = faker.random.number(jsonObj.members.length - 1);
+  var member = jsonObj.members[randomMember];
+  var randomForm = faker.random.number(jsonObj.forms.length - 1);
+  var form = jsonObj.forms[randomForm];
+  data.formId = form.id;
+  data.memberId = member.id;
+}
+
+
 for (var i = 0, len = jsonObj.metadata.length; i < len; i++) {
   var metadata = jsonObj.metadata[i];
   var randomForm = faker.random.number(jsonObj.forms.length - 1);

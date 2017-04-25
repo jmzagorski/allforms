@@ -2,6 +2,18 @@ import * as domain from '../../../../src/domain';
 
 describe('the member actions', () => {
 
+  it('creates the action for requesting member activity', () => {
+    const memberId = 1;
+    const expected = {
+      type: 'REQUEST_MEMBER_ACTIVITY',
+      payload: { memberId }
+    };
+
+    const actual = domain.requestMemberActivity(memberId);
+
+    expect(actual).toEqual(expected);
+  });
+
   it('creates the action for requesting the current member', () => {
     const expected = {
       type: 'REQUEST_CURRENT_MEMBER',

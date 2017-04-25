@@ -1,9 +1,24 @@
 export const REQUEST_FORM_DATA = 'REQUEST_FORM_DATA';
 export const RECEIVED_FORM_DATA = 'RECEIVED_FORM_DATA';
+export const RECEIVED_DATA_FORMS = 'RECEIVED_DATA_FORMS';
 export const CREATE_FORM_DATA = 'CREATE_FORM_DATA';
 export const EDIT_FORM_DATA = 'EDIT_FORM_DATA';
 export const FORM_DATA_CREATED = 'FORM_DATA_CREATED';
 export const FORM_DATA_EDITED = 'FORM_DATA_EDITED';
+
+/**
+ * @summary action creator for receving data forms
+ * @param {IForm | Error} data the IFormData array or Error object
+ * @param {Boolean} [hasError] a flag to indicate in the data arg is an error
+ * @return {IAction} the action object
+ */
+export function receivedDataForms(data, hasError) {
+  return {
+    type: RECEIVED_DATA_FORMS,
+    payload: data,
+    error: hasError
+  };
+}
 
 /**
  * @summary creates the action object for requesting the IFormData object

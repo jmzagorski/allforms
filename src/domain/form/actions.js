@@ -1,12 +1,33 @@
 export const REQUEST_FORM = 'REQUEST_FORM';
 export const REQUEST_MEMBER_FORM = 'REQUEST_MEMBER_FORM';
 export const RECEIVED_FORM = 'RECEIVED_FORM';
+export const RECEIVED_FORMS = 'RECEIVED_FORMS';
 export const CREATE_FORM = 'CREATE_FORM';
 export const FORM_CREATED = 'FORM_CREATED';
 export const EDIT_FORM = 'EDIT_FORM';
 export const FORM_EDITED = 'FORM_EDITED';
 export const EDIT_FORM_TEMPLATE = 'EDIT_FORM_TEMPLATE';
 
+/**
+ * @summary action creator for receving forms
+ * @param {IForm | Error} data the IForm array or Error object
+ * @param {Boolean} [hasError] a flag to indicate in the data arg is an error
+ * @return {IAction} the action object
+ */
+export function receivedForms(data, hasError) {
+  return {
+    type: RECEIVED_FORMS,
+    payload: data,
+    error: hasError
+  };
+}
+
+/**
+ * @summary action creator for when a request a forms for a particular member
+ * @param {string} memberId the id of the member
+ * @param {string} formName the name of the form
+ * @return {IAction} the action object
+ */
 export function requestMemberForm(memberId, formName) {
   return {
     type: REQUEST_MEMBER_FORM,
