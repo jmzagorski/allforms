@@ -73,14 +73,14 @@ describe('the home view model', () => {
     );
     expect(sut.forms).toEqual([ { name: 'a', url: 'g' }, { name: 'b', url: 'h' } ])
     expect(sut.datum).toEqual([
-      { display: 'd/c', url: 'i' }, { display: 'f/e', url: 'j' }
+      { display: '4/d/c', url: 'i' }, { display: '5/f/e', url: 'j' }
     ]);
   });
 
   it('refreshes the forms and datum properties on each refresh', () => {
     let update = null;
     const forms = [ { name: 'a' } ];
-    const dataForms = [ { name: 'c', form: { name: 'd' } } ];
+    const dataForms = [ { name: 'c', form: { name: 'd', memberId: 4 } } ];
     spyOn(memberSelectors, 'getActiveMember').and.returnValue({ id: 1 });
     spyOn(formSelectors, 'getFormList').and.returnValues(forms, forms);
     spyOn(formDataSelectors, 'getDataFormList').and.returnValues(dataForms, dataForms);
@@ -92,7 +92,7 @@ describe('the home view model', () => {
     update();
 
     expect(sut.forms).toEqual([ { name: 'a', url: undefined } ])
-    expect(sut.datum).toEqual([ { display: 'd/c', url: undefined } ]);
+    expect(sut.datum).toEqual([ { display: '4/d/c', url: undefined } ]);
   });
 
   it('unsubscribes on deactivate', () => {

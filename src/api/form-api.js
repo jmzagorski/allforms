@@ -47,4 +47,11 @@ export class FormApi {
       body: json({ id, template })
     }).then(response => response.json());
   }
+
+  copy(id, memberId) {
+    return this._http.fetch('forms/copy', {
+      method: 'POST',
+      body: json({ originalId: id, memberId })
+    }).then(response => response.json());
+  }
 }

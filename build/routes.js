@@ -1,5 +1,6 @@
 module.exports = {
   "/api/": "/",
+  "/forms/copy": "/forms",
   "/forms/data/lookups": "/lookups",
   "/forms/data/copy": "/formData",
   "/forms/data/snapshots": "/formData",

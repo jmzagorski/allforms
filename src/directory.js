@@ -1,16 +1,27 @@
-import { requestMetadata, getOverallMetadataStatus, getActiveForm } from './domain/index';
+import {
+  requestMetadata,
+  getOverallMetadataStatus,
+  getActiveForm,
+  getActiveMember
+} from './domain/index';
+import { FormApi } from './api';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
 export class Directory {
-  static inject() { return [ Router, Store ]; }
+  static inject() { return [ Router, Store, FormApi ]; }
 
-  constructor(router, store) {
+  constructor(router, store, formApi) {
     this.routes = [];
     this.status = 'muted';
     this._router = router;
     this._store = store;
+    this._formApi = formApi;
     this._unsubscribes = [];
+  }
+
+  get form() {
+    return getActiveForm(this._store.getState());
   }
 
   activate(params) {
@@ -21,15 +32,15 @@ export class Directory {
     this._store.dispatch(requestMetadata(params.memberId, params.formName));
   }
 
-  copy() {
-    // TODO
+  async copy() {
+    const member = getActiveMember(this._store.getState());
+    await this._formApi.copy(this.form.id, member.id);
   }
 
   _updateForm() {
     this.routes = [];
-    const form =  getActiveForm(this._store.getState());
 
-    if (!form) return;
+    if (!this.form) return;
 
     this.interfaceRoute = this._router.generate('interface', {
       memberId: this.memberId, formName: this.formName
@@ -39,7 +50,7 @@ export class Directory {
       .filter(r => r.settings.dirListing)
       .forEach(route => {
         const url = this._router.generate(route.name, {
-          memberId: this.memberId, formName: form.name
+          memberId: this.memberId, formName: this.form.name
         });
         this.routes.push({
           url,

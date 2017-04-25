@@ -112,4 +112,24 @@ describe('the form api', () => {
     expect(serverElem).toBe(returnedForm);
     fr.readAsText(httpStub.blob.body);
   });
+
+  it('uses the copy api', async done => {
+    const form = { id: 123, memberId: 'a' };
+    const returnedData = {};
+    const fr = new FileReader();
+
+    httpStub.itemStub = returnedData;
+    fr.addEventListener('loadend', () => {
+      const postObj = { originalId: 123, memberId: 'a' };
+      expect(fr.result).toEqual(JSON.stringify(postObj));
+      done();
+    });
+
+    const actual = await sut.copy(form.id, form.memberId);
+
+    expect(httpStub.url).toEqual('forms/copy');
+    expect(httpStub.blob.method).toEqual('POST');
+    expect(actual).toBe(returnedData);
+    fr.readAsText(httpStub.blob.body);
+  });
 });
