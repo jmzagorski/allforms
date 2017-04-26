@@ -8,24 +8,16 @@
               <i class="fa fa-handshake-o fa-fw" aria-hidden="true"></i>
             </a>
           </button>
-          <button title="Copy" class="btn btn-xs btn-default" click.delegate="copy()">
-            <i class="fa fa-files-o" aria-hidden="true"></i>
+          <button title="Copy" class="btn btn-xs transparent" click.delegate="copy()">
+            <i class="fa fa-files-o fa-fw" aria-hidden="true"></i>Copy
           </button>
+          <a repeat.for="r of routes" title="${r.description}"
+            class="btn btn-xs transparent" href="${r.url}">
+            <i class="fa fa-${r.icon} fa-fw" aria-hidden="true"></i>${r.name}
+          </a>
         </div>
       </div>
-      <table class="table">
-        <tbody>
-          <tr repeat.for="r of routes">
-            <td>
-              <i class="fa fa-${r.icon} fa-fw" aria-hidden="true"></i>
-              <a href.bind="r.url">&nbsp; ${r.name}</a>
-            </td>
-            <td class="text-muted">
-              ${r.description}
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+    <compose if.bind="form" view-model="./dashboard" model.bind="form"></compose>
   </section>
 </template>
