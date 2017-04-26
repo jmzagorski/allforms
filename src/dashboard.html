@@ -1,0 +1,9 @@
+<template>
+  <require from="./resources/elements/grid"></require>
+  <require from="./resources/elements/grid-column"></require>
+
+  <grid height="500" options.bind="gridOptions" data.bind="dataList">
+    <grid-column repeat.for="d of dataFormProps" field.bind="d">
+    </grid-column>
+  </grid>
+</template>
