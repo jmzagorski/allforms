@@ -6,5 +6,5 @@
 
 /*to fix nav-bar-right last child appearing @ edge of screen*/
 .navbar-nav.navbar-right:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
