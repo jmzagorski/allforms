@@ -108,7 +108,7 @@ describe('the interact form custom element', () => {
 
   it('sets default value on change', async done => {
     let event = null;
-    const context = { html: '<input id="1">', listener: e => event = e };
+    const context = { html: '<div id="1"><input></div>', listener: e => event = e };
     const setDefaultSpy = spyOn(domServices, 'setDefaultVal');
 
     sut.inView(`<interact-form html.bind="html"
@@ -116,14 +116,17 @@ describe('the interact form custom element', () => {
 
     await sut.create(bootstrap);
 
+    const $div = sut.element.querySelector('div');
     const $input = sut.element.querySelector('input');
     const $form = sut.element.querySelector('form');
-    $input.onchange({ target: $input });
+    $div.onchange({ target: $input });
 
     expect(event).not.toEqual(null);
     expect(event.detail).not.toEqual(null);
     expect(event.detail.type).toEqual('valset');
-    expect(event.detail.$elem).toBe($input);
+    // the emitting element must be the interactable not any nested elements
+    // that do not have an id property
+    expect(event.detail.$elem).toBe($div);
     expect(event.detail.$form).toBe($form);
     expect(setDefaultSpy).toHaveBeenCalledWith($input);
     done();

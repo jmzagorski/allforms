@@ -77,7 +77,7 @@ export class InteractFormCustomElement {
   _addEvents($elem) {
     $elem.onchange = e => {
       setDefaultVal(e.target);
-      this._emitInteractEvent(e.target, EVENTS.valset);
+      this._emitInteractEvent($elem, EVENTS.valset);
     };
     $elem.onkeydown = e => this._deleteInteractable(e, $elem);
     $elem.onclick = e => e.preventDefault();
