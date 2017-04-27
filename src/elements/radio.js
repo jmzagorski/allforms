@@ -20,7 +20,9 @@ export const bootstrap = stampit()
     let type = 'radio';
 
     this.create = function create($element) {
-      return $element ? updateOptions($element, this) : createOptions(Object.assign({}, this, { type }));
+      return $element ?
+        updateOptions($element, Object.assign({}, this, { type })) :
+        createOptions(Object.assign({}, this, { type }));
     };
   })
   .compose(defaults, metadata);

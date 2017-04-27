@@ -61,7 +61,8 @@ describe('the input elements', () => {
       const $input = $updated.querySelector('input')
       expect($label.textContent).toEqual('c');
       expect($input.required).toBeTruthy();
-      expect($input.name).toEqual('b');
+      expect($input.name).toBeTruthy();
+      expect($input.type).toEqual(data.type);
     });
   });
 

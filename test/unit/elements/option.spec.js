@@ -60,7 +60,10 @@ describe('the option elememts', () => {
 
       const $updated = sut.create($existing);
 
+      const $input = $updated.querySelector('input');
+
       expect($updated).toBe($existing);
+      expect($input.type).toEqual(data.type);
       expect($updated.innerText).toContain('b\n');
       // plus one because of the <br> tag
       expect($updated.children.length).toEqual(data.count + 1);

@@ -19,15 +19,17 @@ export const bootstrap = stampit()
 
     this.create = function create($element) {
       // TODO: name attribute really shouldn't be set on file types
-      const $formGroup = $element ? updateInput($element, this) : createInput(Object.assign({}, this, { type }));
+      const formGroup = $element ?
+        updateInput($element, Object.assign({}, this, { type })) :
+        createInput(Object.assign({}, this, { type }));
 
       if (this.multiple) {
-        $formGroup.$input.setAttribute('multiple', '');
+        formGroup.$input.setAttribute('multiple', '');
       } else {
-        $formGroup.$input.removeAttribute('multiple');
+        formGroup.$input.removeAttribute('multiple');
       }
 
-      return $formGroup.$element;
+      return formGroup.$element;
     };
   })
   .compose(defaults, metadata);

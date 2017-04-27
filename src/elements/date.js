@@ -22,10 +22,13 @@ export const bootstrap = stampit()
     this.min = formatDate(new Date());
 
     this.create = function create($element) {
-      const $formGroup = $element ? updateInput($element, this) : createInput(Object.assign({}, this, { type }));
-      $formGroup.$input.setAttribute('max', this.max);
-      $formGroup.$input.setAttribute('min', this.min);
-      return $formGroup.$element;
+      const formGroup = $element ?
+        updateInput($element, Object.assign({}, this, { type })) :
+        createInput(Object.assign({}, this, { type }));
+
+      formGroup.$input.setAttribute('max', this.max);
+      formGroup.$input.setAttribute('min', this.min);
+      return formGroup.$element;
     };
   })
   .compose(defaults, metadata);
