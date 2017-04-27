@@ -46,7 +46,6 @@ export class Design {
   activate(params) {
     this._unsubscribe = this._store.subscribe(this._update.bind(this));
     this._store.dispatch(requestElementTypes());
-    this._store.dispatch(requestForm(params.form));
   }
 
   /**

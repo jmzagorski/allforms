@@ -63,16 +63,6 @@ describe('the design view model', () => {
     expect(storeSpy.dispatch).toHaveBeenCalledWith(requestElementTypes());
   });
 
-  it('dispatches a request to get the form', () => {
-    storeSpy.subscribe.and.callFake(() => {
-      expect(storeSpy.dispatch).not.toHaveBeenCalled()
-    });
-
-    sut.activate({ form: 'a' });
-
-    expect(storeSpy.dispatch).toHaveBeenCalledWith(requestForm('a'));
-  });
-
   it('subscribes to the store on activate', () => {
     sut.activate({ });
 

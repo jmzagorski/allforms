@@ -1,4 +1,4 @@
-import { requestForm, getActiveForm, editForm, createForm } from './domain/index';
+import { getActiveForm, editForm, createForm } from './domain/index';
 import { Store } from 'aurelia-redux-plugin';
 import { Router } from 'aurelia-router';
 
