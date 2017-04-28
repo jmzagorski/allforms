@@ -26,6 +26,7 @@ export const bootstrap = stampit()
   .methods({
     create($element) {
       const $wrapper = $element || DOM.createElement('span');
+      // hidden input field so it can be submitted with form data
       const $output = $wrapper.querySelector('output') || DOM.createElement('output');
       $wrapper.textContent = this.text;
 
@@ -34,7 +35,6 @@ export const bootstrap = stampit()
 
       if (this.context) {
         $output.className += `alert alert-${this.context}`.trim();
-        $output.setAttribute('onchange', function() { this.value ? this.hidden = false : this.hidden = true; });
       }
 
       $output.name = this.name;
