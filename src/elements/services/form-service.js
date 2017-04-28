@@ -1,5 +1,6 @@
 import { isObject, isArray } from '../../utils';
 import { standard as stdLink } from '../link';
+import $ from 'jquery';
 
 export class FormService {
 
@@ -25,25 +26,10 @@ export class FormService {
   }
 
   async _collect() {
-    let valueObj = {};
-    let fd = this._formDataProvider();
+    const fd = this._formDataProvider(this._$form);
 
     for (let other of this._otherServices) {
-      await other.collect(this._$form);
-    }
-
-    // collect all the non formulas in the value object
-    for (let i = 0; i < this._$form.elements.length; i++) {
-      const $elem = this._$form.elements[i];
-
-      if($elem.type === 'file') {
-        for (let f = 0; f < $elem.files.length; f++) {
-          const $file = $elem.files[f];
-          fd.append($elem.name, $file)
-        }
-      } else {
-        fd.append($elem.name, this._$form.elements[i].value)
-      }
+      await other.collect(this._$form, fd);
     }
 
     return fd;
@@ -62,7 +48,7 @@ export class FormService {
 
   _setFormValue(name, obj) {
     const $elems = this._$form.querySelectorAll(`[name="${name}"]`);
-   
+
     for (let i = 0; i < $elems.length; i++) {
       const $elem = $elems[i];
       const value = obj[i] || obj;
@@ -77,9 +63,18 @@ export class FormService {
           this._createLinkFromFile(obj, $elem);
         }
       } else {
-        $elems[i].value = obj[i] || obj;
+        switch ($elems[i].type) {
+          case "radio": case "checkbox": 
+            // FIXME assuming the value is an array
+            $elems[i].checked = obj.find(o => o == $elems[i].value) ? true : false
+
+            break;
+          default:
+            $elems[i].value = obj[i] || obj;
+
+        }
       }
-		}
+    }
   }
 
   _createLinkFromFile(file, $elem) {

@@ -16,7 +16,7 @@ export class FormulaService {
     }
   }
 
-  async collect($form) {
+  async collect($form, fd) {
     const $formulas = [];
 
     for (let i = 0; i < $form.elements.length; i++) {
@@ -35,9 +35,13 @@ export class FormulaService {
       const fx = $formula.getAttribute('data-formula');
       const val = await this._formulaParser.parse(fx);
 
-      $form.elements[$formula.name].value = val.result;
-      // use == to get null and undefined
-      $formula.hidden = val.result == null ? true : false; // eslint-disable-line no-eq-null, eqeqeq
+      if (val.result !== null) {
+        $form.elements[$formula.name].value = val.result;
+        fd.append($formula.name, val.result);
+        $formula.hidden = false;
+      } else {
+        $formula.hidden = true;
+      }
     }
   }
 }

@@ -6,13 +6,13 @@ describe('the form service', () => {
   let otherSerices;
   let httpRequestSpy;
 
-  it('populates the form on value changed', async done => {
+  it('populates the form on value changed for complex objects', async done => {
     const formStr = `<form>
-      <input name='d'>
-      <input name='d'>
-      <input name='a'>
-      <input name='b.e.f.g'>
-      <input name='b.e.f.g'>
+      <input name="d">
+      <input name="d">
+      <input name="a">
+      <input name="b.e.f.g">
+      <input name="b.e.f.g">
       </form>`;
     const $form = $(formStr).get(0);
 
@@ -38,6 +38,28 @@ describe('the form service', () => {
     expect($inputs[3].value).toEqual('5');
     expect($inputs[4].value).toEqual('6');
     done();
+  });
+
+  [ { type: 'radio', data: { a: [ 1 ] }, expectFirst: true, expectSecond: false },
+    { type: 'checkbox', data: { a: [ 1, 2 ] }, expectFirst: true, expectSecond: true },
+    { type: 'checkbox', data: { a: [ 1 ] }, expectFirst: true, expectSecond: false },
+  ].forEach(rec => {
+    it('populates the form for radio and checkbox', async done => {
+      const formStr = `<form>
+      <input type=${rec.type} name="a" value="1">
+      <input type=${rec.type} name="a" value="2">
+      </form>`;
+      const $form = $(formStr).get(0);
+
+      const sut = new FormService($form, null, null, null)
+
+      await sut.populate(rec.data);
+      const $inputs = $form.querySelectorAll('input');
+
+      expect($inputs[0].checked).toEqual(rec.expectFirst)
+      expect($inputs[1].checked).toEqual(rec.expectSecond)
+      done();
+    });
   });
 
   // INTEGRATION TEST - spec.bundle acts weird if i break this out into its own
@@ -91,37 +113,23 @@ describe('the form service', () => {
     done();
   });
 
-  it('collects the form data on submit', async done => {
-    const formStr = `<form>
-      <input name='d' value="1">
-      <input name='d' value="2">
-      <input name='a' value="3">
-      <input name='b.e.f.g' value="4">
-      <input name='b.e.f.g' value="5">
-      </form>`;
-    const $form = $(formStr).get(0);
-    const appendSpy = jasmine.createSpy('append');
-    const formDataProvider = jasmine.createSpy('provider').and
-      .returnValue({ append: appendSpy})
+  it('sends the form to the form data provider', async done => {
+    const form = {};
+    const formDataProvider = jasmine.createSpy('provider');
 
-    const sut = new FormService($form, formDataProvider, null, { send: () => {} });
+    const sut = new FormService(form, formDataProvider, null, { send: () => {} });
 
     await sut.submit('a', 'b');
 
-    expect(appendSpy).toHaveBeenCalledWith('d', '1');
-    expect(appendSpy).toHaveBeenCalledWith('d', '2');
-    expect(appendSpy).toHaveBeenCalledWith('a', '3');
-    expect(appendSpy).toHaveBeenCalledWith('b.e.f.g', '4');
-    expect(appendSpy).toHaveBeenCalledWith('b.e.f.g', '5');
+    expect(formDataProvider.calls.argsFor(0)[0]).toEqual(form);
     done();
   });
 
   it('calls collect on other services once its done', async done => {
-    const formStr = `<form><input name='d' value="1"></form>`;
-    const $form = $(formStr).get(0);
-    const appendSpy = jasmine.createSpy('append');
+    const form = {};
+    const formDataStub = {};
     const formDataProvider = jasmine.createSpy('provider').and
-      .returnValue({ append: appendSpy})
+      .returnValue(formDataStub);
     const firstOther = jasmine.createSpy('1stother');
     const secondOther = jasmine.createSpy('2ndother');
     const others = [
@@ -129,24 +137,14 @@ describe('the form service', () => {
       { collect: secondOther }
     ];
 
-    const sut = new FormService($form, formDataProvider, others, { send: () => {} });
-
-    firstOther.and.callFake(() => {
-      // only one call since there is one input
-      expect(appendSpy).not.toHaveBeenCalled();
-      expect(secondOther).not.toHaveBeenCalled();
-    });
-
-    secondOther.and.callFake(() => {
-      expect(appendSpy).not.toHaveBeenCalled();
-    });
+    const sut = new FormService(form, formDataProvider, others, { send: () => {} });
 
     await sut.submit();
 
     expect(firstOther.calls.count()).toEqual(1);
-    expect(firstOther).toHaveBeenCalledWith($form);
     expect(secondOther.calls.count()).toEqual(1);
-    expect(secondOther).toHaveBeenCalledWith($form);
+    expect(firstOther).toHaveBeenCalledWith(form, formDataStub);
+    expect(secondOther).toHaveBeenCalledWith(form, formDataStub);
     done();
   });
 

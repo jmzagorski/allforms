@@ -13,7 +13,7 @@ export class FormServiceProvider {
   provide($form) {
     return new FormService(
       $form,
-      () => new window.FormData(),
+      $existingForm => $existingForm ? new window.FormData($existingForm) : new window.FormData(),
       this._formServices,
       new HttpRequest(() => new window.XMLHttpRequest())
     );
