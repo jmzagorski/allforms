@@ -1,3 +1,5 @@
+import { DOM } from 'aurelia-pal';
+
 /**
  * @summary delete with the delete key
  * @param {Object} event the event object
@@ -32,22 +34,28 @@ export function deepClone(event, $target) {
  * @param {Element} el the element to set
  */
 export function setDefaultVal(el) {
-  const canCheck = el.type === 'checkbox' || el.type === 'radio';
-  const canSelect = el.type === 'select-one';
   el.defaultValue = el.value;
 
-  if (canCheck) {
-    if (el.checked) {
-      el.setAttribute('checked', el.checked);
-    } else {
-      el.removeAttribute('checked');
-    }
-  }
+  switch (el.type) {
+    case 'radio':
+      DOM.querySelectorAll(`[name="${el.name}"`)
+        .forEach(e => e.removeAttribute('checked'));
+    case 'checkbox':
+      if (el.checked) {
+        el.setAttribute('checked', '');
+      } else {
+        el.removeAttribute('checked');
+      }
+      break;
+    case 'select-one':
+      for (let i = 0; i < el.options.length; i++) {
+        el.options[i].removeAttribute('selected');
+      }
 
-  if (canSelect) {
-    for (let i = 0; i < el.options.length; i++) {
-      el.options[i].removeAttribute('selected');
-    }
-    el.options[el.options.selectedIndex].setAttribute('selected', true);
+      el.options[el.options.selectedIndex].setAttribute('selected', true);
+
+      break;
+    default:
+
   }
 }

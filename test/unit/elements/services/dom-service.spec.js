@@ -1,4 +1,5 @@
 import * as domServices from '../../../../src/elements/services/dom-service';
+import { DOM } from 'aurelia-pal';
 
 describe('the dom service', () => {
 
@@ -75,7 +76,7 @@ describe('the dom service', () => {
     expect($cloned.children[0].value).toEqual('3');
   });
 
-  it('sets the default value for an element (not an option)', () => {
+  it('sets the default value for any element', () => {
     const el = document.createElement('input');
     el.type = 'input';
     el.value = 1;
@@ -86,7 +87,7 @@ describe('the dom service', () => {
   });
 
   using([ true, false ], checked => {
-    it('sets the default value for a checkbox', () => {
+    it('sets the checked attribute for a checkbox', () => {
       const el = document.createElement('input');
       el.type = 'checkbox';
       el.value = 'on';
@@ -98,6 +99,32 @@ describe('the dom service', () => {
       expect(el.defaultValue).toEqual(el.value);
       expect(el.checked).toEqual(checked);
       expect(attr).toEqual(checked);
+    });
+  });
+
+  using([ true, false ], expectOn => {
+    it('sets the checked attribute for a radio', () => {
+      const off = document.createElement('input');
+      const on = document.createElement('input');
+      off.type = 'radio';
+      off.name = 'a';
+      off.setAttribute('checked', '');
+      on.value = 'off';
+      on.type = 'radio';
+      on.value = 'on';
+      on.checked = expectOn;
+      on.name = 'a';
+
+      const domSpy = spyOn(DOM, 'querySelectorAll').and.returnValue([ on, off ]);
+
+      domServices.setDefaultVal(on);
+      const onChecked = on.getAttribute('checked') == null ? false : true;
+      const offChecked = off.getAttribute('checked') == null ? false : true;
+
+      expect(on.defaultValue).toEqual(on.value);
+      expect(on.checked).toEqual(expectOn);
+      expect(onChecked).toEqual(expectOn);
+      expect(offChecked).toBeFalsy();
     });
   });
 
