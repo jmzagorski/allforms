@@ -80,7 +80,9 @@ export class InteractFormCustomElement {
       this._emitInteractEvent($elem, EVENTS.valset);
     };
     $elem.onkeydown = e => this._deleteInteractable(e, $elem);
-    $elem.onclick = e => e.preventDefault();
+    $elem.onclick = e => {
+      if (e.target.tagName === 'A')  e.preventDefault();
+    }
     $elem.ondblclick = e => this._emitInteractEvent($elem, EVENTS.dblclick);
   }
 

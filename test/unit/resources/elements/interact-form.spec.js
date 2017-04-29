@@ -182,22 +182,27 @@ describe('the interact form custom element', () => {
     done();
   });
 
-  it('prevents default on the element on click', async done => {
-    const context = { html: '<input id="1">'  };
-    const event = {
-      preventDefault: jasmine.createSpy('prevent')
-    };
+  [ { tagName: 'INPUT', html: '<input id="1">', calls: 0 },
+    { tagName: 'A', html: '<a id="1"></a>', calls: 1 }
+  ].forEach(rec => {
+    it('prevents default on the element on click for links', async done => {
+      const context = { html: rec.html };
+      const event = {
+        preventDefault: jasmine.createSpy('prevent'),
+        target: { tagName: rec.tagName }
+      };
 
-    sut.inView(`<interact-form html.bind="html"></interact-form>`)
-      .boundTo(context);
+      sut.inView(`<interact-form html.bind="html"></interact-form>`)
+        .boundTo(context);
 
-    await sut.create(bootstrap);
+      await sut.create(bootstrap);
 
-    const $input = sut.element.querySelector('input');
-    $input.onclick(event);
+      const $elem = document.getElementById(1);
+      $elem.onclick(event);
 
-    expect(event.preventDefault.calls.count()).toEqual(1);
-    done();
+      expect(event.preventDefault.calls.count()).toEqual(rec.calls);
+      done();
+    });
   });
 
   it('dispatches interact event on element double click', async done => {
