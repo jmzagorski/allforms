@@ -48,6 +48,7 @@ describe('the duplicator element', () => {
     expect($drawer.className).toEqual('collapse');
 
     expect($btn.tagName).toEqual('BUTTON');
+    expect($btn.type).toEqual('button');
     expect($btn.getAttribute('data-toggle')).toEqual('collapse');
     expect($btn.getAttribute('data-target')).toEqual('#a-drawer');
     expect($btn.className).toEqual('btn btn-default btn-xs');
@@ -59,6 +60,7 @@ describe('the duplicator element', () => {
 
     const $addBtn = $drawer.children[0];
 
+    expect($addBtn.type).toEqual('button');
     expect($addBtn.tagName).toEqual('BUTTON');
     expect($addBtn.textContent).toEqual('+');
     expect($addBtn.className).toEqual('btn btn-success btn-xs');

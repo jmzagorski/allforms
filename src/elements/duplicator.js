@@ -22,6 +22,7 @@ export const bootstrap = stampit()
       $drawerBtnSpan.className = 'glyphicon glyphicon-resize-vertical';
 
       const $drawerBtn = DOM.createElement('button');
+      $drawerBtn.type = 'button';
       $drawerBtn.setAttribute('data-toggle', 'collapse');
       $drawerBtn.setAttribute('data-target', `#${targetName}`);
       $drawerBtn.className = 'btn btn-default btn-xs';
@@ -29,6 +30,7 @@ export const bootstrap = stampit()
       $drawerBtn.appendChild($drawerBtnSpan);
 
       const $addBtn = DOM.createElement('button');
+      $addBtn.type = 'button';
       $addBtn.textContent = '+';
       $addBtn.className = 'btn btn-success btn-xs';
 
