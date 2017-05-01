@@ -2,8 +2,8 @@ import * as domain from '../../../../src/domain';
 
 describe('the element reducer', () => {
 
-  [
-    domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED
+  [ domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED,
+    domain.ELEMENT_DELETED
   ].forEach(type => {
     it('returns the original state on error for actions', () => {
       const state = {};
@@ -15,8 +15,7 @@ describe('the element reducer', () => {
     });
   });
 
-  [
-    domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED,
+  [ domain.RECEIVED_ELEMENT, domain.ELEMENT_ADDED, domain.ELEMENT_EDITED,
     domain.DEFAULT_NEW_ELEMENT
   ].forEach(type => {
     it('returns the payload for actions', () => {
@@ -36,6 +35,15 @@ describe('the element reducer', () => {
     const newState = domain.element(state, action);
 
     expect(newState).toBe(state);
+  });
+
+  it('returns null when element is deleted', () => {
+    const state = [];
+    const action = { type: 'ELEMENT_DELETED' };
+
+    const newState = domain.element(state, action);
+
+    expect(newState).toEqual(null);
   });
 
   it('defaults the state to null', () => {

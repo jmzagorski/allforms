@@ -68,6 +68,19 @@ describe('the element actions', () => {
     expect(actual.payload).toBe(data);
   });
 
+  it('creates the action for deleting an element', () => {
+    const data = {};
+    const expected = {
+      type: 'DELETE_ELEMENT',
+      payload: { id: 1 }
+    };
+
+    const actual = domain.deleteElement(1);
+
+    expect(actual).toEqual(expected);
+    expect(actual.payload).toEqual({ id: 1 });
+  });
+
   [ true, false ].forEach(hasError => {
     it('creates the action for an element being added', () => {
       const data = {};
@@ -97,6 +110,21 @@ describe('the element actions', () => {
 
       expect(actual).toEqual(expected);
       expect(actual.payload).toBe(data);
+    });
+  });
+
+  [ true, false ].forEach(hasError => {
+    it('creates the action for an element being deleted', () => {
+      const data = {};
+      const expected = {
+        type: 'ELEMENT_DELETED',
+        payload: data,
+        error: hasError
+      };
+
+      const actual = domain.deletedElement(data, hasError);
+
+      expect(actual).toEqual(expected);
     });
   });
 });

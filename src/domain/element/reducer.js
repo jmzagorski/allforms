@@ -16,6 +16,11 @@ export default function elementReducer(state = null, action) {
 
       return action.payload;
 
+    case actions.ELEMENT_DELETED:
+      if (action.error) return state;
+
+      return null;
+
     default:
       return state;
   }

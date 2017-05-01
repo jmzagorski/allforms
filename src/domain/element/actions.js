@@ -5,6 +5,23 @@ export const RECEIVED_ELEMENT = 'RECEIVED_ELEMENT';
 export const ELEMENT_ADDED = 'ELEMENT_ADDED';
 export const ELEMENT_EDITED = 'ELEMENT_EDITED';
 export const DEFAULT_NEW_ELEMENT = 'DEFAULT_NEW_ELEMENT';
+export const DELETE_ELEMENT = 'DELETE_ELEMENT';
+export const ELEMENT_DELETED = 'ELEMENT_DELETED';
+
+export function deletedElement(data, hasError) {
+  return {
+    type: ELEMENT_DELETED,
+    payload: data,
+    error: hasError
+  };
+}
+
+export function deleteElement(id) {
+  return {
+    type: DELETE_ELEMENT,
+    payload: { id }
+  };
+}
 
 export function defaultNewElement(element) {
   return {
