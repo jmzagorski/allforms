@@ -55,11 +55,25 @@ export function* editElement(api, action) {
 
 export function* editTemplate(api, action) {
   try {
-    const element = yield call([api, api.saveTemplate], action.payload.element);
+    if (action.payload.element) {
+      const element = yield call([api, api.saveTemplate], action.payload.element);
 
-    yield put(actions.elementEdited(element));
+      yield put(actions.elementEdited(element));
+    }
   } catch (e) {
     yield put(actions.elementEdited(e, true));
+  }
+}
+
+export function* deleteElement(api, action) {
+  try {
+    // FIXME delete should retun an empty body
+    if (action.payload.id) {
+      const element = yield call([api, api.delete], action.payload.id);
+      yield put(actions.deletedElement(element));
+    }
+  } catch (e) {
+    yield put(actions.deletedElement(e, true));
   }
 }
 
@@ -71,5 +85,6 @@ export default function* elementSaga(api) {
   yield takeLatest(actions.REQUEST_ELEMENT, getElement, api);
   yield takeLatest(actions.CREATE_ELEMENT, addElement, api);
   yield takeLatest(actions.EDIT_ELEMENT, editElement, api);
+  yield takeLatest(actions.DELETE_ELEMENT, deleteElement, api);
   yield takeLatest(EDIT_FORM_TEMPLATE, editTemplate, api);
 }

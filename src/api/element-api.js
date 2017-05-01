@@ -28,6 +28,12 @@ export class ElementApi {
     }).then(response => response.json());
   }
 
+  delete(id) {
+    return this._http.fetch('elements/' + id, {
+      method: 'DELETE',
+    }).then(response => response.json());
+  }
+
   saveTemplate({id, template}) {
     return this._http.fetch(`elements/${id}`, {
       method: 'PATCH',

@@ -3,7 +3,8 @@ import {
   receivedAllElements, 
   receivedElement,
   elementAdded,
-  elementEdited
+  elementEdited,
+  deletedElement
 } from '../../../src/domain/index'
 import * as saga from '../../../src/sagas/element';
 
@@ -22,6 +23,9 @@ describe('the element saga', () => {
     );
     expect(iterator.next().value).toEqual(
       takeLatest('EDIT_ELEMENT', saga.editElement, api)
+    );
+    expect(iterator.next().value).toEqual(
+      takeLatest('DELETE_ELEMENT', saga.deleteElement, api)
     );
     expect(iterator.next().value).toEqual(
       takeLatest('EDIT_FORM_TEMPLATE', saga.editTemplate, api)
@@ -175,6 +179,19 @@ describe('the element saga', () => {
     });
   });
 
+  [ null, undefined ].forEach(element => {
+    it('has no iterator when element is missing from payload', () => {
+      const action= { payload: { element } };
+
+      const iterator = saga.editTemplate(null, action);
+
+      expect(iterator.next()).toEqual({
+        done: true,
+        value: undefined
+      });
+    });
+  });
+
   it('sends an error in the catch of edit element template', () => {
     const api = { saveTemplate: () => { } };
     const action= { payload: { element: {} } };
@@ -185,6 +202,42 @@ describe('the element saga', () => {
 
     expect(iterator.throw(err).value).toEqual(
       put(elementEdited(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('deletes the element', () => {
+    const api = { delete: () => { } };
+    const action= { payload: { id: 1 } };
+    const element = { id: 1 };
+
+    const iterator = saga.deleteElement(api, action);
+
+    expect(iterator.next().value).toEqual(
+      call([api, api.delete], action.payload.id)
+    );
+    expect(iterator.next(element).value).toEqual(
+      put(deletedElement(element))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('sends an error in the catch of delete element', () => {
+    const api = { delete: () => { } };
+    const action= { payload: { id: 1 } };
+    const err = new Error();
+
+    const iterator = saga.deleteElement(api, action);
+    iterator.next()
+
+    expect(iterator.throw(err).value).toEqual(
+      put(deletedElement(err, true))
     );
     expect(iterator.next()).toEqual({
       done: true,

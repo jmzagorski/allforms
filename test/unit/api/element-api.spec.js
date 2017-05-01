@@ -67,4 +67,14 @@ describe('the element api', () => {
     expect(serverElem).toBe(returnedElem);
     fr.readAsText(httpStub.blob.body);
   });
+
+  it('deletes the element', async done => {
+    httpStub.itemStub = {};
+
+    const serverElem = await sut.delete(1);
+
+    expect(httpStub.url).toEqual('elements/1');
+    expect(httpStub.blob.method).toEqual('DELETE');
+    done();
+  });
 });
