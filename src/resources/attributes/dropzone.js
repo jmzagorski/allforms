@@ -1,13 +1,30 @@
 import $ from 'jquery';
 import * as Interact from 'interact.js';
 
-// TODO bug blue stays
 function ondragenter(event) {
   event.target.classList.add('drop-target');
 }
 
 function ondragleave(event) {
+  const dropping = event.relatedTarget;
   event.target.classList.remove('drop-target');
+
+  dropping.style.webkitTransform = dropping.style.transform = null;
+
+  let parent = event.target;
+  while(!parent.getAttribute('data-x')) {
+    parent = parent.parentNode;
+  }
+
+  const x = parseInt(parent.getAttribute('data-x')) + parseInt(dropping.getAttribute('data-x'));
+  const y = parseInt(parent.getAttribute('data-y')) + parseInt(dropping.getAttribute('data-y'));
+
+  // if we used the parent it would be the target element which is already the
+  // drop zone 
+  parent.parentNode.appendChild(dropping);
+
+  dropping.setAttribute('data-x', x)
+  dropping.setAttribute('data-y', y);
 }
 
 function ondropactivate(event) {

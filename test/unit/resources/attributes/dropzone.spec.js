@@ -57,13 +57,34 @@ describe('the dropzone custom attribute', () => {
     done();
   });
 
-  it('removes drop-target class on ondragleave', async done => {
+  it('appends the droppable to the closest draggable parents parent', async done => {
+    const grandParent = document.createElement('div');
+    const parent = document.createElement('div');
+    const child = document.createElement('div');
+    child.style.webkitTransform = child.style.transform = 'translate(1px,1px)';
+    child.setAttribute('data-x', '1');
+    child.setAttribute('data-y', '2');
+    parent.classList.add('drop-target');
+    parent.setAttribute('data-x', '3');
+    parent.setAttribute('data-y', '4');
+    parent.appendChild(child);
+    grandParent.appendChild(parent);
+
+    eventStub.target = parent;
+    eventStub.relatedTarget = child;
+
     await sut.create(bootstrap);
 
     const config = interactStub.options.dropzone;
     config.ondragleave(eventStub);
 
-    expect(classListSpy.remove).toHaveBeenCalledWith('drop-target');
+    expect(child.style.webkitTransform).toEqual('');
+    expect(child.style.transform).toEqual('');
+    expect(parent.children.length).toEqual(0);
+    expect(grandParent.children.length).toEqual(2);
+    expect(child.getAttribute('data-x')).toEqual('4');
+    expect(child.getAttribute('data-y')).toEqual('6');
+    expect(parent.classList).not.toContain('drop-target');
     done();
   });
 
@@ -147,5 +168,4 @@ describe('the dropzone custom attribute', () => {
     expect(child.getAttribute('data-y')).toEqual('2');
     done();
   });
-
 });
