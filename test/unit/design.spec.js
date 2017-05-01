@@ -7,7 +7,8 @@ import { MetadataDialog } from '../../src/metadata-dialog';
 import {
   requestForm,
   requestElementTypes,
-  editFormTemplate
+  editFormTemplate,
+  deleteElement
 } from '../../src/domain/index';
 import { setupSpy } from './jasmine-helpers';
 
@@ -148,6 +149,28 @@ describe('the design view model', () => {
     expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(
       requestForm(sut.formId)
     );
+    done();
+  });
+
+  it('deletes the element on delete', async done => {
+    const $elem = { id: '2' };
+    const event = {
+      detail: {
+        $form: { outerHTML: 'formHtml' },
+        type: 'delete',
+        $elem
+      }
+    }
+    await sut.saveInteraction(event);
+
+    expect(storeSpy.dispatch.calls.count()).toEqual(2);
+    expect(storeSpy.dispatch.calls.argsFor(0)[0]).toEqual(deleteElement('2'))
+    expect(storeSpy.dispatch.calls.argsFor(1)[0]).toEqual(editFormTemplate({
+      form: {
+        template: 'formHtml',
+        id: sut.formId
+      },
+    }));
     done();
   });
 

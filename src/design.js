@@ -6,7 +6,8 @@ import {
   editFormTemplate,
   requestElementTypes,
   getActiveForm,
-  getElementTypes
+  getElementTypes,
+  deleteElement
 } from './domain';
 
 export class Design {
@@ -73,6 +74,15 @@ export class Design {
     switch (event.detail.type) {
       case 'dblclick':
         await this.createMetadata({ $form: event.detail.$form, $elem: event.detail.$elem });
+        break;
+      case 'delete':
+        this._store.dispatch(deleteElement(event.detail.$elem.id))
+        this._store.dispatch(editFormTemplate({
+          form: {
+            template: event.detail.$form.outerHTML,
+            id: this.formId
+          }
+        }));
         break;
       default:
         this._saveLayout({
