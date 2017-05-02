@@ -8,7 +8,7 @@ export class FormulaService {
     this._formulaParser = formulaParser;
   }
 
-  populate($form) {
+  populate($form, data) {
     for (let i = 0; i < $form.elements.length; i++) {
       const $elem = $form.elements[i];
 
