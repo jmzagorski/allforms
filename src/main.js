@@ -12,6 +12,8 @@ import { PLATFORM } from 'aurelia-pal';
 import { BindingMiddleware } from './binding-middleware';
 import { BindingSignaler } from 'aurelia-templating-resources';
 import { FormulaService } from './elements/services/formula-service';
+import { InputListService } from './elements/services/input-list-service';
+import { AureliaFormService } from './elements/services/aurelia-form-service';
 import { LookupProvider } from './functions/excel/macros/lookup-provider';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from './root-reducer';
@@ -44,7 +46,8 @@ export async function configure(aurelia) {
     .plugin('aurelia-value-converters')
     .plugin('aurelia-redux-plugin', {
       store: createStore(rootReducer, applyMiddleware(sagaMiddleware, signalerMiddleware.listen))
-    });
+    })
+  .feature('resources');
 
   configureHttp(http, env.generateBaseApi());
 
@@ -55,6 +58,8 @@ export async function configure(aurelia) {
   aurelia.container.registerInstance(BindingSignaler, signaler);
   aurelia.container.registerInstance(EnvironmentService, env);
   aurelia.container.registerSingleton('FormServices', FormulaService);
+  aurelia.container.registerSingleton('FormServices', InputListService);
+  aurelia.container.registerSingleton('FormServices', AureliaFormService);
   aurelia.container.registerSingleton('MacroProviders', LookupProvider);
   aurelia.container.registerSingleton('GridFormatters', HtmlFormatter);
   aurelia.container.registerSingleton('GridFormatters', LinkFormatter);

@@ -1,6 +1,8 @@
 <template>
   <require from="./resources/elements/autosave-form"></require>
+  <require from="./resources/attributes/enhance-html"></require>
 
-  <div innerhtml.one-way="html | sanitizeHTML" autosave-form.one-way="autoSaveOpts"></div>
+  <div enhance-html.one-way="html" innerhtml.one-way="html | sanitizeHTML"
+    autosave-form.one-way="autoSaveOpts"></div>
 
 </template>

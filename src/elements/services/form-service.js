@@ -12,11 +12,11 @@ export class FormService {
   }
 
   async populate(dataObj) {
-    this._populate(dataObj, '')
-
     for (let other of this._otherServices) {
-      await other.populate(this._$form);
+      await other.populate(this._$form, dataObj);
     }
+
+    this._populate(dataObj, '')
   }
 
   async submit(method, api) {

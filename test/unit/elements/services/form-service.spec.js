@@ -85,7 +85,7 @@ describe('the form service', () => {
     });
   });
 
-  it('calls other form service collect methods after its done', async done => {
+  it('calls other form service populate methods after its done', async done => {
     const formStr = `<form><input name='b'></form>`;
     const $form = $(formStr).get(0);
     const firstOther = jasmine.createSpy('1stother');
@@ -99,17 +99,20 @@ describe('the form service', () => {
     const data = { b: 1 };
 
     firstOther.and.callFake(() => {
-      const $input = $form.querySelector('input');
-      expect($input.value).toEqual('1');
       expect(secondOther).not.toHaveBeenCalled();
     });
+
+    secondOther.and.callFake(() => {
+      const $input = $form.querySelector('input');
+      expect($input.value).toEqual('');
+    })
 
     await sut.populate(data);
 
     expect(firstOther.calls.count()).toEqual(1);
-    expect(firstOther).toHaveBeenCalledWith($form);
+    expect(firstOther).toHaveBeenCalledWith($form, data);
     expect(secondOther.calls.count()).toEqual(1);
-    expect(secondOther).toHaveBeenCalledWith($form);
+    expect(secondOther).toHaveBeenCalledWith($form, data);
     done();
   });
 

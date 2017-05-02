@@ -17,9 +17,8 @@ export function deleteTarget(event) {
   }
 }
 
-export function deepClone(event, $target) {
-  const $cloning = $target || event.target;
-  const $deepClone = $cloning.cloneNode(true);
+export function deepClone($target) {
+  const $deepClone = $target.cloneNode(true);
   const $newElements = [$deepClone].concat(...$deepClone.children);
 
   for (let i = 0; i < $newElements.length; i++) {

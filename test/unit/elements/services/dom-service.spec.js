@@ -29,7 +29,7 @@ describe('the dom service', () => {
     });
   });
 
-  it('deep clones the event target', () => {
+  it('deep clones the target', () => {
     const $original = document.createElement('div');
     const $nested = document.createElement('input');
     $original.id = '1';
@@ -39,33 +39,7 @@ describe('the dom service', () => {
     $nested.value = '3';
     $original.appendChild($nested);
     
-    const event = { target: $original };
-
-    const $cloned = domServices.deepClone(event, null);
-
-    expect($cloned.tagName).toEqual('DIV');
-    expect($cloned.id).toEqual('');
-    expect($cloned.className).toEqual('a');
-    expect($cloned.children[0].tagName).toEqual('INPUT');
-    expect($cloned.children[0].id).toEqual('');
-    expect($cloned.children[0].name).toEqual('b');
-    expect($cloned.children[0].value).toEqual('3');
-  });
-
-  it('deep clones the override target', () => {
-    const $original = document.createElement('div');
-    const $nested = document.createElement('input');
-    const $eventTarget = document.createElement('span');
-    $original.id = '1';
-    $original.className = 'a';
-    $nested.id = '2';
-    $nested.name = 'b';
-    $nested.value = '3';
-    $original.appendChild($nested);
-    
-    const event = { target: $eventTarget };
-
-    const $cloned = domServices.deepClone(event, $original);
+    const $cloned = domServices.deepClone($original);
 
     expect($cloned.tagName).toEqual('DIV');
     expect($cloned.id).toEqual('');
