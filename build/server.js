@@ -17,6 +17,7 @@ var getFormProfile = require('./get-form-profile');
 var routerRender = require('./composite-router-render');
 var snapshot = require('./snapshot-formdata');
 var routes = require('./routes');
+var changeFormNameOnPast = require('./post-new-dashed-form-name');
 
 // Set default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
@@ -38,6 +39,7 @@ server.use(copyFormData(router));
 server.use(copyForm(router));
 server.use(snapshot(router));
 server.use(addApiFormDataFields(router));
+server.use(changeFormNameOnPast);
 
 server.use(jsonServer.rewriter(routes));
 
