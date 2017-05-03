@@ -6,12 +6,13 @@ const defaults = stampit()
   .props({
     required: false,
     text: '',
-    options: ''
+    options: '',
+    name: ''
   });
 
 const metadata = stampit()
   .props({
-    schema: [ map.text, map.input, map.options ]
+    schema: [ map.text, map.name, map.input, map.options ]
   });
 
 export const bootstrap = stampit()

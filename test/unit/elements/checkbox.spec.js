@@ -8,6 +8,7 @@ describe('the checkbox element', () => {
     expect(sut.required).toBeFalsy();
     expect(sut.text).toBeDefined();
     expect(sut.options).toBeDefined();
+    expect(sut.name).toBeDefined();
     expect(sut.schema).toBeDefined();
     expect(sut.schema).toContain('text.html');
     expect(sut.schema).toContain('input.html');
