@@ -5,9 +5,10 @@ import { default as formDataSaga } from './sagas/form-data';
 import { default as formSaga } from './sagas/form-saga';
 import { default as metadataSaga } from './sagas/metadata-saga';
 import { default as memberSaga } from './sagas/member-saga';
+import { default as externalSaga } from './sagas/external-saga';
 import * as apis from './api/index';
 
-export default function setupRootSaga(http) {
+export default function setupRootSaga(http, envService) {
   const elementApi = new apis.ElementApi(http);
   const elementTypeApi = new apis.ElementTypeApi(http);
   const formApi = new apis.FormApi(http);
@@ -20,10 +21,12 @@ export default function setupRootSaga(http) {
     yield [
       elemTypeSaga(elementTypeApi),
       elemSaga(elementApi),
-      formDataSaga(formDataApi),
+      formDataSaga(formDataApi, new window.XMLHttpRequest(), envService),
       formSaga(formApi),
       metadataSaga(metadataApi),
-      memberSaga(memberApi)
+      memberSaga(memberApi),
+      // TODO logger for this
+      externalSaga(formDataApi, new window.XMLHttpRequest(), envService)
     ];
   };
 }
