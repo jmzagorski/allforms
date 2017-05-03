@@ -19,13 +19,7 @@ export class FormService {
     this._populate(dataObj, '')
   }
 
-  async submit(method, api) {
-    const data = await this._collect();
-
-    this._requestApi.send(method, api, data);
-  }
-
-  async _collect() {
+  async collect() {
     const fd = this._formDataProvider(this._$form);
 
     for (let other of this._otherServices) {

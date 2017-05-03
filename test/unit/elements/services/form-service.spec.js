@@ -122,7 +122,7 @@ describe('the form service', () => {
 
     const sut = new FormService(form, formDataProvider, null, { send: () => {} });
 
-    await sut.submit('a', 'b');
+    await sut.collect();
 
     expect(formDataProvider.calls.argsFor(0)[0]).toEqual(form);
     done();
@@ -142,7 +142,7 @@ describe('the form service', () => {
 
     const sut = new FormService(form, formDataProvider, others, { send: () => {} });
 
-    await sut.submit();
+    await sut.collect();
 
     expect(firstOther.calls.count()).toEqual(1);
     expect(secondOther.calls.count()).toEqual(1);
@@ -153,22 +153,6 @@ describe('the form service', () => {
 
   // TODO how to do this since you cant mock or stub the FileList
   xit('collect input files on submit', async done => {
-    done();
-  });
-
-  it('submits the data to the request service', async done => {
-    const formStr = `<form></form>`;
-    const $form = $(formStr).get(0);
-    const formDataStub = { }; 
-    const formDataProvider = jasmine.createSpy('provider').and
-      .returnValue(formDataStub)
-    const requestSpy = { send: jasmine.createSpy('request') };
-
-    const sut = new FormService($form, formDataProvider, null, requestSpy);
-
-    await sut.submit('a', 'b');
-
-    expect(requestSpy.send).toHaveBeenCalledWith('a', 'b', formDataStub);
     done();
   });
 })

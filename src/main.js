@@ -51,7 +51,7 @@ export async function configure(aurelia) {
 
   configureHttp(http, env.generateBaseApi());
 
-  sagaMiddleware.run(setupSaga(http));
+  sagaMiddleware.run(setupSaga(http, env));
 
   aurelia.container.registerInstance(Interact, Interact);
   aurelia.container.registerInstance(HttpClient, http);

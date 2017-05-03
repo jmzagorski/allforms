@@ -59,6 +59,13 @@ export class FormDataApi {
     }).then(response => response.json());
   }
 
+  saveData(id, formData) {
+    return this._http.fetch(baseUrl + '/' + id, {
+      method: 'PATCH',
+      body: formData
+    }).then(response => response.json());
+  }
+
   snapshot(id) {
     return this._http.fetch(`${baseUrl}/snapshots`, {
       method: 'POST',
@@ -73,5 +80,4 @@ export class FormDataApi {
       body: json({ originalId: id })
     }).then(response => response.json());
   }
-
 }

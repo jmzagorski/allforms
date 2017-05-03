@@ -6,6 +6,7 @@ module.exports = {
   "/forms/data/snapshots": "/formData",
   "/forms/:id/data": "/forms/:id/formData",
   "/forms/data": "/formData",
+  "/formData/:id": "/formData/:id?_expand=form",
   "/forms/profile/:memberId/:name": "/forms?name=:name&memberId=:memberId&_embed=elements&_embed=metadata",
   "/members/current": "/members?_limit=1",
   "/members/:id/forms/recent": "/members/:id/forms?_limit=10&_sort=lastEditInDays&_sort=asc",

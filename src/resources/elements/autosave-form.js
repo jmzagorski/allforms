@@ -29,11 +29,12 @@ export class AutosaveFormCustomAttribute {
     this.$form.onsubmit = e => e.preventDefault();
 
     this.$form.onchange = async e => {
-      if (!this.value || !this.value.method || !this.value.dataId) {
-        throw new Error('the binding object must have an method and dataId property');
-      }
+      const data = await this._formService.collect();
 
-      this._formService.submit(this.value.method, this.$form.action + '/' + this.value.dataId);
+      this.element.dispatchEvent(new CustomEvent('dataready', {
+        bubbles: true,
+        detail: { data, api: this.$form.action  }
+      }));
     };
   }
 }

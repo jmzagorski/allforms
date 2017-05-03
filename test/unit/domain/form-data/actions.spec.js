@@ -2,6 +2,35 @@ import * as domain from '../../../../src/domain/index';
 
 describe('the form data actions', () => {
 
+  it('creates the action for editing the data property on the form-data object', () => {
+    const data = {};
+    const expected = {
+      type: 'EDIT_DATA_ON_FORM',
+      payload: { api: 'a', formDataId: 1, formData: data }
+    };
+
+    const actual = domain.editDataOnForm('a', 1, data);
+
+    expect(actual).toEqual(expected);
+    expect(actual.payload.formData).toBe(data);
+  });
+
+  [ true, false ].forEach(hasError => {
+    it('creates the action when external data is posted', () => {
+      const data = {};
+      const expected = {
+        type: 'POSTED_EXTERNAL_DATA_FORM',
+        payload: { formDataId: 1, something: 2 },
+        error: hasError
+      };
+
+      const actual = domain.postedExternalDataForm(1, { something: 2 }, hasError);
+
+      expect(actual).toEqual(expected);
+    });
+  });
+
+
   [ true, false ].forEach(hasError => {
     it('creates the action for all data forms received', () => {
       const data = {};

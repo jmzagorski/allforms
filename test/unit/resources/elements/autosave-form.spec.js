@@ -112,33 +112,24 @@ describe('the auto save form attribute', () => {
     done();
   });
 
-  [ { }, { dataId: 'a' }, { method: 'p'} ].forEach(options => {
-    it('throws when no value options exists', async done => {
-      sut.inView(`<form autosave-form.bind="options"></form>`)
-        .boundTo({ options });
+  it('calls the form service to collect and emit the data', async done => {
+    let event = null
+    const collect = e => event = e;
+    const options = { dataId: 'a' }
+    const data = {};
+    sut.inView(`<form action="testUrl" dataready.delegate="collect($event)"
+      autosave-form.bind="options"></form>`).boundTo({ collect, options });
 
-      await sut.create(bootstrap);
-
-      try {
-        await sut.element.onchange();
-      } catch(e) {
-        expect(e).toEqual(new Error('the binding object must have an method and dataId property'));
-        done();
-      }
-    });
-  });
-
-  it('calls the form service to submit the data', async done => {
-    const options = { dataId: 'a', method: 'b' }
-    sut.inView(`<form action="c/b" autosave-form.bind="options"></form>`)
-      .boundTo({ options });
+    formServiceSpy.collect.and.returnValue(data);
 
     await sut.create(bootstrap);
 
     await sut.element.onchange();
 
-    expect(formServiceSpy.submit.calls.argsFor(0)[0]).toEqual('b');
-    expect(formServiceSpy.submit.calls.argsFor(0)[1]).toContain('c/b/a');
+    expect(event).not.toEqual(null);
+    expect(event.detail).not.toEqual(null);
+    expect(event.detail.data).toBe(data);
+    expect(event.detail.api).toContain('testUrl');
     done();
   });
 });

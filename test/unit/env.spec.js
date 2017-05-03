@@ -19,10 +19,10 @@ describe('the environment functions', () => {
     });
   });
 
-  [ '', '/api/' ].forEach(api => {
+  [ '', '/api/', 'http://test:9001/api/', 'http://test:9001/api/something' ].forEach(api => {
     it('returns true for local apis', () => {
       const platformStub = {
-        location: {  }
+        location: { port: 1, hostname: 'test' }
       };
       const sut = new EnvironmentService(platformStub);
       const isLocal = sut.isLocalApi(api);

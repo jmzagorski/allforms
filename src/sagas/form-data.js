@@ -1,4 +1,4 @@
-import { put, takeLatest, call } from 'redux-saga/effects';
+import { put, takeLatest, takeEvery, call } from 'redux-saga/effects';
 import * as actions from '../domain/form-data/actions';
 
 /**
@@ -42,6 +42,17 @@ export function* editFormDataAsync(api, action) {
   }
 }
 
+export function* saveDataOnlyAsync(api, action) {
+  try {
+    const formData = yield call([ api, api.saveData ],
+      action.payload.formDataId, action.payload.formData);
+
+    yield put(actions.formDataEdited(formData));
+  } catch (e) {
+    yield put(actions.formDataEdited(e, true));
+  }
+}
+
 /**
  * @summary Listens for form data actions
  * @param {IFormDataApi} api IFormDataApi interface
@@ -50,4 +61,5 @@ export default function* formDataSaga(api) {
   yield takeLatest(actions.REQUEST_FORM_DATA, getFormDataAsync, api);
   yield takeLatest(actions.CREATE_FORM_DATA, createFormDataAsync, api);
   yield takeLatest(actions.EDIT_FORM_DATA, editFormDataAsync, api);
+  yield takeEvery(actions.POSTED_EXTERNAL_DATA_FORM, saveDataOnlyAsync, api);
 }

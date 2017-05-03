@@ -72,7 +72,7 @@ describe('the form data api', () => {
   [ { method: 'snapshot', api: 'snapshots' },
     { method: 'copy', api: 'copy' }
   ].forEach(data => {
-    it('uses the snapshot api', async done => {
+    it('uses the snapshot and copy api', async done => {
       const formData = { id: 123 };
       const returnedData = {};
       const fr = new FileReader();
@@ -91,5 +91,20 @@ describe('the form data api', () => {
       expect(actual).toBe(returnedData);
       fr.readAsText(httpStub.blob.body);
     });
+  });
+
+  it('saves for the form data', async done => {
+    const formData = { id: 123 };
+    const returnedData = {};
+
+    httpStub.itemStub = returnedData;
+
+    const actual = await sut.saveData(1, formData)
+
+    expect(httpStub.url).toEqual('forms/data/1');
+    expect(httpStub.blob.method).toEqual('PATCH');
+    expect(actual).toBe(returnedData);
+    expect(httpStub.blob.body).toBe(formData);
+    done();
   });
 });

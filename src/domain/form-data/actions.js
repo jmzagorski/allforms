@@ -5,6 +5,23 @@ export const CREATE_FORM_DATA = 'CREATE_FORM_DATA';
 export const EDIT_FORM_DATA = 'EDIT_FORM_DATA';
 export const FORM_DATA_CREATED = 'FORM_DATA_CREATED';
 export const FORM_DATA_EDITED = 'FORM_DATA_EDITED';
+export const EDIT_DATA_ON_FORM = 'EDIT_DATA_ON_FORM'; 
+export const POSTED_EXTERNAL_DATA_FORM = 'POSTED_EXTERNAL_DATA_FORM'; 
+
+export function editDataOnForm(api, formDataId, formData) {
+  return {
+    type: EDIT_DATA_ON_FORM,
+    payload: { api, formDataId, formData }
+  };
+}
+
+export function postedExternalDataForm(formDataId, data, hasError) {
+  return {
+    type: POSTED_EXTERNAL_DATA_FORM,
+    payload: Object.assign({}, data, { formDataId }),
+    error: hasError
+  };
+}
 
 /**
  * @summary action creator for receving data forms

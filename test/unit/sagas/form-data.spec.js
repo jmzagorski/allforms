@@ -1,4 +1,4 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
+import { put, call, takeLatest, takeEvery } from 'redux-saga/effects';
 import {
   receivedFormDataList,
   receivedFormData,
@@ -22,6 +22,9 @@ describe('the form data saga', () => {
     );
     expect(iterator.next().value).toEqual(
       takeLatest('EDIT_FORM_DATA', saga.editFormDataAsync, api)
+    );
+    expect(iterator.next().value).toEqual(
+      takeEvery('POSTED_EXTERNAL_DATA_FORM', saga.saveDataOnlyAsync, api)
     );
     expect(iterator.next()).toEqual({
       done: true, value: undefined
@@ -125,6 +128,42 @@ describe('the form data saga', () => {
     const err = new Error();
 
     const iterator = saga.editFormDataAsync(api, action);
+    iterator.next();
+
+    expect(iterator.throw(err).value).toEqual(
+      put(formDataEdited(err, true))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('saves the data only for the form data', () => {
+    const returnedData = { id: 1 };
+    const api = { saveData: () => { } };
+    const action = { payload: { formDataId: 2, formData: {} } };
+
+    const iterator = saga.saveDataOnlyAsync(api, action);
+
+    expect(iterator.next().value).toEqual(
+      call([api, api.saveData], 2, action.payload.formData)
+    );
+    expect(iterator.next(returnedData).value).toEqual(
+      put(formDataEdited(returnedData))
+    );
+    expect(iterator.next()).toEqual({
+      done: true,
+      value: undefined
+    });
+  });
+
+  it('sends an error in the catch of editing the data on the form data object', () => {
+    const api = { saveData: () => { } };
+    const action = { payload: {} };
+    const err = new Error();
+
+    const iterator = saga.saveDataOnlyAsync(api, action);
     iterator.next();
 
     expect(iterator.throw(err).value).toEqual(

@@ -1,7 +1,7 @@
 import { Store } from 'aurelia-redux-plugin';
 import { DataEdit } from '../../src/data-edit';
 import { setupSpy } from './jasmine-helpers';
-import { requestForm, requestFormData } from '../../src/domain/index';
+import { requestForm, requestFormData, editDataOnForm } from '../../src/domain/index';
 import * as formSelectors from '../../src/domain/form/selectors';
 import * as dataSelectors from '../../src/domain/form-data/selectors';
 
@@ -37,7 +37,7 @@ describe('edit data view model', () => {
     expect(storeSpy.dispatch.calls.argsFor(0)).toEqual([ requestFormData(params.formDataName) ]);
   });
 
-  it('sets up the view mode properties if the form and data exist on update', () => {
+  it('sets up the view model properties if the form and data exist on update', () => {
     const state = {};
     const form = { template: 'a' };
     const formData = { data: 'c', id: 1, name: 'e' };
@@ -58,9 +58,7 @@ describe('edit data view model', () => {
     expect(getFormSpy.calls.argsFor(0)[0]).toBe(state);
     expect(getDataSpy.calls.argsFor(0)[0]).toBe(state);
     expect(sut.html).toEqual('a');
-    expect(sut.autoSaveOpts).toEqual({
-      method: 'PATCH', dataId: 1, data: 'c'
-    });
+    expect(sut.autoSaveOpts).toEqual({ data: 'c' });
   });
 
   [ { form: null, formData: {} },
@@ -82,6 +80,26 @@ describe('edit data view model', () => {
       expect(sut.html).toEqual('');
       expect(sut.autoSaveOpts).toEqual({});
     });
+  });
+
+  it('calls the store to save the data', () => {
+    const form = { template: 'a' };
+    const formData = { data: 'c', id: 1, name: 'e' };
+    const data = {};
+    const getFormSpy = spyOn(formSelectors, 'getActiveForm').and.returnValue(form);
+    const getDataSpy = spyOn(dataSelectors, 'getFormData').and.returnValue(formData);
+    let updateFunc = null;
+
+    storeSpy.subscribe.and.callFake(func => updateFunc = func);
+
+    sut = new DataEdit(storeSpy);
+    sut.activate({ formDataName: formData.name });
+    updateFunc();
+
+    sut.save({ detail: { api: 'a', data }});
+
+    expect(storeSpy.dispatch).toHaveBeenCalledWith(editDataOnForm('a', 1, data));
+    expect(storeSpy.dispatch.calls.mostRecent().args[0].payload.formData).toBe(data);
   });
 
   it('unsubscribes on deactivate', () => {
