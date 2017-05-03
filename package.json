@@ -25,7 +25,7 @@
     "build:dev": "cross-env BABEL_ENV=webpack NODE_ENV=development npm run webpack -- --progress --profile",
     "prebuild:prod": "npm run clean:dist",
     "build:prod": "cross-env BABEL_ENV=webpack NODE_ENV=production npm run webpack -- --progress --profile",
-    "start": "npm-run-all --parallel secure lint:watch start-mockapi server:dev",
+    "start": "npm-run-all --parallel lint:watch start-mockapi server:dev",
     "secure": "nsp check",
     "server": "npm run server:dev",
     "server:dev": "cross-env BABEL_ENV=webpack NODE_ENV=development node ./node_modules/webpack-dev-server/bin/webpack-dev-server --inline --profile --watch",
@@ -88,7 +88,7 @@
     "jquery": "^3.1.1",
     "jquery-textcomplete": "^1.8.0",
     "redux": "^3.6.0",
-    "redux-saga": "^0.14.3",
+    "redux-saga": "^0.15.1",
     "slickgrid-es6": "^2.0.3",
     "stampit": "^3.1.2"
   },
