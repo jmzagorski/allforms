@@ -14,7 +14,8 @@
     <label for="form-schema-tabs">Tabs</label>
 
     <input title="Comma Separate Values" type="text" class="form-control"
-    id="form-schema-tabs" required value.bind="model.headers" pattern="^([a-zA-Z])+(,\s?[a-zA-Z0-9]+)*$">
+    id="form-schema-tabs" required value.bind="model.headers"
+    pattern="^.+(,\s*.+)*$">
 
   </div>
 
