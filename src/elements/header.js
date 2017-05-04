@@ -16,8 +16,20 @@ const metadata = stampit()
 
 export const standard = stampit()
   .methods({
-    create() {
-      const $header = DOM.createElement(`h${this.size}`);
+    create($element) {
+      let $header = DOM.createElement(`h${this.size}`);
+
+      // TODO need to copy attributes and what not
+      // need to replace the entire element if different size
+      // else just set the text
+      if ($element) {
+        if ($element.tagName !== $header.tagName) {
+          $element.parentNode.replaceChild($header, $element);
+        } else {
+          $header = $element;
+        }
+      }
+
       $header.textContent = this.text;
       return $header;
     }
