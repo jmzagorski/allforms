@@ -1,18 +1,23 @@
-/**
- * @implements {IFormService}
- */
 export class AureliaFormService {
 
-  populate($form, data) {
-    const $elems = $form.querySelectorAll('[au-target]');
+  /**
+   * @summary cleans off the aurelia enhancement data on an element
+   * @param {Element} $elem the parent element to search
+   *
+   */
+  clean($elem) {
+    const $targets = $elem.querySelectorAll('[au-target-id]');
 
-    for (let i = 0; i < $elems.length; i++) {
-      const $elem = $elems[i];
-      $elem.removeAttribute('au-target');
+    this._cleanSingle($elem);
+
+    for (let i = 0; i < $targets.length; i++) {
+      const $enhanced = $targets[i];
+      this._cleanSingle($enhanced)
     }
   }
 
-  collect() {
-    // do nothing, but implement the interface
+  _cleanSingle($elem) {
+    $elem.removeAttribute('au-target-id');
+    $elem.classList.remove('au-target');
   }
 }

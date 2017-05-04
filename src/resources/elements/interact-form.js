@@ -1,5 +1,6 @@
 import { setDefaultVal, deleteTarget } from '../../elements/services/dom-service';
 import { bindable } from 'aurelia-framework';
+import { AureliaFormService } from '../../elements/services/aurelia-form-service';
 
 const DRAGGABLE = 'draggable.bind';
 
@@ -18,9 +19,9 @@ export class InteractFormCustomElement {
   @bindable action;
   @bindable method;
 
-  static inject = [ Element ];
+  static inject = [ Element, AureliaFormService ];
 
-  constructor(element) {
+  constructor(element, aureliaService) {
     this.enctype = '';
     this.element = element;
     this.interactHtml = '';
@@ -30,6 +31,8 @@ export class InteractFormCustomElement {
         onend: e => this._emitInteractEvent(e.target, EVENTS.move)
       }
     };
+
+    this._aureliaService = aureliaService;
   }
 
   bind() {
@@ -99,6 +102,8 @@ export class InteractFormCustomElement {
   }
 
   _emitInteractEvent($elem, type) {
+    this._aureliaService.clean(this.$form);
+
     const interactEvent = new CustomEvent('oninteract', {
       bubbles: true,
       detail: { type, $elem, $form: this.$form }

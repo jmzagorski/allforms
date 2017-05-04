@@ -1,17 +1,21 @@
 import * as Interact from 'interact.js';
 import * as domServices from '../../../../src/elements/services/dom-service';
 import { InteractStub } from '../../stubs';
+import { setupSpy } from '../../jasmine-helpers';
 import { StageComponent } from 'aurelia-testing';
 import { bootstrap } from 'aurelia-bootstrapper-webpack';
+import { AureliaFormService } from '../../../../src/elements/services/aurelia-form-service';
 
 describe('the interact form custom element', () => {
   let sut;
+  let serviceSpy;
 
   beforeEach(() => {
     // FIXME: how can i get rid of these mocks. the interact form requires these
     // in the html and all tests will throw if not setup to spy
     const interactFunc = jasmine.createSpy('interactFunc');
     const interactSpy = new InteractStub();
+    serviceSpy = setupSpy('aureliaService', AureliaFormService.prototype);
     interactFunc.and.returnValue(interactSpy);
 
     sut = StageComponent.withResources('resources/elements/interact-form');
@@ -19,6 +23,7 @@ describe('the interact form custom element', () => {
     sut.configure = aurelia => {
       aurelia.use.standardConfiguration();
       aurelia.container.registerInstance(Interact, interactFunc);
+      aurelia.container.registerInstance(AureliaFormService, serviceSpy);
     };
   });
 
@@ -224,6 +229,7 @@ describe('the interact form custom element', () => {
     expect(event.detail.type).toEqual('dblclick');
     expect(event.detail.$elem).toBe($input);
     expect(event.detail.$form).toBe($form);
+    expect(serviceSpy.clean).toHaveBeenCalledWith($form)
     done();
   });
 });

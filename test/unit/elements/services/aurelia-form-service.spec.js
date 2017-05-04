@@ -7,19 +7,33 @@ describe('the aurelia form service', () => {
     sut = new AureliaFormService();
   });
 
-  it('removes all the au-target attributes', () => {
-    const attr = 'au-target';
-    const $form = document.createElement('form');
+  it('removes the au-target attribute', () => {
+    const attr = 'au-target-id';
     const $input = document.createElement('input');
-    $input.setAttribute(attr, 1);
     const $span = document.createElement('span');
+    $input.setAttribute(attr, 1);
     $span.setAttribute(attr, 1);
-    $form.appendChild($input);
-    $form.appendChild($span);
 
-    sut.populate($form);
+    $span.appendChild($input);
+
+    sut.clean($span);
 
     expect($input.getAttribute(attr)).toEqual(null);
     expect($span.getAttribute(attr)).toEqual(null);
+  });
+
+  xit('removes the au-target class', () => {
+    const attr = 'au-target-id';
+    const $input = document.createElement('input');
+    const $span = document.createElement('span');
+    $input.className = attr + ' something';
+    $span.className = attr + ' something';
+
+    $span.appendChild($input);
+
+    sut.clean($span);
+
+    expect($input.className).toEqual('something');
+    expect($span.className).toEqual('something');
   });
 })
