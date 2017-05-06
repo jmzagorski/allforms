@@ -239,9 +239,8 @@ describe('the grid custom element', () => {
   ].forEach(data => {
     it('emits columns events when correct cell is clicked', async done => {
       const item = {};
-      const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
       const gridMock = {
-        getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+        getDataItem: jasmine.createSpy('getData').and.returnValue(item)
       };
       const args = {
         cell: data.cell,
@@ -266,7 +265,7 @@ describe('the grid custom element', () => {
 
       if (data.calls !== 0) {
         expect(context.change.calls.argsFor(0)[0]).toBe(item);
-        expect(getItemSpy).toHaveBeenCalledWith(1);
+        expect(gridMock.getDataItem).toHaveBeenCalledWith(1);
       }
 
       done();
@@ -276,9 +275,8 @@ describe('the grid custom element', () => {
   it('emits event only when item has changed', async done => {
     let itemChangedEvent= null;
     const item = {};
-    const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
     const gridMock = {
-      getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+      getDataItem: jasmine.createSpy('getData').and.returnValue(item)
     };
     const args = {
       cell: 0,
@@ -306,9 +304,8 @@ describe('the grid custom element', () => {
   it('does not emit event when item did not change', async done => {
     let itemChangedEvent= null;
     const item = {};
-    const getItemSpy = jasmine.createSpy('getItem').and.returnValue(item);
     const gridMock = {
-      getData: jasmine.createSpy('getData').and.returnValue({ getItem: getItemSpy })
+      getDataItem: jasmine.createSpy('getData').and.returnValue(item)
     };
     const args = {
       cell: 0,

@@ -129,7 +129,8 @@ export class GridColumnCustomElement {
 
   _callHandler(e, args, handler) {
     if (args.cell === this._index) {
-      const item = args.grid.getData().getItem(args.row)
+      // TODO grid should send item
+      const item = args.grid.getDataItem(args.row);
       const cached = JSON.stringify(item);
 
       this[handler].call(this._bindingContext, item);
